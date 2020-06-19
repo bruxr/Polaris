@@ -1,10 +1,6 @@
 import { setApolloContext } from './apollo';
 
-interface User {
-  id: string;
-  email: string;
-  token: string;
-}
+import { User } from '../types/users';
 
 export function signin(user: User): void {
   localStorage.setItem('polaris_auth', JSON.stringify(user));

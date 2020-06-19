@@ -3,8 +3,10 @@ import React, { useState } from 'react';
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import { loader } from 'graphql.macro';
+import { useRecoilState } from 'recoil';
 import { useMutation } from '@apollo/client';
 
+import userAtom from '../../atoms/user';
 import Alert from '../../components/Alert';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -13,6 +15,8 @@ import { signin } from '../../services/auth';
 const AUTHENTICATE = loader('../../graphql/mutations/authenticate.gql');
 
 export default function Signin(): JSX.Element {
+  const [, setUser] = useRecoilState(userAtom);
+
   const [error, setError] = useState('');
   const [credentials, setCredentials] = useState<{ email: string, password: string } | undefined>(undefined);
 
@@ -95,11 +99,13 @@ export default function Signin(): JSX.Element {
           }
 
           const { userId, userEmail, token } = data.authenticate;
-          signin({
+          const user = {
             id: userId,
             email: userEmail,
             token,
-          });
+          };
+          signin(user);
+          setUser(user);
         }}
       >
         <Form className="flex flex-col items-center justify-center min-w-full min-h-screen">
