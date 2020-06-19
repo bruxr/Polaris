@@ -4,7 +4,9 @@ import Signin from './views/Signin';
 
 function App(): JSX.Element {
   return (
-    <Signin />
+    <div className="min-w-screen min-h-screen px-4">
+      <Signin />
+    </div>
   );
 }
 

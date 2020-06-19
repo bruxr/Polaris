@@ -15,6 +15,7 @@ export default function Signin(): JSX.Element {
     validationSchema: Yup.object({
       email: Yup.string()
         .label('Email')
+        .email()
         .required(),
       password: Yup.string()
         .label('Password')
@@ -25,14 +26,19 @@ export default function Signin(): JSX.Element {
   });
 
   return (
-    <form onSubmit={signinFormik.handleSubmit}>
+    <form
+      className="flex flex-col items-center justify-center min-w-full min-h-screen"
+      onSubmit={signinFormik.handleSubmit}
+    >
       <Input
         id="email"
         type="email"
         name="email"
         label="Email"
         value={signinFormik.values.email}
+        error={signinFormik.touched.email ? signinFormik.errors.email : undefined}
         onChange={signinFormik.handleChange}
+        onBlur={signinFormik.handleBlur}
       />
 
       <Input
@@ -41,7 +47,9 @@ export default function Signin(): JSX.Element {
         name="password"
         label="Password"
         value={signinFormik.values.password}
+        error={signinFormik.touched.password ? signinFormik.errors.password : undefined}
         onChange={signinFormik.handleChange}
+        onBlur={signinFormik.handleBlur}
       />
 
       <Button type="submit">Sign In</Button>
