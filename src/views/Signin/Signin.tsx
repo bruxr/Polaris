@@ -8,6 +8,7 @@ import { useMutation } from '@apollo/client';
 import Alert from '../../components/Alert';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+import { signin } from '../../services/auth';
 
 const AUTHENTICATE = loader('../../graphql/mutations/authenticate.gql');
 
@@ -93,7 +94,12 @@ export default function Signin(): JSX.Element {
             return;
           }
 
-          console.log(data);
+          const { userId, userEmail, token } = data.authenticate;
+          signin({
+            id: userId,
+            email: userEmail,
+            token,
+          });
         }}
       >
         <Form className="flex flex-col items-center justify-center min-w-full min-h-screen">
