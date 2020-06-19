@@ -13,11 +13,11 @@ const AUTHENTICATE = loader('../../graphql/mutations/authenticate.gql');
 
 export default function Signin(): JSX.Element {
   const [error, setError] = useState('');
-  const [step, setStep] = useState<'signin' | 'otp'>('signin');
+  const [credentials, setCredentials] = useState<{ email: string, password: string } | undefined>(undefined);
 
   const [authenticate, { loading }] = useMutation(AUTHENTICATE);
 
-  if (step === 'signin') {
+  if (!credentials) {
     return (
       <Formik
         initialValues={{
@@ -36,13 +36,16 @@ export default function Signin(): JSX.Element {
             .required(),
         })}
         onSubmit={async ({ email, password }, { setFieldValue }) => {
+          setError('');
           const { data } = await authenticate({ variables: { email, password } });
+
           if (data.authenticate.errors) {
             setFieldValue('password', '', false);
             setError(data.authenticate.errors[0].message);
             return;
           }
-          setStep('otp');
+          setFieldValue('email', '', false);
+          setCredentials({ email, password });
         }}
       >
         <Form className="flex flex-col items-center justify-center min-w-full min-h-screen">
@@ -70,11 +73,43 @@ export default function Signin(): JSX.Element {
     );
   } else {
     return (
-      <Form className="flex flex-col items-center justify-center min-w-full min-h-screen">
-        {error && <Alert>{error}</Alert>}
+      <Formik
+        initialValues={{ otp: '' }}
+        validationSchema={Yup.object({
+          otp: Yup
+            .string()
+            .label('OTP')
+            .required(),
+        })}
+        onSubmit={async ({ otp }, { setFieldValue }) => {
+          const { email, password } = credentials;
 
-        <Button type="submit" disabled={loading}>Sign In</Button>
-      </Form>
+          setError('');
+          const { data } = await authenticate({ variables: { email, password, otp } });
+
+          if (data.authenticate.errors) {
+            setFieldValue('otp', '', false);
+            setError(data.authenticate.errors[0].message);
+            return;
+          }
+
+          console.log(data);
+        }}
+      >
+        <Form className="flex flex-col items-center justify-center min-w-full min-h-screen">
+          {error && <Alert>{error}</Alert>}
+          
+          <Input
+            id="otp"
+            name="otp"
+            label="OTP"
+            placeholder=""
+            disabled={loading}
+          />
+
+          <Button type="submit" disabled={loading}>Sign In</Button>
+        </Form>
+      </Formik>
     );
   }
 }
