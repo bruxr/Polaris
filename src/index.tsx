@@ -1,7 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+
 import App from './App';
+
+import './index.css';
+// eslint-disable-next-line import/no-unresolved
+import './assets/css/tailwind-out.css';
+
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
