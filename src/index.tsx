@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 
 import './index.css';
+import 'react-toastify/dist/ReactToastify.css';
 // eslint-disable-next-line import/no-unresolved
 import './assets/css/tailwind-out.css';
 
