@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { useRecoilState } from 'recoil';
 
+import AppShell from '../AppShell';
 import userAtom from '../../atoms/user';
 import Signin from '../../views/Signin';
 
@@ -14,6 +15,8 @@ export default function AuthGuard({ children }: PropsWithChildren<unknown>): JSX
   }
 
   return (
-    <>{children}</>
+    <AppShell>
+      {children}
+    </AppShell>
   );
 }
