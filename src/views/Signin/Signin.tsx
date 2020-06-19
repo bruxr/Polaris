@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
@@ -10,7 +10,7 @@ import userAtom from '../../atoms/user';
 import Alert from '../../components/Alert';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import { signin } from '../../services/auth';
+import { signin, readCredentials } from '../../services/auth';
 
 const AUTHENTICATE = loader('../../graphql/mutations/authenticate.gql');
 
@@ -21,6 +21,14 @@ export default function Signin(): JSX.Element {
   const [credentials, setCredentials] = useState<{ email: string, password: string } | undefined>(undefined);
 
   const [authenticate, { loading }] = useMutation(AUTHENTICATE);
+
+  // Try to load any saved credentials
+  useEffect(() => {
+    const user = readCredentials();
+    if (user) {
+      setUser(user);
+    }
+  }, [setUser]);
 
   if (!credentials) {
     return (
