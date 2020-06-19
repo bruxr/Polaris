@@ -1,18 +1,31 @@
-import React, { DetailedHTMLProps, InputHTMLAttributes } from 'react';
+import React, { DetailedHTMLProps, InputHTMLAttributes, useMemo } from 'react';
 
 import classnames from 'classnames';
+import { Field, useFormikContext } from 'formik';
 
 interface Props extends DetailedHTMLProps<
   InputHTMLAttributes<HTMLInputElement>,
   HTMLInputElement
 > {
+  name: string;
   label: string;
   id: string;
   error?: string;
 }
 
 export default function Input(props: Props): JSX.Element {
-  const { label, id, error } = props;
+  const { name, label, id, error } = props;
+  const { touched, errors } = useFormikContext<{[index: string]: string}>();
+
+  // Determine if there is an error message to be displayed.
+  // If an error is explicitly provided via props, use it.
+  const errorMsg = useMemo(() => {
+    if (error) {
+      return error;
+    }
+
+    return touched[name] && errors[name] ? errors[name] : undefined;
+  }, [error, name, touched, errors]);
 
   return (
     <div className="min-w-full mb-4">
@@ -22,19 +35,19 @@ export default function Input(props: Props): JSX.Element {
       >
         {label}
       </label>
-      <input
+      <Field
         placeholder={label}
         {...props}
         id={id}
         className={classnames(
           'p-2 w-full border border-gray text-base',
           props.className,
-          { 'border-red': !!error }
+          { 'border-red-600': !!errorMsg }
         )}
       />
-      {error && (
-        <div className="mt-2 text-red text-xs">
-          {error}
+      {errorMsg && (
+        <div className="mt-2 text-red-600 text-xs">
+          {errorMsg}
         </div>
       )}
     </div>
