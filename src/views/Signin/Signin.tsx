@@ -10,6 +10,7 @@ import userAtom from '../../atoms/user';
 import Alert from '../../components/Alert';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+import { setApolloContext } from '../../services/apollo';
 import { signin, readCredentials } from '../../services/auth';
 
 const AUTHENTICATE = loader('../../graphql/mutations/authenticate.gql');
@@ -27,6 +28,7 @@ export default function Signin(): JSX.Element {
     const user = readCredentials();
     if (user) {
       setUser(user);
+      setApolloContext(user.token);
     }
   }, [setUser]);
 
