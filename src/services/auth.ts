@@ -22,6 +22,5 @@ export function readCredentials(): User | void {
     return;
   }
 
-  setApolloContext(user.token);
   return user;
 }
