@@ -7,6 +7,7 @@ import { MemoryRouter as Router, Switch, Route }  from 'react-router-dom';
 import apollo from './services/apollo';
 import Dashboard from './views/Dashboard';
 import AuthGuard from './components/AuthGuard';
+import Notifications from './views/Notifications';
 
 function App(): JSX.Element {
   return (
@@ -16,6 +17,7 @@ function App(): JSX.Element {
           <div className="min-w-screen min-h-screen px-4">
             <AuthGuard>
               <Switch>
+                <Route path="/notifications" component={Notifications} />
                 <Route path="/" component={Dashboard} exact />
               </Switch>
             </AuthGuard>
