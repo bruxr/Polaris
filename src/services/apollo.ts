@@ -5,12 +5,15 @@ const httpLink = new HttpLink({
   uri: process.env.REACT_APP_API_URI,
 });
 
-let authLink = setContext(() => {
-  // Do nothing
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: httpLink,
 });
 
 export function setApolloContext(token?: string): void {
-  authLink = setContext((_, { headers }) => {
+  console.info('Updating apollo client with new token.');
+
+  const authLink = setContext((_, { headers }) => {
     return {
       headers: {
         ...headers,
@@ -18,9 +21,7 @@ export function setApolloContext(token?: string): void {
       },
     };
   });
+  client.setLink(authLink.concat(httpLink));
 }
 
-export default new ApolloClient({
-  cache: new InMemoryCache(),
-  link: authLink.concat(httpLink),
-});
+export default client;
