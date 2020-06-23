@@ -12,7 +12,7 @@ const NOTIFICATIONS_COUNT = loader('../../graphql/queries/notifications-count.gq
 const MARK_NOTIFICATIONS_READ = loader('../../graphql/mutations/mark-notifications-read.gql');
 
 export default function Notifications(): JSX.Element {
-  const { loading, data } = useQuery(NOTIFICATIONS, { fetchPolicy: 'no-cache' });
+  const { loading, data } = useQuery(NOTIFICATIONS, { fetchPolicy: 'cache-and-network' });
   const [markNotificationsRead] = useMutation(
     MARK_NOTIFICATIONS_READ,
     {
