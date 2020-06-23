@@ -22,7 +22,7 @@ export default function Notifications(): JSX.Element {
   
   return (
     <div className="divide-y">
-      {data && data.notifications.map((notification: Notification) => (
+      {data && data.notifications.items.map((notification: Notification) => (
         <NotificationItem key={notification.id} notification={notification} />
       ))}
     </div>
