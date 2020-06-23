@@ -10,7 +10,7 @@ const client = new ApolloClient({
   link: httpLink,
 });
 
-export function setApolloContext(token?: string): void {
+export function setAuthToken(token?: string): void {
   console.info('Updating apollo client with new token.');
 
   const authLink = setContext((_, { headers }) => {

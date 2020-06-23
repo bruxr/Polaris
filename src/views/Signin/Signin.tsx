@@ -1,25 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import { loader } from 'graphql.macro';
-import { useRecoilState } from 'recoil';
 import { useMutation } from '@apollo/client';
 
-import userAtom from '../../atoms/user';
 import Alert from '../../components/Alert';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import { setApolloContext } from '../../services/apollo';
+import AuthContext from '../../contexts/auth';
+import { setAuthToken } from '../../services/apollo';
 import { signin, readCredentials } from '../../services/auth';
 
 const AUTHENTICATE = loader('../../graphql/mutations/authenticate.gql');
 
 export default function Signin(): JSX.Element {
-  const [, setUser] = useRecoilState(userAtom);
-
   const [error, setError] = useState('');
   const [credentials, setCredentials] = useState<{ email: string, password: string } | undefined>(undefined);
+
+  const authContext = useContext(AuthContext);
 
   const [authenticate, { loading }] = useMutation(AUTHENTICATE);
 
@@ -27,10 +26,10 @@ export default function Signin(): JSX.Element {
   useEffect(() => {
     const user = readCredentials();
     if (user) {
-      setUser(user);
-      setApolloContext(user.token);
+      setAuthToken(user.token);
+      authContext.setUser(user);
     }
-  }, [setUser]);
+  }, [authContext]);
 
   if (!credentials) {
     return (
@@ -115,7 +114,7 @@ export default function Signin(): JSX.Element {
             token,
           };
           signin(user);
-          setUser(user);
+          authContext.setUser(user);
         }}
       >
         <Form className="flex flex-col items-center justify-center min-w-full min-h-screen">

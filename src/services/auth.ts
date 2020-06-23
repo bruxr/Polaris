@@ -1,10 +1,10 @@
-import { setApolloContext } from './apollo';
+import { setAuthToken } from './apollo';
 
 import { User } from '../types/users';
 
 export function signin(user: User): void {
   localStorage.setItem('polaris_auth', JSON.stringify(user));
-  setApolloContext(user.token);
+  setAuthToken(user.token);
 }
 
 export function readCredentials(): User | void {
@@ -13,7 +13,7 @@ export function readCredentials(): User | void {
     return;
   }
 
-  let user;
+  let user: User;
   try {
     user = JSON.parse(data);
   } catch (err) {
