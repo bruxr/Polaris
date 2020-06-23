@@ -10,7 +10,7 @@ import { Notification } from '../../types/notifications';
 const NOTIFICATIONS = loader('../../graphql/queries/notifications.gql');
 
 export default function Notifications(): JSX.Element {
-  const { loading, data } = useQuery(NOTIFICATIONS);
+  const { loading, data } = useQuery(NOTIFICATIONS, { fetchPolicy: 'no-cache' });
 
   if (loading) {
     return (
@@ -22,7 +22,7 @@ export default function Notifications(): JSX.Element {
   
   return (
     <div className="divide-y">
-      {data && data.notifications.items.map((notification: Notification) => (
+      {data && data.notifications.map((notification: Notification) => (
         <NotificationItem key={notification.id} notification={notification} />
       ))}
     </div>

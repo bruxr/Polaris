@@ -26,12 +26,14 @@ export default function Header(): JSX.Element {
         activeClassName="text-blue-600"
       >
         <NotificationsOutlined />
-        {notifsData && notifsData.notifications.numUnread > 0 && <div
-          className="
-            absolute bg-red-600 text-white text-xs font-bold rounded-full
-            w-3 h-3 text-center border-white border right-0 bottom-0
-          "
-        />}
+        {notifsData && notifsData.notificationsCount.unread > 0 && (
+          <div
+            className="
+              absolute bg-red-600 text-white text-xs font-bold rounded-full
+              w-3 h-3 text-center border-white border right-0 bottom-0
+            "
+          />
+        )}
       </NavLink>
     </header>
   );
