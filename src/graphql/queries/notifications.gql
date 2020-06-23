@@ -1,0 +1,12 @@
+query Notifications {
+  notifications {
+    items {
+      id
+      variant
+      title
+      body
+      unread
+      createdAt
+    }
+  }
+}

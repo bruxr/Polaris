@@ -18,6 +18,7 @@
     "formik": "^2.1.4",
     "graphql": "^15.1.0",
     "graphql.macro": "^1.4.2",
+    "luxon": "^1.24.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
@@ -53,6 +54,7 @@
   },
   "devDependencies": {
     "@types/classnames": "^2.2.10",
+    "@types/luxon": "^1.24.0",
     "@types/react-router-dom": "^5.1.5",
     "@types/yup": "^0.29.3",
     "@typescript-eslint/eslint-plugin": "^3.3.0",
