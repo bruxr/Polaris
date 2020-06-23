@@ -25,9 +25,7 @@ function App(): JSX.Element {
     <ApolloProvider client={apolloClient}>
       <AuthRoot>
         <Router>
-          <div className="min-w-screen min-h-screen px-4">
-            <Views />
-          </div>
+          <Views />
         </Router>
       </AuthRoot>
     </ApolloProvider>
