@@ -7,7 +7,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIosOutlined';
 import NotificationsOutlined from '@material-ui/icons/NotificationsOutlined';
 
-const GET_NOTIFICATIONS_COUNT = loader('../../graphql/queries/notifications_count.gql');
+const GET_NOTIFICATIONS_COUNT = loader('../../graphql/queries/notifications-count.gql');
 
 export default function Header(): JSX.Element {
   const location = useLocation();

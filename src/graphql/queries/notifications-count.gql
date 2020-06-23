@@ -1,4 +1,4 @@
-query NotificationsCount {
+query notificationsCount {
   notificationsCount {
     unread
   }

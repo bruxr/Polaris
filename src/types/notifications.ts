@@ -8,3 +8,10 @@ export interface Notification {
   unread: boolean;
   createdAt: DateTime;
 }
+
+export interface NotificationsCountQuery {
+  notificationsCount: {
+    __typename: 'NotificationsCount',
+    unread: number;
+  }
+}
