@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import { loader } from 'graphql.macro';
 import { useQuery, useMutation } from '@apollo/client';
 
 import Spinner from '../../components/Spinner';
 import NotificationItem from './NotificationItem';
+import { deserializeNotification } from '../../deserializers/notifications';
 import { Notification, NotificationsCountQuery } from '../../types/notifications';
+import NOTIFICATIONS, { NotificationResult } from '../../graphql/queries/notifications';
 
-const NOTIFICATIONS = loader('../../graphql/queries/notifications.gql');
 const NOTIFICATIONS_COUNT = loader('../../graphql/queries/notifications-count.gql');
 const MARK_NOTIFICATIONS_READ = loader('../../graphql/mutations/mark-notifications-read.gql');
 
@@ -34,6 +35,15 @@ export default function Notifications(): JSX.Element {
     }
   );
 
+  // Convert notifications to objects we can use
+  const notifs = useMemo<Notification[] | undefined>(() => {
+    if (!data) {
+      return undefined;
+    }
+
+    return data.notifications.map((item: NotificationResult) => deserializeNotification(item));
+  }, [data]);
+
   // Mark notifications read in backend
   useEffect(() =>  {
     if (data) {
@@ -52,7 +62,7 @@ export default function Notifications(): JSX.Element {
   
   return (
     <div className="divide-y">
-      {data && data.notifications.map((notification: Notification) => (
+      {notifs && notifs.map((notification: Notification) => (
         <NotificationItem key={notification.id} notification={notification} />
       ))}
     </div>

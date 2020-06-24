@@ -1,8 +1,13 @@
 import { DateTime } from 'luxon';
 
+export enum NotificationVariant {
+  Test = 'test',
+  Package = 'package',
+}
+
 export interface Notification {
   id: string;
-  variant: string;
+  variant: NotificationVariant;
   title: string;
   body: string;
   unread: boolean;
