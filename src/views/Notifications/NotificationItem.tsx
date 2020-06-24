@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 
 import classnames from 'classnames';
+import { Link } from 'react-router-dom';
 import BuildIcon from '@material-ui/icons/BuildOutlined';
 import LocalShippingIcon from '@material-ui/icons/LocalShippingOutlined';
 
@@ -23,11 +24,11 @@ export default function NotificationItem({ notification }: Props): JSX.Element {
   return (
     <div className={classnames('flex p-4', { 'bg-indigo-100': notification.unread })}>
       <Icon className="mr-4" />
-      <div className="text-gray-600">
+      <Link to="/notifications/packages/2" className="text-gray-600">
         <h3 className="font-medium text-blue-900">{notification.title}</h3>
           {notification.body}
           <div className="text-gray-500 text-sm mt-1">{notification.createdAt.toRelative()}</div>
-      </div>
+      </Link>
     </div>
   );
 }

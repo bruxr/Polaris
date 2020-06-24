@@ -1,8 +1,11 @@
 import React from 'react';
 
+import { RecoilRoot } from 'recoil';
 import { ApolloProvider } from '@apollo/client';
 import { BrowserRouter as Router, Switch, Route }  from 'react-router-dom';
 
+import Package from './views/Package';
+import Packages from './views/Packages';
 import Dashboard from './views/Dashboard';
 import AuthRoot from './components/AuthRoot';
 import AppShell from './components/AppShell';
@@ -13,22 +16,27 @@ function Views(): JSX.Element {
   return (
     <AppShell>
       <Switch>
+        <Route path="/packages" component={Packages} exact />
         <Route path="/notifications" component={Notifications} />
-        <Route path="/" component={Dashboard} exact />
       </Switch>
+
+      <Route path={["/packages/:id", "/notifications/packages/:id"]} component={Package} />
+      <Route path="/" component={Dashboard} exact />
     </AppShell>
   );
 }
 
 function App(): JSX.Element {
   return (
-    <ApolloProvider client={apolloClient}>
-      <AuthRoot>
-        <Router>
-          <Views />
-        </Router>
-      </AuthRoot>
-    </ApolloProvider>
+    <RecoilRoot>
+      <ApolloProvider client={apolloClient}>
+        <AuthRoot>
+          <Router>
+            <Views />
+          </Router>
+        </AuthRoot>
+      </ApolloProvider>
+    </RecoilRoot>
   );
 }
 
