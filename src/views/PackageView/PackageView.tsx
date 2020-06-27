@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 
-import { useLazyQuery } from '@apollo/client';
 import isUndefined from 'lodash-es/isUndefined';
 import { useParams, useHistory } from 'react-router';
+import { useMutation, useLazyQuery } from '@apollo/client';
 
 import Sheet from '../../components/Sheet';
 import Button from '../../components/Button';
@@ -15,8 +15,8 @@ import { Package, Courier } from '../../types/packages';
 import lazada from '../../assets/images/couriers/lel.png';
 import jinio from '../../assets/images/couriers/jinio.png';
 import { deserializePackage } from '../../deserializers/packages';
+import RECEIVE_PACKAGE from '../../graphql/mutations/receive-package';
 import GET_PACKAGE, { PackageQuery, PackageResult } from '../../graphql/queries/get-package';
-
 
 export default function PackageView(): JSX.Element {
   const { id } = useParams();
@@ -24,6 +24,10 @@ export default function PackageView(): JSX.Element {
 
   const [pkg, setPkg] = useState<Package | undefined>(undefined);
 
+  const [receivePackage, { loading: receivedLoading }] = useMutation(
+    RECEIVE_PACKAGE,
+    { variables: { id, received: true } },
+  );
   const [getPackage, { data }] = useLazyQuery<PackageQuery>(GET_PACKAGE, { variables: { id } });
 
   // Determine courier image
@@ -41,6 +45,20 @@ export default function PackageView(): JSX.Element {
         return lbc;
     }
   }, [pkg]);
+
+  // Handle received button
+  const handleOnReceived = useCallback(async () => {
+    await receivePackage({
+      update: (cache) => {
+        const result = cache.readQuery<PackageQuery>({ query: PACKAGES });
+        cache.writeQuery({
+          query: PACKAGES,
+          data: { packages: result?.packages.filter((pkg) => pkg.id !== id) },
+        });
+      },
+    });
+    history.push('/packages');
+  }, [id, history, receivePackage]);
 
   // Load full package data if it isn't present
   useEffect(() => {
@@ -101,8 +119,9 @@ export default function PackageView(): JSX.Element {
             {pkg.lastTimestamp.toRelative()}
           </div>
 
-          <Button>Received</Button>
-          <Button variant="danger">Delete</Button>
+          <Button loading={receivedLoading} onClick={handleOnReceived}>
+            Received
+          </Button>
         </div>
       )}
     </Sheet>
