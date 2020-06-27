@@ -11,10 +11,11 @@ interface Props extends DetailedHTMLProps<
   label: string;
   id: string;
   error?: string;
+  as?: 'input' | 'select';
 }
 
 export default function Input(props: Props): JSX.Element {
-  const { name, label, id, error } = props;
+  const { name, label, id, error, as } = props;
   const { touched, errors } = useFormikContext<{[index: string]: string}>();
 
   // Determine if there is an error message to be displayed.
@@ -38,6 +39,7 @@ export default function Input(props: Props): JSX.Element {
       <Field
         placeholder={label}
         {...props}
+        as={as}
         id={id}
         className={classnames(
           'p-2 w-full border border-gray text-base',
