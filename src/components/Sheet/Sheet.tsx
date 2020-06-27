@@ -39,7 +39,8 @@ export default function Sheet({ title, children, onClose }: PropsWithChildren<Pr
   return createPortal(
     <>
       <div
-        className="fixed left-0 top-0 w-screen h-screen bg-black opacity-75 z-40"
+        className="fixed left-0 top-0 w-screen h-screen opacity-75 z-40"
+        style={{ backgroundColor: '#000' }}
         onClick={() => {
           if (onClose) {
             onClose();
