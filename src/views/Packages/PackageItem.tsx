@@ -15,7 +15,7 @@ export default function Package({ pkg }: Props): JSX.Element {
 
 
   return (
-    <Link to={`packages/${id}`} className="block py-4 mb-4">
+    <Link to={`/packages/${id}`} className="block py-4 mb-4">
       <div className={classnames(
         'text-xs uppercase inline-block',
         {
