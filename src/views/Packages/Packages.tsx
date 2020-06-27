@@ -22,7 +22,6 @@ export default function Packages(): JSX.Element {
     if (!data) {
       return [];
     }
-    console.log(data.packages);
 
     return data.packages.map((pkg: PackageStubResult) => deserializePackageStub(pkg));
   }, [data]);
