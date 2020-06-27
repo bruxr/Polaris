@@ -3,26 +3,32 @@ import { gql } from '@apollo/client';
 import { Courier } from '../../types/packages';
 
 export default gql`
-  query Packages {
-    packages {
+  query Package($id: String!) {
+    packages(id: $id) {
       id
       courier
       trackingCode
       eta
+      received
       lastStatus
+      lastTimestamp
+      createdAt
     }
   }
 `;
 
-export interface PackageStubResult {
+export interface PackageResult {
   __typename: 'Package';
   id: string;
   courier: Courier;
   trackingCode: string;
   eta: string;
+  received: boolean;
   lastStatus: string;
+  lastTimestamp: string;
+  createdAt: string;
 }
 
-export interface PackagesQuery {
-  packages: PackageStubResult[];
+export interface PackageQuery {
+  packages: PackageResult[];
 }

@@ -22,8 +22,6 @@ export default function AppShell({ children }: PropsWithChildren<unknown>): JSX.
         {children}
         <Footer />
       </div>
-
-      <div id="modals" />
     </main>
   );
 }

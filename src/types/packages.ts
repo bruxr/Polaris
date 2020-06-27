@@ -12,6 +12,15 @@ export interface PackageStub {
   code: string;
   eta: DateTime;
   lastStatus: string;
+}
+
+export interface Package {
+  id: string;
+  courier: Courier;
+  code: string;
+  eta: DateTime;
+  received: boolean;
+  lastStatus: string;
   lastTimestamp: DateTime;
   createdAt: DateTime;
 }

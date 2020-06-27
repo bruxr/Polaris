@@ -17,6 +17,7 @@ export default function Sheet({ title, children, onClose }: PropsWithChildren<Pr
   const [, setSheetOptions] = useRecoilState(sheetAtom);
 
   const modals = useMemo(() => {
+    console.log(document.getElementById('modals'));
     return document.getElementById('modals');
   }, []);
 

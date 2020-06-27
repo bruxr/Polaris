@@ -4,7 +4,7 @@ import { RecoilRoot } from 'recoil';
 import { ApolloProvider } from '@apollo/client';
 import { BrowserRouter as Router, Switch, Route }  from 'react-router-dom';
 
-import Package from './views/Package';
+import Package from './views/PackageView';
 import Packages from './views/Packages';
 import Dashboard from './views/Dashboard';
 import AuthRoot from './components/AuthRoot';
@@ -16,7 +16,7 @@ function Views(): JSX.Element {
   return (
     <AppShell>
       <Switch>
-        <Route path="/packages" component={Packages} exact />
+        <Route path="/packages" component={Packages} />
         <Route path="/notifications" component={Notifications} />
       </Switch>
 
