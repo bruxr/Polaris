@@ -3,11 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prestart": "yarn build:tailwind",
     "start": "react-scripts start",
+    "prebuild": "yarn build:tailwind",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "build:tailwind": "tailwindcss build src/assets/css/tailwind.css -o src/assets/css/tailwind.out.css"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -35,12 +38,12 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
+    "tailwindcss": "^1.5.2",
     "typescript": "^3.9.7"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^3.7.0",
     "@typescript-eslint/parser": "^3.7.0",
-    "eslint": "^7.5.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jest": "^23.18.2",
     "eslint-plugin-jsx-a11y": "^6.3.1",
