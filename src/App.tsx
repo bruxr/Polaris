@@ -5,8 +5,6 @@ import { Auth0Provider } from '@auth0/auth0-react';
 import Signin from './views/Signin';
 
 function App(): JSX.Element {
-  console.log(process.env);
-
   return (
     <Auth0Provider
       domain={process.env.REACT_APP_AUTH0_DOMAIN || ''}
