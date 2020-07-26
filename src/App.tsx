@@ -24,13 +24,13 @@ function App(): JSX.Element {
   }
 
   return (
-    <div className="container min-h-screen pb-16 pt-16 px-2">
+    <div className="container min-h-screen pb-16 pt-20 px-2">
       <header
-        className="fixed top-0 left-0 flex justify-between items-center w-screen h-12 p-2 border-b border-gray-300"
+        className="fixed top-0 left-0 flex justify-between items-center w-screen h-16 p-2 border-b border-gray-300"
       >
         <button
           type="button"
-          className="block w-6 h-6"
+          className="block w-8 h-8"
           onClick={() => logout()}
         >
           <img src={user.picture} alt={user.name} className="rounded-full" />
