@@ -13,7 +13,6 @@ module.exports = {
     'plugin:import/typescript',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
-    'plugin:jest/recommended',
     'plugin:jsx-a11y/recommended',
   ],
   rules: {
