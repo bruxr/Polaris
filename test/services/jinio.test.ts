@@ -70,7 +70,7 @@ describe('getJinioPackage()', () => {
         .reply(200, invalidFixture.body);
     });
 
-    it('should be null', async () => {
+    it('should throw an error', async () => {
       await expect(getJinioPackage('NOTEXISTING')).to.be.rejectedWith('Unknown package');
     });
   });
