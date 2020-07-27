@@ -1,11 +1,12 @@
-import { DateTime } from 'luxon';
 import { useEffect } from 'react';
+import sortBy from 'lodash-es/sortBy';
+import reverse from 'lodash-es/reverse';
 import { useSetRecoilState } from 'recoil';
 import { useAuth0 } from '@auth0/auth0-react';
 
 import { db } from '../services/firebase';
 import notifsAtom from '../atoms/notifications';
-import { Notification } from '../types/notifications';
+import { deserializeNotif } from '../deserializers/notifications';
 
 const useNotifications = (): void => {
   const { isAuthenticated } = useAuth0();
@@ -19,22 +20,26 @@ const useNotifications = (): void => {
     db.collection('notifications')
       .orderBy('ts', 'desc')
       .limit(10)
-      .get()
-      .then((snapshot) => {
-        const notifs: Notification[] = [];
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          notifs.push({
-            id: doc.id,
-            type: data.type,
-            url: data.url,
-            title: data.title,
-            body: data.body,
-            unread: data.read ? false : true,
-            timestamp: DateTime.fromSeconds(data.ts.seconds),
+      .onSnapshot((snapshot) => {
+        setNotifications((notifs) => {
+          let copy = notifs.slice(0);
+
+          // Append new notifications or update existing ones
+          snapshot.forEach((doc) => {
+            const index = copy.findIndex((notif) => notif.id === doc.id);
+            const notif = deserializeNotif(doc.id, doc.data());
+            if (index >= 0) {
+              copy[index] = notif;
+            } else {
+              copy.push(notif);
+            }
           });
+
+          // Sort by reverse-chronological order
+          copy = reverse(sortBy(copy, 'timestamp'));
+
+          return copy;
         });
-        setNotifications(notifs);
       });
   }, [isAuthenticated, setNotifications]);
 };

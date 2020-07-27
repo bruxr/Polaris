@@ -2,19 +2,20 @@ import React from 'react';
 
 import { useAuth0 } from '@auth0/auth0-react';
 import AddBoxIcon from '@material-ui/icons/AddBox';
-import { Switch, Route, Link, NavLink } from 'react-router-dom';
+import { Switch, Route, NavLink } from 'react-router-dom';
 import InboxOutlinedIcon from '@material-ui/icons/InboxOutlined';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import LocalShippingOutlinedIcon from '@material-ui/icons/LocalShippingOutlined';
-import NotificationsOutlinedIcon from '@material-ui/icons/NotificationsOutlined';
 import AccountBalanceOutlinedIcon from '@material-ui/icons/AccountBalanceOutlined';
 
 import Signin from './views/Signin';
+import Header from './components/Header';
 import Dashboard from './views/Dashboard';
+import Notifications from './views/Notifications';
 import useNotifications from './hooks/use-notifications';
 
 function App(): JSX.Element {
-  const { isAuthenticated, user, logout } = useAuth0();
+  const { isAuthenticated } = useAuth0();
 
   useNotifications();
 
@@ -28,22 +29,9 @@ function App(): JSX.Element {
 
   return (
     <div className="container min-h-screen pb-16 pt-20 px-2">
-      <header
-        className="fixed top-0 left-0 flex justify-between items-center w-screen h-16 p-2 border-b border-gray-300"
-      >
-        <button
-          type="button"
-          className="block w-8 h-8"
-          onClick={() => logout()}
-        >
-          <img src={user.picture} alt={user.name} className="rounded-full" />
-        </button>
-        <h1 className="font-bold text-xl">Polaris</h1>
-        <Link to="/notifications">
-          <NotificationsOutlinedIcon />
-        </Link>
-      </header>
+      <Header />
       <Switch>
+        <Route path="/notifications" component={Notifications} />
         <Route path="/" component={Dashboard} />
       </Switch>
       <nav

@@ -6,7 +6,7 @@ export enum NotificationType {
 
 export interface Notification {
   id: string;
-  url: string;
+  url?: string;
   type: NotificationType;
   title: string;
   body: string;
