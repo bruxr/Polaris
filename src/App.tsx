@@ -11,9 +11,12 @@ import AccountBalanceOutlinedIcon from '@material-ui/icons/AccountBalanceOutline
 
 import Signin from './views/Signin';
 import Dashboard from './views/Dashboard';
+import useNotifications from './hooks/use-notifications';
 
 function App(): JSX.Element {
   const { isAuthenticated, user, logout } = useAuth0();
+
+  useNotifications();
 
   if (!isAuthenticated) {
     return (

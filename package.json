@@ -40,11 +40,13 @@
     "@types/react-dom": "^16.9.0",
     "axios": "^0.19.2",
     "cheerio": "^1.0.0-rc.3",
+    "firebase": "^7.17.1",
     "luxon": "^1.24.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
+    "recoil": "^0.0.10",
     "tailwindcss": "^1.5.2",
     "typescript": "^3.9.7"
   },
