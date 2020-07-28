@@ -17,8 +17,9 @@ module.exports = {
   ],
   rules: {
     'comma-dangle': ['error', 'always-multiline'],
+    'eqeqeq': ['warn', 'smart'],
     'semi': ['warn', 'always'],
     'max-len': ['error', { code: 120 }],
     'object-curly-spacing': ['warn', 'always'],
-    },
+  },
 };
