@@ -9,6 +9,7 @@ import LocalShippingOutlinedIcon from '@material-ui/icons/LocalShippingOutlined'
 import AccountBalanceOutlinedIcon from '@material-ui/icons/AccountBalanceOutlined';
 
 import Signin from './views/Signin';
+import Finances from './views/Finances';
 import Header from './components/Header';
 import Dashboard from './views/Dashboard';
 import Notifications from './views/Notifications';
@@ -31,6 +32,7 @@ function App(): JSX.Element {
     <div className="container min-h-screen pb-16 pt-20 px-2">
       <Header />
       <Switch>
+        <Route path="/finances" component={Finances} />
         <Route path="/notifications" component={Notifications} />
         <Route path="/" component={Dashboard} />
       </Switch>
@@ -40,7 +42,7 @@ function App(): JSX.Element {
         <NavLink to="/">
           <InboxOutlinedIcon />
         </NavLink>
-        <NavLink to="/">
+        <NavLink to="/finances">
           <AccountBalanceOutlinedIcon />
         </NavLink>
         <button type="button">
