@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+import 'firebase/messaging';
 
 firebase.initializeApp({
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -11,4 +12,8 @@ firebase.initializeApp({
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
 });
 
-export const db = firebase.firestore();
+const firestore = firebase.firestore;
+const messaging = firebase.messaging();
+const db = firebase.firestore();
+
+export { firestore, db, messaging };
