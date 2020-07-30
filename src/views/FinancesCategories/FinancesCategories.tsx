@@ -1,15 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+
+import { useSetRecoilState } from 'recoil';
 
 import CategoryForm from './CategoryForm';
 import Sheet from '../../components/Sheet';
 import { db } from '../../services/firebase';
+import addBtnAtom from '../../atoms/add-button';
 import { TransactionCategory, TransactionCategoryType } from '../../types/finances';
 import { deserializeTransactionCategory } from '../../deserializers/finances';
 
 const FinancesCategories = (): React.ReactElement => {
+  const setAddBtn = useSetRecoilState(addBtnAtom);
+
   const [categories, setCategories] = useState<TransactionCategory[] | null>(null);
   const [showAdd, setShowAdd] = useState(false);
   const [editedCategory, setEditedCategory] = useState<TransactionCategory | null>(null);
+
+  const handleSheetClose = useCallback(() => {
+    setShowAdd(false);
+    setEditedCategory(null);
+  }, []);
 
   useEffect(() => {
     const unsubscribe = db
@@ -24,6 +34,16 @@ const FinancesCategories = (): React.ReactElement => {
       });
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    setAddBtn({
+      onClick: () => setShowAdd(true),
+    });
+
+    return () => setAddBtn({
+      onClick: undefined,
+    });
+  }, [setAddBtn]);
 
   if (!categories) {
     return (
@@ -68,8 +88,8 @@ const FinancesCategories = (): React.ReactElement => {
       </div>
 
       {(showAdd || editedCategory) && (
-        <Sheet title="Create Category">
-          {editedCategory ? <CategoryForm category={editedCategory} /> : <CategoryForm />}
+        <Sheet title="Create Category" onClose={handleSheetClose}>
+          <CategoryForm category={editedCategory || undefined} onSave={handleSheetClose} />
         </Sheet>
       )}
     </div>

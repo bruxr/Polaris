@@ -10,9 +10,10 @@ import { TransactionCategoryType, TransactionCategory } from '../../types/financ
 
 type Props = {
   category?: TransactionCategory;
+  onSave?: () => void;
 }
 
-const CategoryForm = ({ category }: Props): React.ReactElement => {
+const CategoryForm = ({ category, onSave }: Props): React.ReactElement => {
   return (
     <Formik
       initialValues={{
@@ -45,6 +46,10 @@ const CategoryForm = ({ category }: Props): React.ReactElement => {
           await updateTransactionCategory(category.id, name, icon, type, notes !== '' ? notes : undefined);
         } else {
           await createTransactionCategory(name, icon, type, notes !== '' ? notes : undefined);
+        }
+
+        if (onSave) {
+          onSave();
         }
       }}
     >
