@@ -44,6 +44,7 @@ export default function Finances(): React.ReactElement {
           <WalletCard key={wallet.id} wallet={wallet} />
         ) : (
           <button
+            key="add"
             type="button"
             className="block w-full h-48 border border-dashed border-gray-500 text-gray-700 text-center"
             onClick={() => setShowAddWallet(true)}
