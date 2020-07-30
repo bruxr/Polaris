@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+import { Link } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import { Carousel } from 'react-responsive-carousel';
 
@@ -52,6 +53,20 @@ export default function Finances(): React.ReactElement {
           </button>
         ))}
       </Carousel>
+
+      <section>
+        <h2 className="text-2xl font-semibold mb-4">Transactions</h2>
+      </section>
+
+      <section className="my-4">
+        <h2 className="text-2xl font-semibold mb-4">Categories</h2>
+        <Link
+          to="/finances/categories"
+          className="block text-blue-500"
+        >
+          Manage Categories
+        </Link>
+      </section>
 
       {showAddWallet && (
         <Sheet

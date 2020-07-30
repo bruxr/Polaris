@@ -8,9 +8,10 @@ interface Props {
   label: string;
   error?: string;
   as?: string;
+  maxLength?: number;
 }
 
-export default function Input({ name, label, error, as, children }: PropsWithChildren<Props>): JSX.Element {
+export default function Input({ name, label, error, as, maxLength, children }: PropsWithChildren<Props>): JSX.Element {
   const { isSubmitting } = useFormikContext();
 
   return (
@@ -24,6 +25,7 @@ export default function Input({ name, label, error, as, children }: PropsWithChi
           'block border border-gray-400 p-2 w-full mb-2',
           { 'border-red-600': error }
         )}
+        maxLength={maxLength}
       >
         {children}
       </Field>
