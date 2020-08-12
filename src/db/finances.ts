@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 
-import { db } from '../services/firebase';
-import { Wallet, WalletType, TransactionCategory, TransactionCategoryType } from '../types/finances';
+import { db, firestore } from '../services/firebase';
+import { Wallet, WalletType, TransactionCategory, TransactionCategoryType, Transaction } from '../types/finances';
 
 export const createWallet = async (name: string, type: WalletType, balance?: number): Promise<Wallet> => {
   const now = DateTime.utc();
@@ -19,6 +19,36 @@ export const createWallet = async (name: string, type: WalletType, balance?: num
     ts: now,
   };
 };
+
+export async function createTransaction(
+  { wallet, category, amount, date, notes, location }: Omit<Transaction, 'id'>
+): Promise<Transaction> {
+  const data: Record<string, unknown> = {
+    wallet: db.collection('wallets').doc(wallet),
+    category: db.collection('transactionCategories').doc(category),
+    date,
+    amount: amount * 100,
+  };
+
+  if (notes && notes.trim()) {
+    data.notes = notes.trim();
+  }
+  if (location) {
+    data.loc = new firestore.GeoPoint(location[0], location[1]);
+  }
+
+  const doc = await db.collection('transactions').add(data);
+
+  return {
+    id: doc.id,
+    wallet,
+    category,
+    amount,
+    date,
+    notes: data.notes ? data.notes as string : undefined,
+    location: location || undefined,
+  };
+}
 
 /**
  * Creates a transaction category.

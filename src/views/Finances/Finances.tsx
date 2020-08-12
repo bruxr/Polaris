@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from 'react';
-
 import { Link } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import { Carousel } from 'react-responsive-carousel';
+import { useSetRecoilState, useResetRecoilState } from 'recoil';
 
 import WalletCard from './WalletCard';
 import Sheet from '../../components/Sheet';
 import AddWalletForm from './AddWalletForm';
 import { db } from '../../services/firebase';
 import { Wallet } from '../../types/finances';
+import TransactionForm from './TransactionForm';
+import addBtnAtom from '../../atoms/add-button';
 import { deserializeWallet } from '../../deserializers/finances';
 
 export default function Finances(): React.ReactElement {
+  const setAddBtn = useSetRecoilState(addBtnAtom);
+  const resetAddBtn = useResetRecoilState(addBtnAtom);
+
   const [wallets, setWallets] = useState<Array<Wallet | null>>([]);
   const [showAddWallet, setShowAddWallet] = useState(false);
+  const [showAddTx, setShowAddTx] = useState(false);
 
   useEffect(() => {
     const unsubscribe = db.collection('wallets')
@@ -29,6 +35,14 @@ export default function Finances(): React.ReactElement {
 
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    setAddBtn({
+      onClick: () => setShowAddTx(true),
+    });
+
+    return () => resetAddBtn();
+  }, [setAddBtn, resetAddBtn]);
 
   return (
     <div>
@@ -75,6 +89,15 @@ export default function Finances(): React.ReactElement {
           onClose={() => setShowAddWallet(false)}
         >
           <AddWalletForm onCreate={() => setShowAddWallet(false)} />
+        </Sheet>
+      )}
+
+      {showAddTx && (
+        <Sheet
+          title="Add Transaction"
+          onClose={() => setShowAddTx(false)}
+        >
+          <TransactionForm onCreate={() => setShowAddTx(false)} />
         </Sheet>
       )}
     </div>

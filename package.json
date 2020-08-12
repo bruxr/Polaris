@@ -41,6 +41,7 @@
     "axios": "^0.19.2",
     "cheerio": "^1.0.0-rc.3",
     "classnames": "^2.2.6",
+    "date-fns": "^2.15.0",
     "firebase": "^7.17.1",
     "formik": "^2.1.5",
     "lodash-es": "^4.17.15",
