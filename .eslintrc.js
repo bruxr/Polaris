@@ -21,5 +21,6 @@ module.exports = {
     'semi': ['warn', 'always'],
     'max-len': ['error', { code: 120 }],
     'object-curly-spacing': ['warn', 'always'],
+    'quotes': ['warn', 'single'],
   },
 };
