@@ -53,4 +53,5 @@ export interface TransactionRecord {
   amount: number;
   notes?: string;
   location?: firestore.GeoPoint;
+  ts: Date;
 }

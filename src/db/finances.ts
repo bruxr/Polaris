@@ -75,6 +75,7 @@ export async function createTransaction(
     category: db.collection('transactionCategories').doc(category),
     date,
     amount: amount * 100,
+    ts: new Date(),
   };
   if (notes && notes.trim()) {
     data.notes = notes.trim();
