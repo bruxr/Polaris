@@ -1,9 +1,9 @@
 import React, { PropsWithChildren } from 'react';
 
 import classnames from 'classnames';
-import { Field, useFormikContext } from 'formik';
+import { Field, useFormikContext, FieldAttributes } from 'formik';
 
-interface Props {
+type Props = FieldAttributes<Record<string ,unknown>> & {
   name: string;
   label: string;
   error?: string;
