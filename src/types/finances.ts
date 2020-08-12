@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+import { firestore } from 'firebase';
 
 export enum WalletType {
   Credit = 'C',
@@ -35,4 +36,14 @@ export interface Transaction {
   date: Date;
   notes?: string;
   location?: [number, number];
+}
+
+export interface TransactionRecord {
+  id: string;
+  wallet: firestore.DocumentReference;
+  category: firestore.DocumentReference;
+  date: Date;
+  amount: number;
+  notes?: string;
+  location?: firestore.GeoPoint;
 }

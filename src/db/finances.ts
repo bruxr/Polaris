@@ -1,7 +1,14 @@
 import { DateTime } from 'luxon';
 
 import { db, firestore } from '../services/firebase';
-import { Wallet, WalletType, TransactionCategory, TransactionCategoryType, Transaction } from '../types/finances';
+import {
+  Wallet,
+  WalletType,
+  TransactionCategory,
+  TransactionCategoryType,
+  Transaction,
+  TransactionRecord,
+} from '../types/finances';
 
 export const createWallet = async (name: string, type: WalletType, balance?: number): Promise<Wallet> => {
   const now = DateTime.utc();
@@ -23,7 +30,7 @@ export const createWallet = async (name: string, type: WalletType, balance?: num
 export async function createTransaction(
   { wallet, category, amount, date, notes, location }: Omit<Transaction, 'id'>
 ): Promise<Transaction> {
-  const data: Record<string, unknown> = {
+  const data: Omit<TransactionRecord, 'id'> = {
     wallet: db.collection('wallets').doc(wallet),
     category: db.collection('transactionCategories').doc(category),
     date,
@@ -34,7 +41,7 @@ export async function createTransaction(
     data.notes = notes.trim();
   }
   if (location) {
-    data.loc = new firestore.GeoPoint(location[0], location[1]);
+    data.location = new firestore.GeoPoint(location[0], location[1]);
   }
 
   const doc = await db.collection('transactions').add(data);
