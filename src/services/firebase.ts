@@ -16,4 +16,12 @@ const firestore = firebase.firestore;
 const messaging = firebase.messaging();
 const db = firebase.firestore();
 
+// Connect to local emulator if we are in localhost
+if (window.location.hostname === 'localhost') {
+  db.settings({
+    host: 'localhost:8080',
+    ssl: false,
+  });
+}
+
 export { firestore, db, messaging };
