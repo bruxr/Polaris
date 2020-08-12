@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+import { formatISO } from 'date-fns/fp';
 
 import { db, firestore } from '../services/firebase';
 import {
@@ -8,7 +9,40 @@ import {
   TransactionCategoryType,
   Transaction,
   TransactionRecord,
+  MonthlyTransactionStats,
 } from '../types/finances';
+
+/**
+ * Returns the transaction stats for a given month.
+ * Creates a record in the database if the stats doesn't exist yet.
+ * 
+ * @param month month string in YYYY-MM format
+ */
+export async function getMonthStats(month: string): Promise<MonthlyTransactionStats> {
+  const stats = await db.collection('transactionStats').doc(month).get();
+  const data = stats.data();
+
+  if (!data) {
+    await db.collection('transactionStats').doc(month).set({
+      expenses: 0,
+      income: 0,
+      categories: {},
+    });
+    return {
+      month,
+      expenses: 0,
+      income: 0,
+      categories: {},
+    };
+  }
+
+  return {
+    month,
+    expenses: data.expenses,
+    income: data.income,
+    categories: data.categories,
+  };
+}
 
 export const createWallet = async (name: string, type: WalletType, balance?: number): Promise<Wallet> => {
   const now = DateTime.utc();
@@ -27,6 +61,12 @@ export const createWallet = async (name: string, type: WalletType, balance?: num
   };
 };
 
+/**
+ * Creates a transaction in the database.
+ * This also updates wallet balance and monthly statistics.
+ * 
+ * @param transaction transaction details
+ */
 export async function createTransaction(
   { wallet, category, amount, date, notes, location }: Omit<Transaction, 'id'>
 ): Promise<Transaction> {
@@ -36,7 +76,6 @@ export async function createTransaction(
     date,
     amount: amount * 100,
   };
-
   if (notes && notes.trim()) {
     data.notes = notes.trim();
   }
@@ -44,10 +83,47 @@ export async function createTransaction(
     data.location = new firestore.GeoPoint(location[0], location[1]);
   }
 
-  const doc = await db.collection('transactions').add(data);
+  // Get monthly stats
+  const now = formatISO(new Date()).substr(0, 7);
+  const stats = await getMonthStats(now);
+  const statsRef = db.collection('transactionStats').doc(now);
+
+  // Create references
+  const walletRef = db.collection('wallets').doc(wallet);
+  const txRef = db.collection('transactions').doc();
+
+  await db.runTransaction(async (t) => {
+    const walletObj = await t.get(walletRef);
+
+    t.set(txRef, data);
+    t.update(walletRef, {
+      balance: walletObj.data()?.balance + data.amount,
+    });
+
+    // Update monthly stats
+    const categoryAmt = stats.categories[category] ? stats.categories[category] + data.amount : data.amount;
+    if (walletObj.data()?.type === WalletType.Savings) {
+      if (data.amount >= 0) {
+        t.update(statsRef, {
+          income: stats.income + data.amount,
+          [`categories.${category}`]: categoryAmt,
+        });
+      } else {
+        t.update(statsRef, {
+          expenses: stats.expenses + data.amount,
+          [`categories.${category}`]: categoryAmt,
+        });
+      }
+    } else {
+      t.update(statsRef, {
+        expenses: stats.expenses + data.amount,
+        [`categories.${category}`]: categoryAmt,
+      });
+    }
+  });
 
   return {
-    id: doc.id,
+    id: txRef.id,
     wallet,
     category,
     amount,

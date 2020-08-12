@@ -1,6 +1,13 @@
 import { DateTime } from 'luxon';
 import { firestore } from 'firebase';
 
+export interface MonthlyTransactionStats {
+  month: string;
+  expenses: number;
+  income: number;
+  categories: Record<string, number>;
+}
+
 export enum WalletType {
   Credit = 'C',
   Savings = 'S',
