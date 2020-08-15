@@ -31,7 +31,7 @@ export function deserializeTransaction(id: string, data: firestore.DocumentData)
     wallet: data.wallet.id,
     category: data.category.id,
     amount: data.amount / 100,
-    date: data.date,
+    date: new Date(data.date.seconds * 1000),
     notes: data.notes,
     location: data.location ? [data.location.latitude, data.location.longitude] : undefined,
   };

@@ -1,21 +1,26 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { formatISO } from 'date-fns';
 import toPairs from 'lodash-es/toPairs';
 import { Link } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import { Carousel } from 'react-responsive-carousel';
+import { formatISO, formatDistanceToNow } from 'date-fns';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSetRecoilState, useResetRecoilState } from 'recoil';
 
 import WalletCard from './WalletCard';
 import Sheet from '../../components/Sheet';
 import AddWalletForm from './AddWalletForm';
 import { db } from '../../services/firebase';
-import { Wallet, TransactionCategory } from '../../types/finances';
+import { Wallet } from '../../types/finances';
 import TransactionForm from './TransactionForm';
 import addBtnAtom from '../../atoms/add-button';
 import useSnapshot from '../../hooks/use-snapshot';
 import useSingleSnapshot from '../../hooks/use-single-snapshot';
-import { deserializeWallet, deserializeTransaction, deserializeStats, deserializeTransactionCategory } from '../../deserializers/finances';
+import {
+  deserializeWallet,
+  deserializeTransaction,
+  deserializeStats,
+  deserializeTransactionCategory,
+} from '../../deserializers/finances';
 
 export default function Finances(): React.ReactElement {
   const setAddBtn = useSetRecoilState(addBtnAtom);
@@ -40,6 +45,17 @@ export default function Finances(): React.ReactElement {
     db.collection('transactionStats').doc(now),
     deserializeStats,
   );
+
+  const categorizedTransactions = useMemo(() => {
+    if (!transactions || !categories) {
+      return null;
+    }
+
+    return transactions.map((tx) => ({
+      ...tx,
+      category: categories.find((cat) => cat.id === tx.category)?.name,
+    }));
+  }, [transactions, categories]);
 
   const categoryStats = useMemo(() => {
     if (!categories || !stats) {
@@ -82,6 +98,8 @@ export default function Finances(): React.ReactElement {
     return () => resetAddBtn();
   }, [setAddBtn, resetAddBtn]);
 
+  console.log(categorizedTransactions);
+
   return (
     <div>
       <Carousel
@@ -109,20 +127,16 @@ export default function Finances(): React.ReactElement {
 
       <section>
         <h2 className="text-2xl font-semibold mb-4">Transactions</h2>
-        {transactions ? (
+        {categorizedTransactions ? (
           <ul>
-            {transactions.map((transaction) => (
-              <li key={transaction.id} className="flex">
+            {categorizedTransactions.map((transaction) => (
+              <li key={transaction.id} className="flex mb-2">
                 <span>
-                  {transaction.category}
-                  {transaction.notes && (
-                    <>
-                      <br />
-                      <small>{transaction.notes}</small>
-                    </>
-                  )}
+                  <span className="block text-lg mb-1">{transaction.category}</span>
+                  {transaction.notes && (<small className="block">{transaction.notes}</small>)}
+                  <small className="block text-gray-600">{formatDistanceToNow(transaction.date)} ago</small>
                 </span>
-                <span className="ml-auto">{transaction.amount.toLocaleString()}</span>
+                <span className="font-bold ml-auto">{transaction.amount.toLocaleString()}</span>
               </li>
             ))}
           </ul>
@@ -145,7 +159,7 @@ export default function Finances(): React.ReactElement {
               <li key={stat.id} className="flex">
                 {stat.icon}
                 {stat.name}
-                <span className="ml-auto">{stat.amount.toLocaleString()}</span>
+                <span className="font-bold ml-auto">{stat.amount.toLocaleString()}</span>
               </li>
             ))}
           </ul>
