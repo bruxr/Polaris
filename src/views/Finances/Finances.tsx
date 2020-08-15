@@ -2,9 +2,9 @@ import toPairs from 'lodash-es/toPairs';
 import { Link } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 import { Carousel } from 'react-responsive-carousel';
-import { formatISO, formatDistanceToNow } from 'date-fns';
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSetRecoilState, useResetRecoilState } from 'recoil';
+import { formatISO, formatDistanceToNow, startOfMonth, endOfMonth } from 'date-fns';
 
 import WalletCard from './WalletCard';
 import Sheet from '../../components/Sheet';
@@ -32,7 +32,11 @@ export default function Finances(): React.ReactElement {
   const now = formatISO(new Date()).substr(0, 7);
 
   const transactions = useSnapshot(
-    db.collection('transactions').orderBy('date', 'desc').limit(10),
+    db.collection('transactions')
+      .where('date', '>=', startOfMonth(new Date()))
+      .where('date', '<=', endOfMonth(new Date()))
+      .orderBy('date', 'desc')
+      .limit(10),
     deserializeTransaction,
   );
 
