@@ -102,8 +102,6 @@ export default function Finances(): React.ReactElement {
     return () => resetAddBtn();
   }, [setAddBtn, resetAddBtn]);
 
-  console.log(categorizedTransactions);
-
   return (
     <div>
       <Carousel
@@ -156,7 +154,7 @@ export default function Finances(): React.ReactElement {
       </section>
 
       <section className="my-4">
-        <h2 className="text-2xl font-semibold mb-4">Categories</h2>
+        <h2 className="text-2xl font-semibold mb-4">Budgets</h2>
         {categoryStats ? (
           <ul>
             {categoryStats.map((stat) => (
@@ -171,10 +169,10 @@ export default function Finances(): React.ReactElement {
           <small>Loading...</small>
         )}
         <Link
-          to="/finances/categories"
+          to="/finances/budgets"
           className="block text-blue-500 text-center"
         >
-          Manage Categories
+          Manage Budgets
         </Link>
       </section>
 

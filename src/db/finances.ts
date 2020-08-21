@@ -10,6 +10,7 @@ import {
   Transaction,
   TransactionRecord,
   MonthlyTransactionStats,
+  Budget,
 } from '../types/finances';
 
 /**
@@ -200,3 +201,57 @@ export const updateTransactionCategory = async (
     ...data,
   };
 };
+
+/**
+ * Creates a budget record for a given category.
+ *
+ * @param month month to put budget
+ * @param category category ID
+ * @param amount budgeted amount
+ */
+export async function createBudget(month: Date, category: string, amount: number): Promise<Budget> {
+  const id = formatISO(month).substr(0, 7);
+
+  // Run in one atomic transaction so all operations have the same values.
+  await db.runTransaction(async (t) => {
+    let spent = 0;
+    const stats = await t.get(db.collection('transactionStats').doc(id));
+    const statsData = stats.data();
+    if (statsData && statsData.categories[category]) {
+      spent = statsData.categories[category];
+    }
+
+    const budgetRef = db.collection('budgets').doc(id);
+    const budget = await t.get(budgetRef);
+    const budgetData = budget.data();
+    if (budgetData) {
+      const catIndex = budgetData.amounts.findIndex((item: { category: string }) => item.category = category);
+      if (catIndex >= 0) {
+        budgetData.amounts[catIndex].budget = amount * -1;
+        budgetData.amounts[catIndex].spent = spent;
+      } else {
+        budgetData.amounts.push({
+          category,
+          budget: amount * -1,
+          spent,
+        });
+      }
+
+      t.set(budgetRef, budgetData);
+    } else {
+      t.set(budgetRef, {
+        amounts: [{
+          category: db.collection('transactionCategories').doc(category),
+          budget: amount * -1,
+          spent,
+        }],
+      });
+    }
+  });
+
+  return {
+    category,
+    budget: amount * -1,
+    spent: 0,
+  };
+}

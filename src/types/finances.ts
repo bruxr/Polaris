@@ -55,3 +55,15 @@ export interface TransactionRecord {
   location?: firestore.GeoPoint;
   ts: Date;
 }
+
+export interface MonthlyBudget {
+  id: string;
+  month: Date;
+  amounts: Budget[];
+}
+
+export interface Budget {
+  category: string;
+  budget: number;
+  spent: number;
+}

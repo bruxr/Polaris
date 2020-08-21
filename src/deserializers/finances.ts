@@ -3,7 +3,13 @@ import { firestore } from 'firebase';
 import mapValues from 'lodash-es/mapValues';
 
 import { Deserializer } from '../types/common';
-import { MonthlyTransactionStats, Wallet, TransactionCategory, Transaction } from '../types/finances';
+import { MonthlyTransactionStats, Wallet, TransactionCategory, Transaction, MonthlyBudget } from '../types/finances';
+
+type BudgetItem = {
+  category: firebase.firestore.DocumentReference,
+  budget: number,
+  spent: number,
+}
 
 export const deserializeWallet = (id: string, data: firestore.DocumentData): Wallet => {
   return {
@@ -43,5 +49,18 @@ export const deserializeStats: Deserializer<MonthlyTransactionStats> = function 
     income: data.income,
     expenses: data.expenses,
     categories: mapValues(data.categories, amount => amount / 100),
+  };
+};
+
+export const deserializeMonthlyBudget: Deserializer<MonthlyBudget> = function (id, data) {
+  const parts = id.split('-');
+  return {
+    id,
+    month: new Date(Number(parts[0]), Number(parts[1]), 0, 0, 0, 0, 0),
+    amounts: data.amounts.map((item: BudgetItem) => ({
+      category: item.category.id,
+      budget: item.budget,
+      spent: item.spent,
+    })),
   };
 };
