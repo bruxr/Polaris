@@ -11,7 +11,6 @@ import './index.css';
 
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import NotificationsManager from './components/NotificationsManager';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -22,9 +21,7 @@ ReactDOM.render(
     >
       <RecoilRoot>
         <Router>
-          <NotificationsManager>
-            <App />
-          </NotificationsManager>
+          <App />
         </Router>
       </RecoilRoot>
     </Auth0Provider>
