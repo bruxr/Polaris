@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { RecoilRoot } from 'recoil';
+import * as Sentry from '@sentry/react';
+import { Integrations } from '@sentry/apm';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -11,6 +13,17 @@ import './index.css';
 
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+
+// Setup sentry on non-dev environments
+if (process.env.NODE_ENV !== 'development') {
+  Sentry.init({
+    dsn: process.env.REACT_APP_SENTRY_DSN,
+    integrations: [
+      new Integrations.Tracing(),
+    ],
+    tracesSampleRate: 1.0,
+  });
+}
 
 ReactDOM.render(
   <React.StrictMode>
