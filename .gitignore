@@ -25,5 +25,6 @@ yarn-error.log*
 src/assets/css/tailwind.out.css
 
 # Firebase
+.firebase
 .firebaserc
 *-debug.log
