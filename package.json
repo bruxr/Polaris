@@ -10,7 +10,8 @@
     "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha --require ts-node/register 'test/**/*.test.ts'",
     "eject": "react-scripts eject",
     "lint": "eslint . --ext .ts,.tsx",
-    "build:tailwind": "tailwindcss build src/assets/css/tailwind.css -o src/assets/css/tailwind.out.css"
+    "build:tailwind": "tailwindcss build src/assets/css/tailwind.css -o src/assets/css/tailwind.out.css",
+    "deploy": "yarn build && firebase deploy --only hosting"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -74,6 +75,7 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.20.3",
     "eslint-plugin-react-hooks": "^4.0.8",
+    "firebase-tools": "^8.8.1",
     "mocha": "^8.0.1",
     "nock": "^13.0.2",
     "ts-node": "^8.10.2"
