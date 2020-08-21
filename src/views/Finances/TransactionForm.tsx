@@ -54,8 +54,8 @@ export default function TransactionForm({ onCreate }: Props): React.ReactElement
   return (
     <Formik
       initialValues={{
-        wallet: wallets[0].id,
-        category: categories[0].id,
+        wallet: wallets && wallets.length > 0 ? wallets[0].id : '',
+        category: categories && categories.length > 0 ? categories[0].id : '',
         amount: '',
         notes: '',
         date: format(new Date(), 'yyyy-MM-dd'),
