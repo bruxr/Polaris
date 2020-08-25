@@ -15,7 +15,8 @@ const Footer = (): React.ReactElement => {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 flex justify-between items-center w-screen h-12 p-2 border-t border-gray-300"
+      className="fixed bg-white bottom-0 left-0 flex justify-between
+        items-center w-screen h-12 p-2 border-t border-gray-300"
     >
       <NavLink to="/">
         <InboxOutlinedIcon />
