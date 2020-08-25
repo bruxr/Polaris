@@ -27,14 +27,14 @@ export default function Packages(): JSX.Element {
   }, [data]);
 
   useEffect(() => {
-    setAddButtonCallback({
-      onShow: () => {
-        setAddShown(true);
-      },
-      onHide: () => {
-        setAddShown(false);
-      },
-    });
+    // setAddButtonCallback({
+    //   onShow: () => {
+    //     setAddShown(true);
+    //   },
+    //   onHide: () => {
+    //     setAddShown(false);
+    //   },
+    // });
   }, [setAddButtonCallback]);
 
   return (

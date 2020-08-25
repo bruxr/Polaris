@@ -24,7 +24,7 @@ export default function AddPackageSheet(): JSX.Element {
       return;
     }
 
-    addButtonCallback.onHide();
+    // addButtonCallback.onHide();
   }, [addButtonCallback]);
 
   return (

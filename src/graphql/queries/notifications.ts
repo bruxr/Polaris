@@ -1,7 +1,5 @@
 import { gql } from '@apollo/client';
 
-import { NotificationVariant } from '../../types/notifications';
-
 export default gql`
   query Notifications {
     notifications {
@@ -18,7 +16,7 @@ export default gql`
 export interface NotificationResult {
   __typename: 'Notification';
   id: string;
-  variant: NotificationVariant;
+  variant: string;
   title: string;
   body: string;
   unread: boolean;
