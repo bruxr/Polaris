@@ -15,7 +15,8 @@ export default function Header(): JSX.Element {
 
   return (
     <header
-      className="fixed top-0 left-0 flex justify-between items-center w-screen h-16 p-2 border-b border-gray-300"
+      className="fixed bg-white top-0 left-0 flex justify-between
+        items-center w-screen h-16 p-2 border-b border-gray-300"
     >
       <button
         type="button"
