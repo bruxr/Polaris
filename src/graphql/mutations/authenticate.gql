@@ -1,0 +1,10 @@
+mutation Authenticate($email: String!, $password: String!, $otp: String) {
+  authenticate(input: { email: $email, password: $password, otp: $otp }) {
+    userId
+    userEmail
+    token
+    errors {
+      message
+    }
+  }
+}

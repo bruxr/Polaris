@@ -1,0 +1,5 @@
+query notificationsCount {
+  notificationsCount {
+    unread
+  }
+}
