@@ -168,12 +168,20 @@ export default function Finances(): React.ReactElement {
         ) : (
           <small>Loading...</small>
         )}
-        <Link
-          to="/finances/budgets"
-          className="block text-blue-500 text-center"
-        >
-          Manage Budgets
-        </Link>
+        <div className="flex">
+          <Link
+            to="/finances/categories"
+            className="block text-blue-500 text-center p-4"
+          >
+            Manage Categories
+          </Link>
+          <Link
+            to="/finances/budgets"
+            className="block text-blue-500 text-center p-4"
+          >
+            Manage Budgets
+          </Link>
+        </div>
       </section>
 
       {showAddWallet && (
