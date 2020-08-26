@@ -3,7 +3,6 @@ import React, { useCallback } from 'react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import { useRecoilState } from 'recoil';
-import { useMutation } from '@apollo/client';
 import LocalShippingIcon from '@material-ui/icons/LocalShippingOutlined';
 
 import Input from '../../components/Input';
@@ -11,13 +10,9 @@ import Sheet from '../../components/Sheet';
 import Button from '../../components/Button';
 import { Courier } from '../../types/packages';
 import addButtonAtom from '../../atoms/add-button';
-import GET_PACKAGES, { PackagesQuery } from '../../graphql/queries/packages';
-import ADD_PACKAGE from '../../graphql/mutations/add-package';
 
 export default function AddPackageSheet(): JSX.Element {
   const [addButtonCallback] = useRecoilState(addButtonAtom);
-
-  const [addPackage, { loading }] = useMutation(ADD_PACKAGE);
 
   const handleOnClose = useCallback(() => {
     if (!addButtonCallback) {
@@ -46,26 +41,26 @@ export default function AddPackageSheet(): JSX.Element {
             .label('Tracking code')
             .required(),
         })}
-        onSubmit={async ({ courier, code }, { setFieldError }) => {
-          const { data } = await addPackage({
-            variables: { courier, code },
-            update: (cache, { data }) => {
-              if (data.addPackage.errors) {
-                return;
-              }
+        onSubmit={async () => {
+          // const { data } = await addPackage({
+          //   variables: { courier, code },
+          //   update: (cache, { data }) => {
+          //     if (data.addPackage.errors) {
+          //       return;
+          //     }
 
-              const pkg = data.addPackage.package;
-              const result = cache.readQuery<PackagesQuery>({ query: GET_PACKAGES });
-              cache.writeQuery({
-                query: GET_PACKAGES,
-                data: { packages: result ? result.packages.concat([pkg]) : null },
-              });
-            },
-          });
+          //     const pkg = data.addPackage.package;
+          //     const result = cache.readQuery<PackagesQuery>({ query: GET_PACKAGES });
+          //     cache.writeQuery({
+          //       query: GET_PACKAGES,
+          //       data: { packages: result ? result.packages.concat([pkg]) : null },
+          //     });
+          //   },
+          // });
 
-          if (data.addPackage.errors) {
-            setFieldError('code', data.addPackage.errors[0].message);
-          }
+          // if (data.addPackage.errors) {
+          //   setFieldError('code', data.addPackage.errors[0].message);
+          // }
         }}
       >
         <Form>
@@ -74,7 +69,7 @@ export default function AddPackageSheet(): JSX.Element {
             name="courier"
             label="Courier"
             as="select"
-            disabled={loading}
+            // disabled={loading}
           >
             <option value={Courier.Jinio}>Jinio</option>
             <option value={Courier.Lazada}>Lazada</option>
@@ -85,9 +80,9 @@ export default function AddPackageSheet(): JSX.Element {
             name="code"
             label="Tracking Code"
             placeholder=""
-            disabled={loading}
+            // disabled={loading}
           />
-          <Button type="submit" loading={loading}>
+          <Button type="submit">
             Submit
           </Button>
         </Form>

@@ -49,6 +49,7 @@
     "date-fns": "^2.15.0",
     "firebase": "^7.17.1",
     "formik": "^2.1.5",
+    "graphql-tag": "^2.11.0",
     "graphql.macro": "^1.4.2",
     "lodash-es": "^4.17.15",
     "luxon": "^1.24.1",
