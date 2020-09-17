@@ -45,7 +45,7 @@ export default function AddWalletForm({ onCreate }: Props): JSX.Element {
             <option value={WalletType.Savings}>Savings</option>
             <option value={WalletType.Credit}>Credit Card</option>
           </Input>
-          <Input name="balance" label="Initial Balance" error={errors.balance} />
+          <Input type="number" name="balance" label="Initial Balance" error={errors.balance} />
           <Button type="submit" loading={isSubmitting}>
             Create Wallet
           </Button>
