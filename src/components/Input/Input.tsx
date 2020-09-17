@@ -11,13 +11,15 @@ type Props = FieldAttributes<Record<string ,unknown>> & {
   maxLength?: number;
 }
 
-const Input = ({ type, name, label, error, as, maxLength, children }: PropsWithChildren<Props>): JSX.Element => {
+const Input = (props: PropsWithChildren<Props>): JSX.Element => {
+  const { type, name, label, error, as, maxLength, children } = props;
   const { isSubmitting } = useFormikContext();
 
   return (
     <div className={classnames('mb-4', { 'flex justify-between': type === 'checkbox' })}>
       <label htmlFor={name} className="block text-gray-700 mb-2">{label}</label>
       <Field
+        {...props}
         type={type}
         name={name}
         as={as}
