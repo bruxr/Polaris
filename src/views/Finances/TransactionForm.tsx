@@ -147,7 +147,7 @@ export default function TransactionForm({ onCreate }: Props): React.ReactElement
                 type="number"
                 name="amount"
                 className={classnames(
-                  'block border border-gray-400 p-2 mb-2 flex-1 -ml-px',
+                  'block border border-gray-400 p-2 flex-1 -ml-px',
                   { 'border-red-600': errors.amount },
                 )}
               />
