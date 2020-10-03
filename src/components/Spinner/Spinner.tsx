@@ -1,9 +1,9 @@
 import React from 'react';
 
-import spinner from '../../assets/images/spinner.gif';
+import styles from './Spinner.module.scss';
 
 export default function Spinner(): JSX.Element {
   return (
-    <img src={spinner} alt="Loading..." />
+    <div className={styles.spinner} role="alert" aria-busy />
   );
 }

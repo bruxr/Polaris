@@ -3,6 +3,8 @@ import classnames from 'classnames';
 import { useFormikContext } from 'formik';
 import isUndefined from 'lodash-es/isUndefined';
 
+import Spinner from '../../components/Spinner';
+
 interface Props {
   type?: 'submit' | 'button' | 'reset',
   loading?: boolean;
@@ -24,17 +26,21 @@ export default function Button({ type, loading, children, onClick }: PropsWithCh
     <button
       type={type || 'button'}
       className={classnames(
-        'block text-center tracking-wider uppercase w-full p-3',
-        { 'bg-gray-200 text-gray-700': isLoading, 'bg-gray-900 text-white': !isLoading },
+        'block font-medium text-center text-gray-100 w-full p-3',
+        {
+          'bg-primary-dark opacity-50': isLoading,
+          'bg-primary': !isLoading,
+        },
       )}
       disabled={isLoading}
+      aria-busy={isLoading}
       onClick={() => {
         if (onClick) {
           onClick();
         }
       }}
     >
-      {isLoading ? 'Please Wait' : children}
+      {isLoading ? <Spinner /> : children}
     </button>
   );
 }
