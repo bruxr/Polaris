@@ -1,0 +1,38 @@
+{
+    "primary": {
+        "light": "#9F7AEA",
+        "default": "#805AD5",
+        "dark": "#6B46C1"
+    },
+    "blue": {
+        "default": "#4299E1"
+    },
+    "red": {
+        "default": "#F56565"
+    },
+    "green": {
+        "default": "#48BB78"
+    },
+    "yellow": {
+        "default": "#ECC94B"
+    },
+    "pink": {
+        "default": "#ED64A6"
+    },
+    "teal": {
+        "default": "#4FD1C5"
+    },
+    "indigo": {
+        "default": "#667EEA"
+    },
+    "orange": {
+        "default": "#ED8936"
+    },
+    "gray": {
+        "100": "#F7FAFC",
+        "300": "#718096",
+        "500": "#384454",
+        "700": "#141B29",
+        "900": "#090E18"
+    }
+}
