@@ -1,47 +1,34 @@
 import React from 'react';
 
-import { useRecoilValue } from 'recoil';
-import { NavLink } from 'react-router-dom';
-import AddBoxIcon from '@material-ui/icons/AddBox';
-import InboxOutlinedIcon from '@material-ui/icons/InboxOutlined';
-import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
-import LocalShippingOutlinedIcon from '@material-ui/icons/LocalShippingOutlined';
-import AccountBalanceOutlinedIcon from '@material-ui/icons/AccountBalanceOutlined';
+import { useLocation } from 'react-router-dom';
+import ShowChartIcon from '@material-ui/icons/ShowChart';
+import LocalOfferIcon from '@material-ui/icons/LocalOffer';
+import CalendarViewDay from '@material-ui/icons/CalendarViewDay';
+import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 
-import addBtnAtom from '../../atoms/add-button';
+import MenuItem from './MenuItem';
 
-const Footer = (): React.ReactElement => {
-  const addBtn = useRecoilValue(addBtnAtom);
+export default function Footer(): React.ReactElement {
+  const location = useLocation();
+  console.log(location);
 
   return (
     <nav
-      className="fixed bg-white bottom-0 left-0 flex justify-between
-        items-center w-screen h-12 p-2 border-t border-gray-300"
+      className="fixed bg-gray-700 bottom-0 left-0 flex justify-between
+        items-center w-screen h-5 px-4 py-8"
     >
-      <NavLink to="/">
-        <InboxOutlinedIcon />
-      </NavLink>
-      <NavLink to="/finances">
-        <AccountBalanceOutlinedIcon />
-      </NavLink>
-      <button
-        type="button"
-        onClick={() => {
-          if (addBtn.onClick) {
-            addBtn.onClick();
-          }
-        }}
-      >
-        <AddBoxIcon />
-      </button>
-      <NavLink to="/">
-        <LocalShippingOutlinedIcon />
-      </NavLink>
-      <NavLink to="/">
-        <SettingsOutlinedIcon />
-      </NavLink>
+      <MenuItem to="/finances">
+        <CalendarViewDay />
+      </MenuItem>
+      <MenuItem to="/finances/wallets">
+        <AccountBalanceWalletIcon />
+      </MenuItem>
+      <MenuItem to="/finances/categories">
+        <LocalOfferIcon />
+      </MenuItem>
+      <MenuItem to="/finances/budgets">
+        <ShowChartIcon />
+      </MenuItem>
     </nav>
   );
-};
-
-export default Footer;
+}
