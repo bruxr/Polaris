@@ -62,6 +62,7 @@
     "react-scripts": "3.4.1",
     "recoil": "^0.0.10",
     "tailwindcss": "^1.5.2",
+    "typeface-roboto": "^0.0.75",
     "typescript": "^3.9.7",
     "yup": "^0.29.2"
   },

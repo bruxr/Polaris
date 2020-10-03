@@ -7,6 +7,9 @@ module.exports = {
   purge: [],
   theme: {
     colors,
+    fontFamily: {
+      'sans': 'Roboto, Helvetica Neue, -apply-system, Arial, sans-serif',
+    },
     extend: {},
   },
   variants: {},

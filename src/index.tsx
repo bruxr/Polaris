@@ -7,6 +7,7 @@ import { Integrations } from '@sentry/apm';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
+import 'typeface-roboto';
 import './assets/css/tailwind.out.css';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import './index.css';
