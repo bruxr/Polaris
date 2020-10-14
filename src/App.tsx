@@ -1,23 +1,42 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-import { useAuth0 } from '@auth0/auth0-react';
+import { useRecoilState } from 'recoil';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
 import Budgets from './views/Budgets';
 import Finances from './views/Finances';
 import Footer from './components/Footer';
 import Header from './components/Header';
+import { auth } from './services/firebase';
 import Authenticate from './views/Authenticate';
 import Notifications from './views/Notifications';
+import currentUserAtom from './atoms/current-user';
 import useNotifications from './hooks/use-notifications';
 import FinancesCategories from './views/FinancesCategories';
 
 function App(): JSX.Element {
-  const { isAuthenticated } = useAuth0();
+  const [currentUser, setCurrentUser] = useRecoilState(currentUserAtom);
 
   useNotifications();
 
-  if (!isAuthenticated) {
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        if (!user.email) {
+          throw new Error('Cannot signin user without email address.');
+        }
+
+        setCurrentUser({
+          id: user.uid,
+          email: user.email,
+        });
+      } else {
+        setCurrentUser(undefined);
+      }
+    });
+  }, [setCurrentUser]);
+
+  if (!currentUser) {
     return (
       <div className="container">
         <Authenticate />
