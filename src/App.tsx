@@ -8,6 +8,7 @@ import Budgets from './views/Budgets';
 import Finances from './views/Finances';
 import Footer from './components/Footer';
 import Header from './components/Header';
+import Authenticate from './views/Authenticate';
 import Notifications from './views/Notifications';
 import useNotifications from './hooks/use-notifications';
 import FinancesCategories from './views/FinancesCategories';
@@ -20,7 +21,7 @@ function App(): JSX.Element {
   if (!isAuthenticated) {
     return (
       <div className="container">
-        <Signin />
+        <Authenticate />
       </div>
     );
   }

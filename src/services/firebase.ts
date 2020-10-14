@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+import 'firebase/auth';
 
 firebase.initializeApp({
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -13,6 +14,7 @@ firebase.initializeApp({
 
 const firestore = firebase.firestore;
 const db = firebase.firestore();
+const auth = firebase.auth();
 
 // Connect to local emulator if we are in localhost
 if (window.location.hostname === 'localhost') {
@@ -22,4 +24,4 @@ if (window.location.hostname === 'localhost') {
   });
 }
 
-export { firestore, db };
+export { firestore, db, auth };
