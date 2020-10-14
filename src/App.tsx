@@ -3,7 +3,6 @@ import React from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
-import Signin from './views/Signin';
 import Budgets from './views/Budgets';
 import Finances from './views/Finances';
 import Footer from './components/Footer';
