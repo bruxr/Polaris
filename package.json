@@ -6,7 +6,7 @@
     "prestart": "yarn build:tailwind",
     "start": "npm-run-all --parallel start:react start:firebase",
     "start:react": "HTTPS=true PORT=3001 FORCE_COLOR=true react-scripts start | cat",
-    "start:firebase": "firebase emulators:start --only firestore",
+    "start:firebase": "firebase emulators:start --only firestore,functions",
     "prebuild": "yarn build:tailwind",
     "build": "react-scripts build",
     "build:tailwind": "tailwindcss build src/assets/css/tailwind.css -o src/assets/css/tailwind.out.css",
