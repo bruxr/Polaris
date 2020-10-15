@@ -1,9 +1,9 @@
-import hello from './api/hello';
-import trackParcel from './api/track-parcel';
-import updateParcel from './api/update-parcel';
+import generateChallenge from './callables/generate-challenge';
 
 export {
-  hello,
-  trackParcel,
-  updateParcel,
+  generateChallenge,
+
+  // hello,
+  // trackParcel,
+  // updateParcel,
 };
