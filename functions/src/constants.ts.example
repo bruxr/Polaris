@@ -1,9 +1,0 @@
-const CONSTANTS = {
-  auth0: {
-    domain: '',
-    clientId: '',
-    audience: '',
-  },
-};
-
-export default CONSTANTS;
