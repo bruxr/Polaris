@@ -2,21 +2,15 @@ import { useEffect } from 'react';
 import sortBy from 'lodash-es/sortBy';
 import reverse from 'lodash-es/reverse';
 import { useSetRecoilState } from 'recoil';
-import { useAuth0 } from '@auth0/auth0-react';
 
 import { db } from '../services/firebase';
 import notifsAtom from '../atoms/notifications';
 import { deserializeNotif } from '../deserializers/notifications';
 
 const useNotifications = (): void => {
-  const { isAuthenticated } = useAuth0();
   const setNotifications = useSetRecoilState(notifsAtom);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      return;
-    }
-
     db.collection('notifications')
       .orderBy('ts', 'desc')
       .limit(10)
@@ -41,7 +35,7 @@ const useNotifications = (): void => {
           return copy;
         });
       });
-  }, [isAuthenticated, setNotifications]);
+  }, [setNotifications]);
 };
 
 export default useNotifications;

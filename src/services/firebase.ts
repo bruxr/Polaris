@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
+import 'firebase/functions';
 
 firebase.initializeApp({
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -15,13 +16,10 @@ firebase.initializeApp({
 const firestore = firebase.firestore;
 const db = firebase.firestore();
 const auth = firebase.auth();
+const functions = firebase.functions();
 
-// Connect to local emulator if we are in localhost
-if (window.location.hostname === 'localhost') {
-  db.settings({
-    host: 'localhost:8080',
-    ssl: false,
-  });
+function api(name: string): firebase.functions.HttpsCallable {
+  return functions.httpsCallable(name);
 }
 
-export { firestore, db, auth };
+export { firestore, db, auth, functions, api };

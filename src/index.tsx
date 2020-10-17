@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import { RecoilRoot } from 'recoil';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/apm';
-import { Auth0Provider } from '@auth0/auth0-react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import 'typeface-roboto';
@@ -28,17 +27,11 @@ if (process.env.NODE_ENV !== 'development') {
 
 ReactDOM.render(
   <React.StrictMode>
-    <Auth0Provider
-      domain={process.env.REACT_APP_AUTH0_DOMAIN || ''}
-      clientId={process.env.REACT_APP_AUTH0_CLIENT_ID || ''}
-      redirectUri={window.location.origin}
-    >
-      <RecoilRoot>
-        <Router>
-          <App />
-        </Router>
-      </RecoilRoot>
-    </Auth0Provider>
+    <RecoilRoot>
+      <Router>
+        <App />
+      </Router>
+    </RecoilRoot>
   </React.StrictMode>,
   document.getElementById('root')
 );
