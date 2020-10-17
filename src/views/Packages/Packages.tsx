@@ -8,7 +8,7 @@ import addButtonAtom from '../../atoms/add-button';
 export default function Packages(): JSX.Element {
   const [, setAddButtonCallback] = useRecoilState(addButtonAtom);
 
-  const [addShown, setAddShown] = useState(false);
+  const [addShown] = useState(false);
 
   useEffect(() => {
     // setAddButtonCallback({
