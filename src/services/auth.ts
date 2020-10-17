@@ -1,5 +1,5 @@
 import { api } from './firebase';
-import { str2ab } from './buffer';
+// import { str2ab } from './buffer';
 import { User } from '../types/users';
 
 export async function registerTouchId(user: User): Promise<void> {
@@ -15,19 +15,19 @@ export async function registerTouchId(user: User): Promise<void> {
     return;
   }
 
-  const credential = await navigator.credentials.create({
-    publicKey: {
-      rp: { name: 'polaris.bruxromuar.com' },
-      user: {
-        id: str2ab(user.id),
-        name: user.email,
-        displayName: user.name || '',
-      },
-      pubKeyCredParams: [{ type: 'public-key', alg: -7 }],
-      challenge: str2ab(challengeResult.data.challenge),
-      authenticatorSelection: { authenticatorAttachment: 'platform' },
-      attestation: 'direct',
-    },
-  });
+  // const credential = await navigator.credentials.create({
+  //   publicKey: {
+  //     rp: { name: 'polaris.bruxromuar.com' },
+  //     user: {
+  //       id: str2ab(user.id),
+  //       name: user.email,
+  //       displayName: user.name || '',
+  //     },
+  //     pubKeyCredParams: [{ type: 'public-key', alg: -7 }],
+  //     challenge: str2ab(challengeResult.data.challenge),
+  //     authenticatorSelection: { authenticatorAttachment: 'platform' },
+  //     attestation: 'direct',
+  //   },
+  // });
 
 }
