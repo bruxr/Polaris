@@ -16,6 +16,7 @@
   "eslintConfig": {
     "extends": "react-app"
   },
+  "proxy": "http://localhost:8888/.netlify/functions",
   "browserslist": {
     "production": [
       ">0.2%",
