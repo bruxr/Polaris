@@ -28,3 +28,6 @@ src/assets/css/tailwind.out.css
 .firebase
 .firebaserc
 *-debug.log
+
+# Local Netlify folder
+.netlify
