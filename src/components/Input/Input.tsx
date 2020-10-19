@@ -25,7 +25,7 @@ const Input = (props: PropsWithChildren<Props>): JSX.Element => {
         as={as}
         disabled={isSubmitting}
         className={classnames(
-          'block border border-gray-400 p-2 mb-2',
+          'block border border-gray-700 p-2 mb-2 bg-gray-900',
           {
             'border-red-600': error,
             'w-full': type !== 'checkbox',
