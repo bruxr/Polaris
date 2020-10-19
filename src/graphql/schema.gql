@@ -1,0 +1,45 @@
+enum WalletType {
+  CREDIT_CARD
+  SAVINGS
+}
+
+type Wallet {
+  balance: Int!
+  name: String!
+  type: WalletType!
+}
+
+enum TransactionCategoryType {
+  EXPENSE
+  INCOME
+  OTHER
+}
+
+type TransactionCategory {
+  icon: String!
+  name: String!
+  notes: String
+  type: TransactionCategoryType!
+}
+
+type Transaction {
+  amount: Int!
+  category: TransactionCategory!
+  date: Date!
+  location: [Int]
+  notes: String
+  wallet: Wallet!
+}
+
+type TransactionCategoryStat {
+  stat: TransactionStat!
+  category: TransactionCategory!
+  amount: Int!
+}
+
+type TransactionStat {
+  categories: [TransactionCategoryStat!]!
+  month: String!
+  expenses: Int!
+  income: Int!
+}
