@@ -1,45 +1,22 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
-import { User } from './types/users';
 import Budgets from './views/Budgets';
 import Finances from './views/Finances';
 import Footer from './components/Footer';
 import Header from './components/Header';
-import { auth } from './services/firebase';
 import Authenticate from './views/Authenticate';
-import { registerTouchId } from './services/auth';
 import Notifications from './views/Notifications';
 import currentUserAtom from './atoms/current-user';
 import useNotifications from './hooks/use-notifications';
 import FinancesCategories from './views/FinancesCategories';
 
 function App(): JSX.Element {
-  const [currentUser, setCurrentUser] = useRecoilState(currentUserAtom);
+  const currentUser = useRecoilValue(currentUserAtom);
 
   useNotifications();
-
-  useEffect(() => {
-    auth.onAuthStateChanged((userObj) => {
-      if (userObj) {
-        if (!userObj.email) {
-          throw new Error('Cannot signin user without email address.');
-        }
-        const user: User = {
-          id: userObj.uid,
-          email: userObj.email,
-          name: userObj.displayName || undefined,
-        };
-
-        setCurrentUser(user);
-        registerTouchId(user);
-      } else {
-        setCurrentUser(undefined);
-      }
-    });
-  }, [setCurrentUser]);
 
   if (!currentUser) {
     return (

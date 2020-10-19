@@ -1,12 +1,14 @@
 import React from 'react';
 
 import * as Yup from 'yup';
+import { useSetRecoilState } from 'recoil';
 import { Formik, Form, FormikProps } from 'formik';
 
+import auth from '../../services/auth';
 import Alert from '../../components/Alert';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import { auth } from '../../services/firebase';
+import currentUserAtom from '../../atoms/current-user';
 
 type FormValues = {
   email: string;
@@ -19,6 +21,8 @@ const initialValues: FormValues = {
 };
 
 export default function SigninForm(): React.ReactElement {
+  const setCurrentUser = useSetRecoilState(currentUserAtom);
+
   return (
     <Formik
       initialValues={initialValues}
@@ -33,12 +37,18 @@ export default function SigninForm(): React.ReactElement {
       })}
       onSubmit={async ({ email, password }, { setStatus }) => {
         try {
-          await auth.signInWithEmailAndPassword(email, password);
+          const user = await auth.login(email, password, true);
+          setCurrentUser({
+            id: user.id,
+            name: user.user_metadata.full_name,
+            email: user.email,
+            token: user.token.access_token,
+          });
         } catch (err) {
-          if (err.code === 'auth/user-not-found') {
-            setStatus(err.message);
+          if (err.name === 'JSONHTTPError') {
+            setStatus(err.json.error_description);
           } else {
-            throw err;
+            setStatus(err.message);
           }
         }
       }}

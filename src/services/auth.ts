@@ -1,6 +1,12 @@
+import GoTrue from 'gotrue-js';
 import { api } from './firebase';
 // import { str2ab } from './buffer';
 import { User } from '../types/users';
+
+export default new GoTrue({
+  APIUrl: `${process.env.REACT_APP_NETLIFY_API}/identity`,
+  setCookie: true,
+});
 
 export async function registerTouchId(user: User): Promise<void> {
   if (!user.email) {
