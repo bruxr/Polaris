@@ -38,7 +38,7 @@ type TransactionCategoryStat {
 }
 
 type TransactionStat {
-  categories: [TransactionCategoryStat!]!
+  categories: [TransactionCategoryStat!]
   month: String!
   expenses: Int!
   income: Int!
