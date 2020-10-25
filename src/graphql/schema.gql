@@ -1,3 +1,10 @@
+type Query {
+  allWallets: [Wallet!]
+  allTransactionCategories: [TransactionCategory!]
+  allTransactions(date: Date!): [Transaction!]
+  findTransactionStatByMonth(month: String!): TransactionStat
+}
+
 enum WalletType {
   CREDIT_CARD
   SAVINGS
