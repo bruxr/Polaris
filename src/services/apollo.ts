@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
 const client = new ApolloClient({
-  uri: 'https://graphql.faunadb.com/graphql',
+  uri: 'https://graphql.fauna.com/graphql',
   cache: new InMemoryCache(),
 });
 
