@@ -69,7 +69,7 @@ export const createWallet = async (name: string, type: WalletType, balance?: num
  * @param transaction transaction details
  */
 export async function createTransaction(
-  { wallet, category, amount, date, notes, location }: Omit<Transaction, 'id'>
+  { wallet, category, amount, date, notes, location }: Omit<Transaction, 'id'>,
 ): Promise<Transaction> {
   const data: Omit<TransactionRecord, 'id'> = {
     wallet: db.collection('wallets').doc(wallet),
@@ -147,7 +147,7 @@ export const createTransactionCategory = async (
   name: string,
   icon: string,
   type: TransactionCategoryType,
-  notes?: string
+  notes?: string,
 ): Promise<TransactionCategory> => {
   const data: Omit<TransactionCategory, 'id'> = {
     name,
@@ -180,7 +180,7 @@ export const updateTransactionCategory = async (
   name: string,
   icon: string,
   type: TransactionCategoryType,
-  notes?: string
+  notes?: string,
 ): Promise<TransactionCategory> => {
   const data: Omit<TransactionCategory, 'id'> = {
     name,

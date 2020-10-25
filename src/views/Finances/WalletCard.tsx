@@ -16,7 +16,7 @@ export default function WalletCard({ wallet }: Props): ReactElement {
         {
           'bg-blue-600': wallet.type === WalletType.Savings,
           'bg-red-700': wallet.type === WalletType.Credit,
-        }
+        },
       )}
     >
       <h3 className="font-semibold text-lg">{wallet.name}</h3>

@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
  */
 export default function useSnapshot<T>(
   query: firestore.DocumentReference,
-  deserialize: (id: string, data: firestore.DocumentData) => T
+  deserialize: (id: string, data: firestore.DocumentData) => T,
 ): T | null {
   const [record, setRecord] = useState<T | null>(null);
 

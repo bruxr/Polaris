@@ -22,12 +22,12 @@ export default function Budgets(): React.ReactElement {
   const now = formatISO(new Date()).substr(0, 7);
   const budget = useSingleSnapshot(
     db.collection('budgets').doc(now),
-    deserializeMonthlyBudget
+    deserializeMonthlyBudget,
   );
   const categories = useSnapshot(
     db.collection('transactionCategories')
       .where('type', '==', TransactionCategoryType.Expense),
-    deserializeTransactionCategory
+    deserializeTransactionCategory,
   );
 
   const budgets = useMemo<Array<Budget & { icon: string, name: string }> | null>(() => {

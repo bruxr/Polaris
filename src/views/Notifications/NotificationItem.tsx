@@ -15,7 +15,7 @@ export default function NotificationItem({ notification }: Props): JSX.Element {
 
   const wrapperClasses = classnames(
     'block py-4 relative pl-8',
-    { 'opacity-50': !notification.unread }
+    { 'opacity-50': !notification.unread },
   );
   const children = (
     <>
