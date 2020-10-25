@@ -1,25 +1,14 @@
-import { DateTime } from 'luxon';
 import { firestore } from 'firebase';
 import mapValues from 'lodash-es/mapValues';
 
 import { Deserializer } from '../types/common';
-import { MonthlyTransactionStats, Wallet, TransactionCategory, Transaction, MonthlyBudget } from '../types/finances';
+import { MonthlyTransactionStats, TransactionCategory, Transaction, MonthlyBudget } from '../types/finances';
 
 type BudgetItem = {
   category: firebase.firestore.DocumentReference,
   budget: number,
   spent: number,
 }
-
-export const deserializeWallet = (id: string, data: firestore.DocumentData): Wallet => {
-  return {
-    id,
-    name: data.name,
-    type: data.type,
-    balance: data.balance / 100,
-    ts: DateTime.fromSeconds(data.ts.seconds),
-  };
-};
 
 export const deserializeTransactionCategory = (id: string, data: firestore.DocumentData): TransactionCategory => {
   return {

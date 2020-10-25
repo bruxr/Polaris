@@ -1,0 +1,9 @@
+query FindAllWallets {
+  allWallets {
+    data {
+      _id
+      name
+      balance
+    }
+  }
+}

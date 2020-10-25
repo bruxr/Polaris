@@ -11,8 +11,8 @@ import { db } from '../../services/firebase';
 import useSnapshot from '../../hooks/use-snapshot';
 import { createTransaction } from '../../db/finances';
 import { getLocation } from '../../services/geolocation';
+import { deserializeTransactionCategory } from '../../deserializers/finances';
 import { Wallet, TransactionCategory, TransactionCategoryType } from '../../types/finances';
-import { deserializeWallet, deserializeTransactionCategory } from '../../deserializers/finances';
 
 type FormValues = {
   wallet: string;
@@ -42,7 +42,7 @@ export default function TransactionForm({ onCreate }: Props): React.ReactElement
       .onSnapshot((snapshot) => {
         const wallets: Wallet[] = [];
         snapshot.forEach((doc) => {
-          wallets.push(deserializeWallet(doc.id, doc.data()));
+          // wallets.push(deserializeWallet(doc.id, doc.data()));
         });
         setWallets(wallets);
       });
@@ -53,7 +53,8 @@ export default function TransactionForm({ onCreate }: Props): React.ReactElement
   }, []);
 
   const initialValues: FormValues = {
-    wallet: wallets && wallets.length > 0 ? wallets[0].id : '',
+    // wallet: wallets && wallets.length > 0 ? wallets[0].id : '',
+    wallet: '',
     category: categories && categories.length > 0 ? categories[0].id : '',
     amount: '',
     notes: '',
@@ -105,9 +106,9 @@ export default function TransactionForm({ onCreate }: Props): React.ReactElement
             as="select"
             label="Wallet"
           >
-            {wallets !== null && wallets.map((wallet) => (
+            {/* {wallets !== null && wallets.map((wallet) => (
               <option key={wallet.id} value={wallet.id}>{wallet.name}</option>
-            ))}
+            ))} */}
           </Input>
           <Input
             name="category"

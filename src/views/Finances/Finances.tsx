@@ -1,5 +1,7 @@
+import { loader } from 'graphql.macro';
 import toPairs from 'lodash-es/toPairs';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
 import AddIcon from '@material-ui/icons/Add';
 import { Carousel } from 'react-responsive-carousel';
 import React, { useState, useEffect, useMemo } from 'react';
@@ -10,23 +12,25 @@ import WalletCard from './WalletCard';
 import Sheet from '../../components/Sheet';
 import AddWalletForm from './AddWalletForm';
 import { db } from '../../services/firebase';
-import { Wallet } from '../../types/finances';
 import TransactionForm from './TransactionForm';
 import addBtnAtom from '../../atoms/add-button';
 import useSnapshot from '../../hooks/use-snapshot';
+import { Wallet } from '../../types/finances';
 import useSingleSnapshot from '../../hooks/use-single-snapshot';
 import {
-  deserializeWallet,
   deserializeTransaction,
   deserializeStats,
   deserializeTransactionCategory,
 } from '../../deserializers/finances';
 
+const FIND_ALL_WALLETS = loader('./FindAllWallets.graphql');
+
 export default function Finances(): React.ReactElement {
   const setAddBtn = useSetRecoilState(addBtnAtom);
   const resetAddBtn = useResetRecoilState(addBtnAtom);
 
-  const [wallets, setWallets] = useState<Array<Wallet | null>>([]);
+  const { data: wallets } = useQuery<{ allWallets: { data: Wallet[] } }>(FIND_ALL_WALLETS);
+
   const [showAddWallet, setShowAddWallet] = useState(false);
   const [showAddTx, setShowAddTx] = useState(false);
   const now = formatISO(new Date()).substr(0, 7);
@@ -80,21 +84,6 @@ export default function Finances(): React.ReactElement {
   }, [categories, stats]);
 
   useEffect(() => {
-    const unsubscribe = db.collection('wallets')
-      .orderBy('name', 'asc')
-      .onSnapshot((snapshot) => {
-        const wallets: Array<Wallet | null> = [];
-        snapshot.forEach((doc) => {
-          wallets.push(deserializeWallet(doc.id, doc.data()));
-        });
-        wallets.push(null);
-        setWallets(wallets);
-      });
-
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
     setAddBtn({
       onClick: () => setShowAddTx(true),
     });
@@ -112,8 +101,8 @@ export default function Finances(): React.ReactElement {
         showThumbs={false}
         useKeyboardArrows={false}
       >
-        {wallets.map((wallet) => wallet ? (
-          <WalletCard key={wallet.id} wallet={wallet} />
+        {wallets && wallets.allWallets.data.map((wallet) => wallet ? (
+          <WalletCard key={wallet._id} wallet={wallet} />
         ) : (
           <button
             key="add"

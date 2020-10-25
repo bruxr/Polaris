@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon';
 import { firestore } from 'firebase';
+import { FaunaRecord } from './common';
 
 export interface MonthlyTransactionStats {
   month: string;
@@ -9,16 +10,14 @@ export interface MonthlyTransactionStats {
 }
 
 export enum WalletType {
-  Credit = 'C',
-  Savings = 'S',
+  Credit = 'CREDIT_CARD',
+  Savings = 'SAVINGS',
 }
 
-export interface Wallet {
-  id: string;
+export interface Wallet extends FaunaRecord {
   name: string;
-  type: WalletType;
   balance: number;
-  ts: DateTime;
+  type: WalletType;
 }
 
 export enum TransactionCategoryType {

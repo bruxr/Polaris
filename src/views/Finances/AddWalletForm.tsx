@@ -5,7 +5,6 @@ import { Formik, Form } from 'formik';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import { createWallet } from '../../db/finances';
 import { WalletType, Wallet } from '../../types/finances';
 
 interface Props {
@@ -32,10 +31,11 @@ export default function AddWalletForm({ onCreate }: Props): JSX.Element {
           .label('Initial balance'),
       })}
       onSubmit={async ({ name, type, balance }) => {
-        const wallet = await createWallet(name, type, Number(balance) || 0);
-        if (onCreate) {
-          onCreate(wallet);
-        }
+        // TODO
+        // const wallet = await createWallet(name, type, Number(balance) || 0);
+        // if (onCreate) {
+        //   onCreate(wallet);
+        // }
       }}
     >
       {({ errors, isSubmitting }) => (

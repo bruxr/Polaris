@@ -1,9 +1,7 @@
-import { DateTime } from 'luxon';
 import { formatISO } from 'date-fns/fp';
 
 import { db, firestore } from '../services/firebase';
 import {
-  Wallet,
   WalletType,
   TransactionCategory,
   TransactionCategoryType,
@@ -44,23 +42,6 @@ export async function getMonthStats(month: string): Promise<MonthlyTransactionSt
     categories: data.categories,
   };
 }
-
-export const createWallet = async (name: string, type: WalletType, balance?: number): Promise<Wallet> => {
-  const now = DateTime.utc();
-  const data = {
-    name,
-    type,
-    balance: balance ? balance * 100 : 0,
-    ts: now.toJSDate(),
-  };
-  const doc = await db.collection('wallets').add(data);
-
-  return {
-    id: doc.id,
-    ...data,
-    ts: now,
-  };
-};
 
 /**
  * Creates a transaction in the database.
