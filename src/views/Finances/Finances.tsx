@@ -1,7 +1,5 @@
-import { loader } from 'graphql.macro';
 import toPairs from 'lodash-es/toPairs';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
 import AddIcon from '@material-ui/icons/Add';
 import { Carousel } from 'react-responsive-carousel';
 import React, { useState, useEffect, useMemo } from 'react';
@@ -10,12 +8,10 @@ import { formatISO, formatDistanceToNow, startOfMonth, endOfMonth } from 'date-f
 
 import WalletCard from './WalletCard';
 import Sheet from '../../components/Sheet';
-import AddWalletForm from './AddWalletForm';
 import { db } from '../../services/firebase';
 import TransactionForm from './TransactionForm';
 import addBtnAtom from '../../atoms/add-button';
 import useSnapshot from '../../hooks/use-snapshot';
-import { Wallet } from '../../types/finances';
 import useSingleSnapshot from '../../hooks/use-single-snapshot';
 import {
   deserializeTransaction,
@@ -23,13 +19,9 @@ import {
   deserializeTransactionCategory,
 } from '../../deserializers/finances';
 
-const FIND_ALL_WALLETS = loader('./FindAllWallets.graphql');
-
 export default function Finances(): React.ReactElement {
   const setAddBtn = useSetRecoilState(addBtnAtom);
   const resetAddBtn = useResetRecoilState(addBtnAtom);
-
-  const { data: wallets } = useQuery<{ allWallets: { data: Wallet[] } }>(FIND_ALL_WALLETS);
 
   const [showAddWallet, setShowAddWallet] = useState(false);
   const [showAddTx, setShowAddTx] = useState(false);
@@ -93,29 +85,6 @@ export default function Finances(): React.ReactElement {
 
   return (
     <div>
-      <Carousel
-        autoPlay={false}
-        dynamicHeight={false}
-        showArrows={false}
-        showStatus={false}
-        showThumbs={false}
-        useKeyboardArrows={false}
-      >
-        {wallets && wallets.allWallets.data.map((wallet) => wallet ? (
-          <WalletCard key={wallet._id} wallet={wallet} />
-        ) : (
-          <button
-            key="add"
-            type="button"
-            className="block w-full h-48 border border-dashed border-gray-500 text-gray-700 text-center"
-            onClick={() => setShowAddWallet(true)}
-          >
-            <div className="block"><AddIcon /></div>
-            Add Wallet
-          </button>
-        ))}
-      </Carousel>
-
       <section>
         <h2 className="text-2xl font-semibold mb-4">Transactions</h2>
         {categorizedTransactions ? (
@@ -178,7 +147,6 @@ export default function Finances(): React.ReactElement {
           title="Add Wallet"
           onClose={() => setShowAddWallet(false)}
         >
-          <AddWalletForm onCreate={() => setShowAddWallet(false)} />
         </Sheet>
       )}
 
