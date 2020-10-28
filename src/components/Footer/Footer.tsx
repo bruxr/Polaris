@@ -7,6 +7,7 @@ import CalendarViewDay from '@material-ui/icons/CalendarViewDay';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 
 import MenuItem from './MenuItem';
+import { ROUTES } from '../../constants/routes';
 
 export default function Footer(): React.ReactElement {
   const location = useLocation();
@@ -20,7 +21,7 @@ export default function Footer(): React.ReactElement {
       <MenuItem to="/finances">
         <CalendarViewDay />
       </MenuItem>
-      <MenuItem to="/finances/wallets">
+      <MenuItem to={ROUTES.FINANCE_WALLETS}>
         <AccountBalanceWalletIcon />
       </MenuItem>
       <MenuItem to="/finances/categories">

@@ -4,6 +4,7 @@ query FindAllWallets {
       _id
       name
       balance
+      type
     }
   }
 }

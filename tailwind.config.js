@@ -10,7 +10,14 @@ module.exports = {
     fontFamily: {
       'sans': 'Roboto, Helvetica Neue, -apply-system, Arial, sans-serif',
     },
-    extend: {},
+    extend: {
+      backgroundImage: () => ({
+        'savings-wallet': 'url(/assets/images/wallets/savings.png)',
+      }),
+      minHeight: {
+        'content': 'calc(100vh - 5rem - 4rem)',
+      },
+    },
   },
   variants: {},
   plugins: [],

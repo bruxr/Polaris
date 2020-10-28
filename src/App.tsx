@@ -7,9 +7,11 @@ import Budgets from './views/Budgets';
 import Finances from './views/Finances';
 import Footer from './components/Footer';
 import Header from './components/Header';
+import { ROUTES } from './constants/routes';
 import Authenticate from './views/Authenticate';
 import Notifications from './views/Notifications';
 import currentUserAtom from './atoms/current-user';
+import FinanceWallets from './views/FinanceWallets';
 import useNotifications from './hooks/use-notifications';
 import FinancesCategories from './views/FinancesCategories';
 
@@ -32,6 +34,7 @@ function App(): JSX.Element {
       <Switch>
         <Route path="/finances/budgets" component={Budgets} />
         <Route path="/finances/categories" component={FinancesCategories} />
+        <Route path={ROUTES.FINANCE_WALLETS} component={FinanceWallets} />
         <Route path="/finances" component={Finances} />
         <Route path="/notifications" component={Notifications} />
         {/* <Route path="/" component={Dashboard} /> */}
