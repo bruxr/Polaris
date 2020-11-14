@@ -6,6 +6,10 @@ const client = new ApolloClient({
   headers: {
     Authorization: `Bearer ${process.env.REACT_APP_FAUNADB_KEY}`,
   },
+  defaultOptions: {
+    query: { errorPolicy: 'all' },
+    mutate: { errorPolicy: 'all' },
+  },
 });
 
 export default client;
