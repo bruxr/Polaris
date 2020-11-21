@@ -14,9 +14,9 @@ interface Props {
   onSuccess?: () => void;
 }
 
-const CREATE_WALLET = loader('./CreateWallet.graphql');
-const NEW_WALLET_FRAGMENT = loader('./NewWalletFragment.graphql');
+const CREATE_WALLET = loader('../../../graphql/mutations/CreateWallet.graphql');
 const UPDATE_WALLET = loader('../../../graphql/mutations/UpdateWallet.graphql');
+const NEW_WALLET_FRAGMENT = loader('../../../graphql/fragments/NewWallet.graphql');
 
 export default function WalletForm({ wallet, onSuccess }: Props): JSX.Element {
   const [createWallet] = useMutation(CREATE_WALLET, {

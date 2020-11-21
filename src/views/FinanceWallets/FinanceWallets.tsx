@@ -12,7 +12,7 @@ import { Wallet } from '../../types/finances';
 import Spinner from '../../components/Spinner';
 import addBtnAtom from '../../atoms/add-button';
 
-const FIND_ALL_WALLETS = loader('./FindAllWallets.graphql');
+const FIND_ALL_WALLETS = loader('../../graphql/queries/FindAllWallets.graphql');
 
 export default function FinanceWallets(): React.ReactElement {
   const { data, loading } = useQuery<{ allWallets: { data: Wallet[] } }>(FIND_ALL_WALLETS);
