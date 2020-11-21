@@ -4,12 +4,11 @@ import * as Yup from 'yup';
 import { useSetRecoilState } from 'recoil';
 import { Formik, Form, FormikProps } from 'formik';
 
-import { User } from '../../types/users';
 import Alert from '../../components/Alert';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import currentUserAtom from '../../atoms/current-user';
-import auth, { registerTouchId } from '../../services/auth';
+import auth, { deserializeUser, registerTouchId } from '../../services/auth';
 
 type FormValues = {
   email: string;
@@ -37,27 +36,17 @@ export default function SigninForm(): React.ReactElement {
           .required(),
       })}
       onSubmit={async ({ email, password }, { setStatus }) => {
-        let user: User | undefined;
         try {
           const result = await auth.login(email, password, true);
-          console.log(result);
-          user = {
-            id: result.id,
-            name: result.user_metadata.full_name,
-            email: result.email,
-            token: result.token.access_token,
-          };
+          const user = deserializeUser(result);
+          setCurrentUser(user);
+          await registerTouchId(user);
         } catch (err) {
           if (err.name === 'JSONHTTPError') {
             setStatus(err.json.error_description);
           } else {
             setStatus(err.message);
           }
-        }
-
-        if (user) {
-          setCurrentUser(user);
-          await registerTouchId(user);
         }
       }}
     >
