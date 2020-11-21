@@ -1,0 +1,9 @@
+mutation UpdateWallet($id: ID!, $name: String!, $balance: Int!, $type: WalletType!) {
+  updateWallet(id: $id, data: { name: $name, balance: $balance, type: $type }) {
+    _id
+    __typename
+    name
+    balance
+    type
+  }
+}

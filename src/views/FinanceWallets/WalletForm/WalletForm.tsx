@@ -7,16 +7,18 @@ import { useMutation } from '@apollo/client';
 
 import Input from '../../../components/Input';
 import Button from '../../../components/Button';
-import { WalletType } from '../../../types/finances';
+import { Wallet, WalletType } from '../../../types/finances';
 
 interface Props {
-  onCreate?: () => void;
+  wallet?: Wallet;
+  onSuccess?: () => void;
 }
 
 const CREATE_WALLET = loader('./CreateWallet.graphql');
 const NEW_WALLET_FRAGMENT = loader('./NewWalletFragment.graphql');
+const UPDATE_WALLET = loader('../../../graphql/mutations/UpdateWallet.graphql');
 
-export default function WalletForm({ onCreate }: Props): JSX.Element {
+export default function WalletForm({ wallet, onSuccess }: Props): JSX.Element {
   const [createWallet] = useMutation(CREATE_WALLET, {
     update(cache, { data }) {
       cache.modify({
@@ -36,13 +38,14 @@ export default function WalletForm({ onCreate }: Props): JSX.Element {
       });
     },
   });
+  const [updateWallet] = useMutation(UPDATE_WALLET);
 
   return (
     <Formik
       initialValues={{
-        name: '',
-        type: WalletType.Savings,
-        balance: '',
+        name: wallet ? wallet.name : '',
+        type: wallet ? wallet.type : WalletType.Savings,
+        balance: wallet ? wallet.balance / 100 : 0,
       }}
       validationSchema={Yup.object({
         name: Yup.string()
@@ -56,15 +59,24 @@ export default function WalletForm({ onCreate }: Props): JSX.Element {
           .label('Initial balance'),
       })}
       onSubmit={async ({ name, type, balance }) => {
-        await createWallet({
-          variables: {
-            name,
-            balance: Number(balance) * 100,
-            type,
-          },
-        });
-        if (onCreate) {
-          onCreate();
+        const variables = {
+          name,
+          balance: Number(balance) * 100,
+          type,
+        };
+        if (wallet) {
+          await updateWallet({
+            variables: {
+              id: wallet._id,
+              ...variables,
+            },
+          });
+        } else {
+          await createWallet({ variables });
+        }
+
+        if (onSuccess) {
+          onSuccess();
         }
       }}
     >
@@ -83,7 +95,7 @@ export default function WalletForm({ onCreate }: Props): JSX.Element {
             error={errors.balance}
           />
           <Button type="submit" loading={isSubmitting}>
-            Create Wallet
+            {wallet ? 'Update Wallet' : 'Create Wallet'}
           </Button>
         </Form>
       )}

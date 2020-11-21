@@ -21,6 +21,7 @@ export default function FinanceWallets(): React.ReactElement {
   const resetAddBtn = useResetRecoilState(addBtnAtom);
 
   const [showForm, setShowForm] = useState(false);
+  const [editedWallet, setEditedWallet] = useState<Wallet | undefined>();
 
   useEffect(() => {
     setAddBtn({
@@ -40,14 +41,29 @@ export default function FinanceWallets(): React.ReactElement {
       >
         {loading && <Spinner />}
         {data && data.allWallets.data.map((wallet) => (
-          <WalletCard key={wallet._id} wallet={wallet} />
+          <button
+            key={wallet._id}
+            type="button"
+            onClick={() => {
+              setEditedWallet(wallet);
+              setShowForm(true);
+            }}
+          >
+            <WalletCard wallet={wallet} />
+          </button>
         ))}
       </div>
 
       {showForm && (
-        <Sheet onClose={() => setShowForm(false)}>
+        <Sheet
+          onClose={() => {
+            setEditedWallet(undefined);
+            setShowForm(false);
+          }}
+        >
           <WalletForm
-            onCreate={() => setShowForm(false)}
+            wallet={editedWallet}
+            onSuccess={() => setShowForm(false)}
           />
         </Sheet>
       )}

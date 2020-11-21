@@ -13,7 +13,7 @@ export default function WalletCard({ wallet }: Props): React.ReactElement {
   return (
     <div
       className={classnames(
-        'mb-8 p-6 text-gray-100 flex flex-col w-full h-48 bg-contain bg-right bg-no-repeat rounded-lg',
+        'mb-8 p-6 text-gray-100 flex flex-col w-full h-48 bg-contain bg-right bg-no-repeat rounded-lg text-left',
         {
           'bg-blue bg-savings-wallet': wallet.type === WalletType.Savings,
           'bg-red bg-savings-wallet': wallet.type === WalletType.Credit,
