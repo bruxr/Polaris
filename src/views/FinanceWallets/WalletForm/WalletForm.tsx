@@ -2,16 +2,41 @@ import React from 'react';
 
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
+import { loader } from 'graphql.macro';
+import { useMutation } from '@apollo/client';
 
-import Input from '../../components/Input';
-import Button from '../../components/Button';
-import { WalletType, Wallet } from '../../types/finances';
+import Input from '../../../components/Input';
+import Button from '../../../components/Button';
+import { WalletType } from '../../../types/finances';
 
 interface Props {
-  onCreate?: (wallet: Wallet) => void;
+  onCreate?: () => void;
 }
 
-export default function AddWalletForm({ onCreate }: Props): JSX.Element {
+const CREATE_WALLET = loader('./CreateWallet.graphql');
+const NEW_WALLET_FRAGMENT = loader('./NewWalletFragment.graphql');
+
+export default function WalletForm({ onCreate }: Props): JSX.Element {
+  const [createWallet] = useMutation(CREATE_WALLET, {
+    update(cache, { data }) {
+      cache.modify({
+        fields: {
+          allWallets(existing = []) {
+            const newRef = cache.writeFragment({
+              data: data.createWallet,
+              fragment: NEW_WALLET_FRAGMENT,
+            });
+            if (!newRef) {
+              throw new Error('Failed to update cache when creating new wallet.');
+            }
+
+            return [...existing.data, newRef];
+          },
+        },
+      });
+    },
+  });
+
   return (
     <Formik
       initialValues={{
@@ -31,11 +56,16 @@ export default function AddWalletForm({ onCreate }: Props): JSX.Element {
           .label('Initial balance'),
       })}
       onSubmit={async ({ name, type, balance }) => {
-        // TODO
-        // const wallet = await createWallet(name, type, Number(balance) || 0);
-        // if (onCreate) {
-        //   onCreate(wallet);
-        // }
+        await createWallet({
+          variables: {
+            name,
+            balance: Number(balance) * 100,
+            type,
+          },
+        });
+        if (onCreate) {
+          onCreate();
+        }
       }}
     >
       {({ errors, isSubmitting }) => (

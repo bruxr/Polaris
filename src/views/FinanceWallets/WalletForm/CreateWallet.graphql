@@ -1,0 +1,9 @@
+mutation CreateWallet($name: String!, $balance: Int!, $type: WalletType!) {
+  createWallet(data: { name: $name, balance: $balance, type: $type }) {
+    _id
+    __typename
+    name
+    balance
+    type
+  }
+}
