@@ -40,6 +40,7 @@ export default function SigninForm(): React.ReactElement {
         let user: User | undefined;
         try {
           const result = await auth.login(email, password, true);
+          console.log(result);
           user = {
             id: result.id,
             name: result.user_metadata.full_name,
