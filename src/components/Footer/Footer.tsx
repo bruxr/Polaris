@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { useLocation } from 'react-router-dom';
 import ShowChartIcon from '@material-ui/icons/ShowChart';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import CalendarViewDay from '@material-ui/icons/CalendarViewDay';
@@ -10,9 +9,6 @@ import MenuItem from './MenuItem';
 import { ROUTES } from '../../constants/routes';
 
 export default function Footer(): React.ReactElement {
-  const location = useLocation();
-  console.log(location);
-
   return (
     <nav
       className="fixed bg-gray-700 bottom-0 left-0 flex justify-between
