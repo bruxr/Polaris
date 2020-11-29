@@ -5,7 +5,6 @@ import { Formik, Form } from 'formik';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import { createTransactionCategory, updateTransactionCategory } from '../../db/finances';
 import { TransactionCategoryType, TransactionCategory } from '../../types/finances';
 
 type Props = {
@@ -43,9 +42,9 @@ const CategoryForm = ({ category, onSave }: Props): React.ReactElement => {
       })}
       onSubmit={async ({ name, icon, type, notes }) => {
         if (category) {
-          await updateTransactionCategory(category.id, name, icon, type, notes !== '' ? notes : undefined);
+          // await updateTransactionCategory(category.id, name, icon, type, notes !== '' ? notes : undefined);
         } else {
-          await createTransactionCategory(name, icon, type, notes !== '' ? notes : undefined);
+          // await createTransactionCategory(name, icon, type, notes !== '' ? notes : undefined);
         }
 
         if (onSave) {

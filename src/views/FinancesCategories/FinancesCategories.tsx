@@ -1,38 +1,53 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 
+import sortBy from 'lodash/sortBy';
+import { loader } from 'graphql.macro';
+import mapValues from 'lodash/mapValues';
 import { useSetRecoilState } from 'recoil';
 
 import CategoryForm from './CategoryForm';
 import Sheet from '../../components/Sheet';
-import { db } from '../../services/firebase';
+import useQuery from '../../hooks/use-query';
 import addBtnAtom from '../../atoms/add-button';
-import { TransactionCategory, TransactionCategoryType } from '../../types/finances';
 import { deserializeTransactionCategory } from '../../deserializers/finances';
+import { TransactionCategory, TransactionCategoryType } from '../../types/finances';
+
+const ALL_TRANSACTION_CATEGORIES = loader('../../graphql/queries/AllTransactionCategories.graphql');
 
 const FinancesCategories = (): React.ReactElement => {
   const setAddBtn = useSetRecoilState(addBtnAtom);
 
-  const [categories, setCategories] = useState<TransactionCategory[] | null>(null);
+  const categories = useQuery<TransactionCategory>(ALL_TRANSACTION_CATEGORIES, deserializeTransactionCategory);
+  console.log(categories);
+
   const [showAdd, setShowAdd] = useState(false);
   const [editedCategory, setEditedCategory] = useState<TransactionCategory | null>(null);
+
+  const grouped = useMemo(() => {
+    if (!categories) {
+      return;
+    }
+
+    const groups: {
+      [TransactionCategoryType.Income]: TransactionCategory[],
+      [TransactionCategoryType.Expense]: TransactionCategory[],
+      [TransactionCategoryType.Other]: TransactionCategory[],
+    } = {
+      [TransactionCategoryType.Income]: [],
+      [TransactionCategoryType.Expense]: [],
+      [TransactionCategoryType.Other]: [],
+    };
+    categories.forEach((record) => groups[record.type].push(record));
+
+    return mapValues(groups, (items) => {
+      return sortBy(items, ['color', 'name']);
+    });
+
+  }, [categories]);
 
   const handleSheetClose = useCallback(() => {
     setShowAdd(false);
     setEditedCategory(null);
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = db
-      .collection('transactionCategories')
-      .orderBy('type', 'asc')
-      .onSnapshot((snapshot) => {
-        const categories: TransactionCategory[] = [];
-        snapshot.forEach((doc) => {
-          categories.push(deserializeTransactionCategory(doc.id, doc.data()));
-        });
-        setCategories(categories);
-      });
-    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -45,7 +60,7 @@ const FinancesCategories = (): React.ReactElement => {
     });
   }, [setAddBtn]);
 
-  if (!categories) {
+  if (!grouped) {
     return (
       <div>
         Please wait...
@@ -56,36 +71,59 @@ const FinancesCategories = (): React.ReactElement => {
   return (
     <div>
       <h2 className="text-3xl font-bold mb-2">Categories</h2>
-      <div className="divide-y">
-        {categories.map((category) => {
-          let type = '';
-          switch (category.type) {
-            case TransactionCategoryType.Expense:
-              type = 'Expense';
-              break;
-            case TransactionCategoryType.Income:
-              type = 'Income';
-              break;
-            case TransactionCategoryType.Other:
-              type = 'Other';
-              break;
-          }
-          return (
-            <button
-              key={category.id}
-              type="button"
-              className="relative block w-full mb-2 py-2 pl-8 text-left"
-              onClick={() => setEditedCategory(category)}
-            >
-              <span role="img" aria-label="Fuel" className="text-xl mr-2 absolute top-2 left-0 mt-0">
-                {category.icon}
-              </span>
-              <span className="block text-xl">{category.name}</span>
-              <span className="block text-gray-600 text-sm">{type}</span>
-            </button>
-          );
-        })}
-      </div>
+      {grouped[TransactionCategoryType.Income].length > 0 && (
+        <div>
+          <h3>Income</h3>
+          <div className="divide-y">
+            {grouped[TransactionCategoryType.Income].map((category) => (
+              <button
+                key={category.id}
+                type="button"
+                className="block mb-2"
+              >
+                <span className="block">{category.name}</span>
+                <span className="block">{category.notes}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {grouped[TransactionCategoryType.Expense].length > 0 && (
+        <div>
+          <h3>Expense</h3>
+          <div className="divide-y">
+            {grouped[TransactionCategoryType.Expense].map((category) => (
+              <button
+                key={category.id}
+                type="button"
+                className="block mb-2"
+              >
+                <span className="block">{category.name}</span>
+                <span className="block">{category.notes}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {grouped[TransactionCategoryType.Other].length > 0 && (
+        <div>
+          <h3>Other</h3>
+          <div className="divide-y">
+            {grouped[TransactionCategoryType.Other].map((category) => (
+              <button
+                key={category.id}
+                type="button"
+                className="block mb-2"
+              >
+                <span className="block">{category.name}</span>
+                <span className="block">{category.notes}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {(showAdd || editedCategory) && (
         <Sheet title="Create Category" onClose={handleSheetClose}>

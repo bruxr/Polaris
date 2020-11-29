@@ -1,13 +1,25 @@
+/* eslint @typescript-eslint/no-explicit-any: 0, @typescript-eslint/explicit-module-boundary-types: 0 */
+
 import { firestore } from 'firebase';
 import mapValues from 'lodash-es/mapValues';
 
 import { Deserializer } from '../types/common';
-import { MonthlyTransactionStats, Transaction, MonthlyBudget } from '../types/finances';
+import { MonthlyTransactionStats, Transaction, MonthlyBudget, TransactionCategory } from '../types/finances';
 
 type BudgetItem = {
   category: firebase.firestore.DocumentReference,
   budget: number,
   spent: number,
+}
+
+function deserializeTransactionCategory(input: any): TransactionCategory {
+  return {
+    id: input._id,
+    name: input.name,
+    icon: input.icon,
+    type: input.type,
+    notes: input.notes,
+  };
 }
 
 export function deserializeTransaction(id: string, data: firestore.DocumentData): Transaction {
@@ -42,4 +54,8 @@ export const deserializeMonthlyBudget: Deserializer<MonthlyBudget> = function (i
       spent: item.spent,
     })),
   };
+};
+
+export {
+  deserializeTransactionCategory,
 };

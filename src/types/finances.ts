@@ -21,9 +21,9 @@ export interface Wallet extends FaunaRecord {
 }
 
 export enum TransactionCategoryType {
-  Income = 'I',
-  Expense = 'E',
-  Other = 'O',
+  Income = 'INCOME',
+  Expense = 'EXPENSE',
+  Other = 'OTHER',
 }
 
 export interface TransactionCategory {

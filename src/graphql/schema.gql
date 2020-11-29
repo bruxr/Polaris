@@ -23,6 +23,7 @@ enum TransactionCategoryType {
 }
 
 type TransactionCategory {
+  color: String!
   icon: String!
   name: String!
   notes: String
