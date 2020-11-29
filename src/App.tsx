@@ -4,8 +4,6 @@ import { DateTime } from 'luxon';
 import { useRecoilState } from 'recoil';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
-import Budgets from './views/Budgets';
-import Finances from './views/Finances';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import Spinner from './components/Spinner';
@@ -67,10 +65,10 @@ function App(): JSX.Element {
     <div className="container min-h-screen pb-16 pt-20 px-2">
       <Header />
       <Switch>
-        <Route path="/finances/budgets" component={Budgets} />
+        {/* <Route path="/finances/budgets" component={Budgets} /> */}
         <Route path="/finances/categories" component={FinancesCategories} />
         <Route path={ROUTES.FINANCE_WALLETS} component={FinanceWallets} />
-        <Route path="/finances" component={Finances} />
+        {/* <Route path="/finances" component={Finances} /> */}
         <Route path="/notifications" component={Notifications} />
         {/* <Route path="/" component={Dashboard} /> */}
         <Redirect to="/finances" />

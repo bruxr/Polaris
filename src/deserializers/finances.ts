@@ -2,23 +2,13 @@ import { firestore } from 'firebase';
 import mapValues from 'lodash-es/mapValues';
 
 import { Deserializer } from '../types/common';
-import { MonthlyTransactionStats, TransactionCategory, Transaction, MonthlyBudget } from '../types/finances';
+import { MonthlyTransactionStats, Transaction, MonthlyBudget } from '../types/finances';
 
 type BudgetItem = {
   category: firebase.firestore.DocumentReference,
   budget: number,
   spent: number,
 }
-
-export const deserializeTransactionCategory = (id: string, data: firestore.DocumentData): TransactionCategory => {
-  return {
-    id,
-    name: data.name,
-    type: data.type,
-    icon: data.icon,
-    notes: data.notes || undefined,
-  };
-};
 
 export function deserializeTransaction(id: string, data: firestore.DocumentData): Transaction {
   return {
