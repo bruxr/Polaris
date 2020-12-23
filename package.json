@@ -59,7 +59,7 @@
     "react-dom": "^16.13.1",
     "react-responsive-carousel": "^3.2.9",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.0",
+    "react-scripts": "4.0.1",
     "recoil": "^0.0.10",
     "tailwindcss": "^1.5.2",
     "typeface-roboto": "^0.0.75",
