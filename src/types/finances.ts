@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon';
 import { firestore } from 'firebase';
 import { FaunaRecord } from './common';
 

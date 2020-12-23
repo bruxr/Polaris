@@ -3,8 +3,6 @@ import { formatISO } from 'date-fns/fp';
 import { db, firestore } from '../services/firebase';
 import {
   WalletType,
-  TransactionCategory,
-  TransactionCategoryType,
   Transaction,
   TransactionRecord,
   MonthlyTransactionStats,

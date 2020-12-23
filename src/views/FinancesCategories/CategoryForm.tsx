@@ -40,7 +40,7 @@ const CategoryForm = ({ category, onSave }: Props): React.ReactElement => {
         notes: Yup.string()
           .label('Notes'),
       })}
-      onSubmit={async ({ name, icon, type, notes }) => {
+      onSubmit={async () => {
         if (category) {
           // await updateTransactionCategory(category.id, name, icon, type, notes !== '' ? notes : undefined);
         } else {
