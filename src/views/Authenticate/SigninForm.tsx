@@ -6,9 +6,9 @@ import { Formik, Form, FormikProps } from 'formik';
 
 import Alert from '../../components/Alert';
 import Input from '../../components/Input';
+import { login } from '../../services/auth';
 import Button from '../../components/Button';
 import currentUserAtom from '../../atoms/current-user';
-import auth, { deserializeUser, registerTouchId } from '../../services/auth';
 
 type FormValues = {
   email: string;
@@ -37,16 +37,10 @@ export default function SigninForm(): React.ReactElement {
       })}
       onSubmit={async ({ email, password }, { setStatus }) => {
         try {
-          const result = await auth.login(email, password, true);
-          const user = deserializeUser(result);
-          setCurrentUser(user);
-          await registerTouchId(user);
+          setStatus(null);
+          await login(email, password);
         } catch (err) {
-          if (err.name === 'JSONHTTPError') {
-            setStatus(err.json.error_description);
-          } else {
-            setStatus(err.message);
-          }
+          setStatus(err.message);
         }
       }}
     >

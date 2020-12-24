@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 
-import { DateTime } from 'luxon';
 import { useRecoilState } from 'recoil';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
 import Footer from './components/Footer';
 import Header from './components/Header';
 import Spinner from './components/Spinner';
+import { auth } from './services/firebase';
 import { ROUTES } from './constants/routes';
 import Authenticate from './views/Authenticate';
+import { deserializeUser } from './services/auth';
 import Notifications from './views/Notifications';
 import currentUserAtom from './atoms/current-user';
 import FinanceWallets from './views/FinanceWallets';
-import auth, { deserializeUser } from './services/auth';
 import useNotifications from './hooks/use-notifications';
 import FinancesCategories from './views/FinancesCategories';
 
@@ -24,25 +24,16 @@ function App(): JSX.Element {
   useNotifications();
 
   useEffect(() => {
-    const user = auth.currentUser();
-    if (user) {
-      const expiry = DateTime.fromMillis(user.token.expires_at);
-      if (!expiry.isValid || expiry <= DateTime.local()) {
-        user.jwt(true)
-          .then(() => {
-            setCurrentUser(deserializeUser(user));
-            setLoading(false);
-          })
-          .catch(() => {
-            setLoading(false);
-          });
-      } else {
-        setCurrentUser(deserializeUser(user));
-        setLoading(false);
-      }
-    } else {
-      setLoading(false);
+    if (!setCurrentUser) {
+      return;
     }
+
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        setCurrentUser(deserializeUser(user));
+      }
+      setLoading(false);
+    });
   }, [setCurrentUser]);
 
   if (loading) {
