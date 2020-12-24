@@ -1,38 +1,13 @@
 {
-    "primary": {
-        "light": "#9F7AEA",
-        "default": "#805AD5",
-        "dark": "#6B46C1"
-    },
-    "blue": {
-        "default": "#4299E1"
-    },
-    "red": {
-        "default": "#F56565"
-    },
-    "green": {
-        "default": "#48BB78"
-    },
-    "yellow": {
-        "default": "#ECC94B"
-    },
-    "pink": {
-        "default": "#ED64A6"
-    },
-    "teal": {
-        "default": "#4FD1C5"
-    },
-    "indigo": {
-        "default": "#667EEA"
-    },
-    "orange": {
-        "default": "#ED8936"
-    },
+    "primary": "#DC2626",
+    "green": "#16A34A",
+    "black": "#000000",
+    "white": "#FAFAFA",
     "gray": {
-        "100": "#F7FAFC",
-        "300": "#718096",
-        "500": "#384454",
-        "700": "#141B29",
-        "900": "#090E18"
+        "100": "#FAFAFA",
+        "300": "#D4D4D8",
+        "500": "#71717A",
+        "700": "#18181B",
+        "900": "#3F3F46"
     }
 }
