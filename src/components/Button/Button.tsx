@@ -26,10 +26,9 @@ export default function Button({ type, loading, children, onClick }: PropsWithCh
     <button
       type={type || 'button'}
       className={classnames(
-        'block font-medium text-center text-gray-100 w-full p-3',
+        'block font-medium text-center w-full p-3',
         {
-          'bg-primary-dark opacity-50': isLoading,
-          'bg-primary': !isLoading,
+          'opacity-50': isLoading,
         },
       )}
       disabled={isLoading}

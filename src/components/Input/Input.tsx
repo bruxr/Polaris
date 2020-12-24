@@ -17,7 +17,7 @@ const Input = (props: PropsWithChildren<Props>): JSX.Element => {
 
   return (
     <div className={classnames('mb-4', { 'flex justify-between': type === 'checkbox' })}>
-      <label htmlFor={name} className="block text-gray-700 mb-2">{label}</label>
+      <label htmlFor={name} className="block mb-2">{label}</label>
       <Field
         {...props}
         type={type}
@@ -25,7 +25,7 @@ const Input = (props: PropsWithChildren<Props>): JSX.Element => {
         as={as}
         disabled={isSubmitting}
         className={classnames(
-          'block border border-gray-700 p-2 mb-2 bg-gray-900',
+          'block border border-gray-700 p-2 mb-2',
           {
             'border-red-600': error,
             'w-full': type !== 'checkbox',
