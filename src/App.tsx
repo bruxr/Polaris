@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
+import Modal from 'react-modal';
 import { useRecoilState } from 'recoil';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
@@ -15,6 +16,8 @@ import currentUserAtom from './atoms/current-user';
 import FinanceWallets from './views/FinanceWallets';
 import useNotifications from './hooks/use-notifications';
 import FinancesCategories from './views/FinancesCategories';
+
+Modal.setAppElement('#root');
 
 function App(): JSX.Element {
   const [currentUser, setCurrentUser] = useRecoilState(currentUserAtom);
