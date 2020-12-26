@@ -30,7 +30,7 @@ export default function Header(): JSX.Element {
         {add.onClick && (
           <button
             type="button"
-            className="text-primary"
+            className="block w-6 h-6 ml-auto text-primary"
             onClick={() => {
               if (add.onClick) {
                 add.onClick();
