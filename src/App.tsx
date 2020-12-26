@@ -6,6 +6,7 @@ import { useRecoilState } from 'recoil';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
 import Finances from './views/Finances';
+import { setupDb } from './services/db';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import Spinner from './components/Spinner';
@@ -23,7 +24,7 @@ Modal.setAppElement('#root');
 function App(): JSX.Element {
   const [currentUser, setCurrentUser] = useRecoilState(currentUserAtom);
 
-  const [loading,  setLoading] = useState(true);
+  const [loading,  setLoading] = useState(0);
 
   useNotifications();
 
@@ -35,21 +36,26 @@ function App(): JSX.Element {
         user.jwt(true)
           .then(() => {
             setCurrentUser(deserializeUser(user));
-            setLoading(false);
+            setLoading((prev) => prev + 1);
           })
           .catch(() => {
-            setLoading(false);
+            setLoading((prev) => prev + 1);
           });
       } else {
         setCurrentUser(deserializeUser(user));
-        setLoading(false);
+        setLoading((prev) => prev + 1);
       }
     } else {
-      setLoading(false);
+      setLoading((prev) => prev + 1);
     }
   }, [setCurrentUser]);
+  useEffect(() => {
+    setupDb().then(() => {
+      setLoading((prev) => prev + 1);
+    });
+  }, []);
 
-  if (loading) {
+  if (loading < 2) {
     return (
       <div className="container">
         <Spinner />
