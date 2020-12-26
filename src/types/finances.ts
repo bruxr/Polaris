@@ -1,5 +1,6 @@
 import { firestore } from 'firebase';
-import { FaunaRecord } from './common';
+
+import { Document } from './db';
 
 export interface MonthlyTransactionStats {
   month: string;
@@ -13,7 +14,7 @@ export enum WalletType {
   Savings = 'SAVINGS',
 }
 
-export interface Wallet extends FaunaRecord {
+export interface Wallet extends Document {
   name: string;
   balance: number;
   type: WalletType;
