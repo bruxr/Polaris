@@ -65,6 +65,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
     "recoil": "^0.0.10",
+    "swr": "^0.3.11",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
     "typeface-roboto": "^0.0.75",
     "typescript": "^3.9.7",
