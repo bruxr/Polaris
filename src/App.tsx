@@ -4,6 +4,7 @@ import Modal from 'react-modal';
 import { useRecoilState } from 'recoil';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
+import Finances from './views/Finances';
 import Footer from './components/Footer';
 import Header from './components/Header';
 import Spinner from './components/Spinner';
@@ -62,7 +63,7 @@ function App(): JSX.Element {
         {/* <Route path="/finances/budgets" component={Budgets} /> */}
         <Route path="/finances/categories" component={FinancesCategories} />
         <Route path={ROUTES.FINANCE_WALLETS} component={FinanceWallets} />
-        {/* <Route path="/finances" component={Finances} /> */}
+        <Route path="/finances" component={Finances} />
         <Route path="/notifications" component={Notifications} />
         {/* <Route path="/" component={Dashboard} /> */}
         <Redirect to="/finances" />
