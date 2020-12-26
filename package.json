@@ -9,7 +9,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint . --ext .ts,.tsx",
     "deploy": "yarn build && firebase deploy --only hosting",
-    "emulators": "firebase emulators:start --export-on-exit=./saved-data"
+    "emulators": "firebase emulators:start --import=./saved-data --export-on-exit=./saved-data"
   },
   "eslintConfig": {
     "extends": "react-app"
