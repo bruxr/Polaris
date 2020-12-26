@@ -1,45 +1,72 @@
-import React from 'react';
+import React, { useState } from 'react';
 
+import Modal from 'react-modal';
 import { useRecoilValue } from 'recoil';
-// import { useAuth0 } from '@auth0/auth0-react';
 import MenuIcon from '@material-ui/icons/Menu';
-import AddCircle from '@material-ui/icons/AddCircleOutline';
+import AddSharpIcon from '@material-ui/icons/AddSharp';
+import CloseSharpIcon from '@material-ui/icons/CloseSharp';
+import ExitToAppSharpIcon from '@material-ui/icons/ExitToAppSharp';
 
+import titleAtom from '../../atoms/title';
 import addButtonAtom from '../../atoms/add-button';
-// import notifsAtom from '../../atoms/notifications';
 
 export default function Header(): JSX.Element {
+  const title = useRecoilValue(titleAtom);
   const add = useRecoilValue(addButtonAtom);
 
-  // const { user, logout } = useAuth0();
-  // const notifications = useRecoilValue(notifsAtom);
-
-  // const hasUnreadNotifs = useMemo(() => notifications.filter((notif) => notif.unread).length > 0, [notifications]);
+  const [showMenu, setShowMenu] = useState(false);
 
   return (
-    <header
-      className="fixed bg-white top-0 left-0 flex justify-between
-        items-center w-screen h-16 p-5"
-    >
-      <button
-        type="button"
-        className="block w-6 h-6"
-      >
-        <MenuIcon />
-      </button>
-      <h1 className="font-bold text-xl">Polaris</h1>
-      {add.onClick && (
+    <>
+      <header className="fixed top-0 left-0 flex items-center w-screen h-16 p-4">
         <button
           type="button"
-          onClick={() => {
-            if (add.onClick) {
-              add.onClick();
-            }
-          }}
+          className="block w-6 h-6"
+          onClick={() => setShowMenu(true)}
         >
-          <AddCircle />
+          <MenuIcon />
         </button>
-      )}
-    </header>
+        <h1 className="font-bold text-xl ml-4">{title || 'Polaris'}</h1>
+        {add.onClick && (
+          <button
+            type="button"
+            className="text-primary"
+            onClick={() => {
+              if (add.onClick) {
+                add.onClick();
+              }
+            }}
+          >
+            <AddSharpIcon />
+          </button>
+        )}
+      </header>
+      <Modal
+        isOpen={showMenu}
+        onRequestClose={() => setShowMenu(false)}
+        className="fixed left-0 w-3/4 h-screen bg-black p-4"
+        overlayClassName="fixed inset-0 w-full h-screen bg-gray-700 bg-opacity-75 z-50"
+      >
+        <button
+          type="button"
+          className="block w-6 h-6 mb-6"
+          onClick={() => setShowMenu(false)}
+        >
+          <CloseSharpIcon />
+        </button>
+
+        <h2 className="font-bold text-2xl mb-10">Menu</h2>
+        <nav>
+          <ul>
+            <li>
+              <button type="button" className="flex items-center text-gray-500 hover:text-gray-300">
+                <ExitToAppSharpIcon className="mr-2" />
+                Sign-Out
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </Modal>
+    </>
   );
 }

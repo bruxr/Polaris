@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  @apply bg-black;
+  @apply text-gray-100;
+}
+
 .carousel .slide {
   background: transparent;
   padding-bottom: 40px;
