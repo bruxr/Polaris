@@ -3,6 +3,8 @@ import React, { useMemo } from 'react';
 import { Field, useFormikContext } from 'formik';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDownSharp';
 
+import Label from '../Label';
+
 type Props = {
   label: string,
   name: string,
@@ -29,7 +31,7 @@ function Select({ label, name, options }: Props): React.ReactElement {
 
   return (
     <div className="mb-4">
-      <label htmlFor={name} className="text-gray-500 text-sm mb-2 block">{label}</label>
+      <Label htmlFor={name}>{label}</Label>
       <div
         className={classnames(
           'flex relative h-7 border-b pb-2',

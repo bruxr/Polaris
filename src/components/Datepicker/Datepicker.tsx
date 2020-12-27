@@ -6,6 +6,8 @@ import parseISO from 'date-fns/parseISO';
 import isYesterday from 'date-fns/isYesterday';
 import { Field, useFormikContext } from 'formik';
 
+import Label from '../Label';
+
 type Props = {
   label: string,
   name: string,
@@ -33,7 +35,7 @@ function Datepicker({ label, name }: Props): React.ReactElement {
 
   return (
     <div className="mb-4">
-      <label htmlFor={name} className="text-gray-500 text-sm mb-2 block">{label}</label>
+      <Label htmlFor={name}>{label}</Label>
       <div
         className={classnames(
           'flex relative h-7 border-b pb-2',
