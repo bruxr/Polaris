@@ -48,11 +48,11 @@ export async function getMonthStats(month: string): Promise<MonthlyTransactionSt
  * @param transaction transaction details
  */
 export async function createTransaction(
-  { wallet, category, amount, date, notes, location }: Omit<Transaction, 'id'>,
+  { walletId, categoryId, amount, date, notes, location }: Omit<Transaction, 'id'>,
 ): Promise<Transaction> {
   const data: Omit<TransactionRecord, 'id'> = {
-    wallet: db.collection('wallets').doc(wallet),
-    category: db.collection('transactionCategories').doc(category),
+    wallet: db.collection('wallets').doc(walletId),
+    category: db.collection('transactionCategories').doc(categoryId),
     date,
     amount: amount * 100,
     ts: new Date(),
@@ -70,7 +70,7 @@ export async function createTransaction(
   const statsRef = db.collection('transactionStats').doc(now);
 
   // Create references
-  const walletRef = db.collection('wallets').doc(wallet);
+  const walletRef = db.collection('wallets').doc(walletId);
   const txRef = db.collection('transactions').doc();
 
   await db.runTransaction(async (t) => {
@@ -82,33 +82,36 @@ export async function createTransaction(
     });
 
     // Update monthly stats
-    const categoryAmt = stats.categories[category] ? stats.categories[category] + data.amount : data.amount;
+    const categoryAmt = stats.categories[categoryId] ? stats.categories[categoryId] + data.amount : data.amount;
     if (walletObj.data()?.type === WalletType.Savings) {
       if (data.amount >= 0) {
         t.update(statsRef, {
           income: stats.income + data.amount,
-          [`categories.${category}`]: categoryAmt,
+          [`categories.${categoryId}`]: categoryAmt,
         });
       } else {
         t.update(statsRef, {
           expenses: stats.expenses + data.amount,
-          [`categories.${category}`]: categoryAmt,
+          [`categories.${categoryId}`]: categoryAmt,
         });
       }
     } else {
       t.update(statsRef, {
         expenses: stats.expenses + data.amount,
-        [`categories.${category}`]: categoryAmt,
+        [`categories.${categoryId}`]: categoryAmt,
       });
     }
   });
 
   return {
-    id: txRef.id,
-    wallet,
-    category,
+    _id: txRef.id,
+    _rev: '',
+    _type: '',
+    walletId,
+    categoryId,
     amount,
     date,
+    timestamp: new Date(),
     notes: data.notes ? data.notes as string : undefined,
     location: location || undefined,
   };

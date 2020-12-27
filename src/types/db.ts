@@ -1,5 +1,7 @@
+export type DocumentFields = '_id' | '_rev' | '_type';
+
 export interface Document {
-  _id: string;
-  _rev: string;
-  _type: string;
+  readonly _id: string;
+  readonly _rev: string;
+  readonly _type: string;
 }

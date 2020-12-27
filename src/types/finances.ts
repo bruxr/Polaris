@@ -34,14 +34,14 @@ export interface TransactionCategory {
   notes?: string;
 }
 
-export interface Transaction {
-  id: string;
-  wallet: string;
-  category: string;
+export interface Transaction extends Document {
+  walletId: string;
+  categoryId: string;
   amount: number;
   date: Date;
   notes?: string;
   location?: [number, number];
+  readonly timestamp: Date;
 }
 
 export interface TransactionRecord {

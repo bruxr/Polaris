@@ -1,17 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import useSWR from 'swr';
 
+import Sheet from '../../components/Sheet';
 import useTitle from '../../hooks/use-title';
 import { getTransactions } from '../../db/finances';
 import useAddButton from '../../hooks/use-add-button';
+import CreateTransactionForm from './CreateTransactionForm';
 
 function Finances(): React.ReactElement {
   useTitle('Finances');
 
   const { data: transactions } = useSWR('transactions', getTransactions);
 
+  const [createTransaction, setCreateTransaction] = useState(false);
+
   useAddButton(() => {
-    console.log('clicked');
+    setCreateTransaction(true);
   });
 
   return (
@@ -21,6 +25,14 @@ function Finances(): React.ReactElement {
       </section>
 
       Finances
+
+      <Sheet
+        title="New Transaction"
+        open={createTransaction}
+        onClose={() => setCreateTransaction(false)}
+      >
+        <CreateTransactionForm />
+      </Sheet>
     </div>
   );
 }

@@ -24,12 +24,15 @@ function deserializeTransactionCategory(input: any): TransactionCategory {
 
 export function deserializeTransaction(id: string, data: firestore.DocumentData): Transaction {
   return {
-    id,
-    wallet: data.wallet.id,
-    category: data.category.id,
+    _id: id,
+    _rev: '',
+    _type: '',
+    walletId: data.wallet.id,
+    categoryId: data.category.id,
     amount: data.amount / 100,
     date: new Date(data.date.seconds * 1000),
     notes: data.notes,
+    timestamp: new Date(),
     location: data.location ? [data.location.latitude, data.location.longitude] : undefined,
   };
 }
