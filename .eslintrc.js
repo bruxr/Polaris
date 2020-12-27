@@ -16,6 +16,7 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
   ],
   rules: {
+    'jsx-a11y/no-onchange': 0,
     'comma-dangle': ['error', 'always-multiline'],
     'eqeqeq': ['warn', 'smart'],
     'semi': ['warn', 'always'],
