@@ -5,7 +5,11 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     colors,
-    extend: {},
+    extend: {
+      fontFamily: {
+        mono: ['Roboto Mono', 'Monaco', 'monospace'],
+      },
+    },
   },
   variants: {
     extend: {},

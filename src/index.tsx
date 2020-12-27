@@ -7,7 +7,7 @@ import { Integrations } from '@sentry/apm';
 import { ApolloProvider } from '@apollo/client';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import 'typeface-roboto';
+import 'typeface-roboto-mono';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import './index.css';
 

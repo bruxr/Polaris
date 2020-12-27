@@ -1,32 +1,40 @@
 import React, { PropsWithChildren } from 'react';
+import classnames from 'classnames';
+import Modal from 'react-modal';
+
+import styles from './Sheet.module.css';
 
 interface Props {
+  open?: boolean;
   title?: string;
   onClose?: () => void;
 }
 
-export default function Sheet({ title, children, onClose }: PropsWithChildren<Props>): JSX.Element {
+export default function Sheet({ open, title, children, onClose }: PropsWithChildren<Props>): JSX.Element {
   return (
-    <>
-      <button
-        type="button"
-        className="fixed top-0 left-0 h-screen w-screen bg-black opacity-50"
-        onClick={() => {
-          if (onClose) {
-            onClose();
-          }
-        }}
-      >
-        Close Sheet
-      </button>
-      <div className="fixed bottom-0 left-0 w-screen bg-white p-4 z-10">
-        {title && (
-          <header className="text-center mb-4 pb-4 border-b border-gray-300">
-            <h3 className="text-xl font-semibold">{title}</h3>
-          </header>
-        )}
-        {children}
-      </div>
-    </>
+    <Modal
+      isOpen={open || false}
+      closeTimeoutMS={150}
+      className={{
+        beforeClose: styles.modalClose,
+        base: classnames('fixed bottom-0 w-full bg-black p-4 transition', styles.modal),
+        afterOpen: styles.modalShown,
+      }}
+      overlayClassName={{
+        beforeClose: styles.overlayClose,
+        base: classnames('fixed inset-0 w-full h-screen z-50', styles.overlay),
+        afterOpen: styles.overlayShown,
+      }}
+      onRequestClose={() => {
+        if (onClose) {
+          onClose();
+        }
+      }}
+    >
+      {title && (
+        <h2 className="font-mono text-sm text-gray-900 text-center mt-2 mb-6">{title}</h2>
+      )}
+      {children}
+    </Modal>
   );
 }

@@ -1,0 +1,25 @@
+.modal {
+  transition: transform 150ms ease-out;
+  transform: translateY(100%);
+}
+
+.modalShown {
+  transform: translateY(0);
+}
+
+.modalClose {
+  transform: translateY(100%);
+}
+
+.overlay {
+  transition: background 150ms ease-out;
+  background: rgba(24, 24, 27, 0);
+}
+
+.overlayShown {
+  background: rgba(24, 24, 27, .75);
+}
+
+.overlayClose {
+  background: rgba(24, 24, 27, 0);
+}

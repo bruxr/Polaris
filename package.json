@@ -67,7 +67,7 @@
     "recoil": "^0.0.10",
     "swr": "^0.3.11",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
-    "typeface-roboto": "^0.0.75",
+    "typeface-roboto-mono": "^1.1.13",
     "typescript": "^3.9.7",
     "yup": "^0.29.2"
   },
