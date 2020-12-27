@@ -1,26 +1,17 @@
-import React, { PropsWithChildren, useMemo } from 'react';
 import classnames from 'classnames';
-import { useFormikContext } from 'formik';
-import isUndefined from 'lodash-es/isUndefined';
+import React, { PropsWithChildren } from 'react';
 
 import Spinner from '../../components/Spinner';
 
 interface Props {
   type?: 'submit' | 'button' | 'reset',
+  variant?: 'primary' | 'secondary' | 'link',
   loading?: boolean;
+  className?: string;
   onClick?: () => void,
 }
 
-export default function Button({ type, loading, children, onClick }: PropsWithChildren<Props>): JSX.Element {
-  const formik = useFormikContext();
-
-  const isLoading = useMemo(() => {
-    if (isUndefined(loading) && !isUndefined(formik)) {
-      return formik.isSubmitting;
-    }
-
-    return loading;
-  }, [loading, formik]);
+function Button({ type, variant, loading, children, className, onClick }: PropsWithChildren<Props>): JSX.Element {
 
   return (
     <button
@@ -28,18 +19,24 @@ export default function Button({ type, loading, children, onClick }: PropsWithCh
       className={classnames(
         'block font-medium text-center w-full p-3',
         {
-          'opacity-50': isLoading,
-        },
+          'opacity-75': loading,
+          'bg-primary text-white': variant === 'primary' || !variant,
+          'bg-gray-900 text-white': variant === 'secondary',
+          'text-primary': variant === 'link',
+        },  
+        className,
       )}
-      disabled={isLoading}
-      aria-busy={isLoading}
+      disabled={loading}
+      aria-busy={loading}
       onClick={() => {
         if (onClick) {
           onClick();
         }
       }}
     >
-      {isLoading ? <Spinner /> : children}
+      {loading ? <Spinner /> : children}
     </button>
   );
 }
+
+export default Button;
