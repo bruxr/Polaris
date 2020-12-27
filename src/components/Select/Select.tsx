@@ -26,8 +26,8 @@ function Select({ label, name, options }: Props): React.ReactElement {
     return option.label;
   }, [formik.values, name, options]);
   const hasError = useMemo(() => {
-    return !!formik.errors[name];
-  }, [formik.errors, name]);
+    return !!formik.errors[name] && formik.touched[name];
+  }, [formik.errors, formik.touched, name]);
 
   return (
     <div className="mb-4">
