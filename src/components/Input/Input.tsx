@@ -1,43 +1,48 @@
-import React, { PropsWithChildren } from 'react';
+import React, { useMemo, PropsWithChildren } from 'react';
 
 import classnames from 'classnames';
 import { Field, useFormikContext, FieldAttributes } from 'formik';
 
+import Label from '../Label';
+
 type Props = FieldAttributes<Record<string ,unknown>> & {
   name: string;
   label: string;
-  error?: string;
-  as?: string;
-  maxLength?: number;
 }
 
-const Input = (props: PropsWithChildren<Props>): JSX.Element => {
-  const { type, name, label, error, as, maxLength, children } = props;
-  const { isSubmitting } = useFormikContext();
+function Input(props: PropsWithChildren<Props>): React.ReactElement {
+  const { name, label } = props;
+
+  // We allow any here since we cannot fully determine the form values.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { errors, isSubmitting } = useFormikContext<any>();
+
+  const hasError = useMemo(() => {
+    return !!errors[name];
+  }, [errors, name]);
 
   return (
-    <div className={classnames('mb-4', { 'flex justify-between': type === 'checkbox' })}>
-      <label htmlFor={name} className="block mb-2">{label}</label>
-      <Field
-        {...props}
-        type={type}
-        name={name}
-        as={as}
-        disabled={isSubmitting}
+    <div className="mb-4">
+      <Label htmlFor={name}>{label}</Label>
+      <div
         className={classnames(
-          'block border border-gray-700 p-2 mb-2',
-          {
-            'border-red-600': error,
-            'w-full': type !== 'checkbox',
-          },
+          'border-b pb-2',
+          hasError ? 'border-red text-red' : 'border-gray-500 text-white',
         )}
-        maxLength={maxLength}
       >
-        {children}
-      </Field>
-      {error && <div className="text-red-600 text-xs">{error}</div>}
+        <Field
+          {...props}
+          name={name}
+          disabled={isSubmitting}
+          className={classnames(
+            'bg-transparent w-full',
+            hasError ? 'text-red' : 'text-white',
+          )}
+        />
+      </div>
+      {hasError && <div className="text-red-600 text-xs">{errors[name]}</div>}
     </div>
   );
-};
+}
 
 export default Input;
