@@ -1,8 +1,10 @@
 {
     "primary": "#DC2626",
     "green": "#16A34A",
+    "red": "#DC2626",
     "black": "#000000",
     "white": "#FAFAFA",
+    "transparent": "transparent",
     "gray": {
         "100": "#FAFAFA",
         "300": "#D4D4D8",
