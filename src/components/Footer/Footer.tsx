@@ -1,31 +1,43 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 
-import ShowChartIcon from '@material-ui/icons/ShowChart';
-import LocalOfferIcon from '@material-ui/icons/LocalOffer';
-import CalendarViewDay from '@material-ui/icons/CalendarViewDay';
-import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
+import ClearAllIcon from '@material-ui/icons/ClearAllSharp';
+import ShowChartIcon from '@material-ui/icons/ShowChartSharp';
+import LocalOfferIcon from '@material-ui/icons/LocalOfferSharp';
+import AccountBalanceIcon from '@material-ui/icons/AccountBalanceSharp';
+import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWalletSharp';
 
 import MenuItem from './MenuItem';
 import { ROUTES } from '../../constants/routes';
 
 export default function Footer(): React.ReactElement {
+  const location = useLocation();
+  const module = location.pathname.substr(1).split('/')[0];
+
   return (
     <nav
-      className="fixed bg-gray-700 bottom-0 left-0 flex justify-between
+      className="fixed bg-black bottom-0 left-0 border-gray-900 border-t flex justify-between
         items-center w-screen h-5 px-4 py-8"
     >
-      <MenuItem to="/finances">
-        <CalendarViewDay />
-      </MenuItem>
-      <MenuItem to={ROUTES.FINANCE_WALLETS}>
-        <AccountBalanceWalletIcon />
-      </MenuItem>
-      <MenuItem to="/finances/categories">
-        <LocalOfferIcon />
-      </MenuItem>
-      <MenuItem to="/finances/budgets">
-        <ShowChartIcon />
-      </MenuItem>
+      {module === 'finances' && (
+        <>
+          <MenuItem to={ROUTES.FINANCES}>
+            <AccountBalanceWalletIcon />
+          </MenuItem>
+          <MenuItem to={ROUTES.FINANCES_BUDGETS}>
+            <ShowChartIcon />
+          </MenuItem>
+          <MenuItem to={ROUTES.FINANCES_REPORTS}>
+            <ClearAllIcon />
+          </MenuItem>
+          <MenuItem to={ROUTES.FINANCES_CATEGORIES}>
+            <LocalOfferIcon />
+          </MenuItem>
+          <MenuItem to={ROUTES.FINANCES_WALLETS}>
+            <AccountBalanceIcon />
+          </MenuItem>
+        </>
+      )}
     </nav>
   );
 }

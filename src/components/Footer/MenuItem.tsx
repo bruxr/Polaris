@@ -10,8 +10,8 @@ export default function MenuItem({ to, children }: PropsWithChildren<NavLinkProp
     <NavLink
       to={to}
       className={classnames({
-        'text-gray-100': to === location.pathname,
-        'text-gray-300': to !== location.pathname,
+        'text-primary': to === location.pathname,
+        'text-gray-500': to !== location.pathname,
       })}
     >
       {children}
