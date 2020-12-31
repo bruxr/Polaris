@@ -72,7 +72,7 @@ function App(): JSX.Element {
   }
 
   return (
-    <div className="container min-h-screen pb-16 pt-20 px-2">
+    <div className="container min-h-screen pb-16 pt-20 px-4">
       <Header />
       <Switch>
         {/* <Route path="/finances/budgets" component={Budgets} /> */}
