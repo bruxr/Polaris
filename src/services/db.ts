@@ -12,7 +12,7 @@ const db = new PouchDB(name);
 
 async function setupDb(): Promise<void> {
   await db.createIndex({
-    index: { fields: ['_type'] },
+    index: { fields: ['kind'] },
   });
 }
 
