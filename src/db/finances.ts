@@ -1,3 +1,4 @@
+import shortid from 'shortid';
 import set from 'date-fns/set';
 import format from 'date-fns/format';
 import getTime from 'date-fns/getTime';
@@ -6,8 +7,8 @@ import startOfMonth from 'date-fns/startOfMonth';
 
 import db from '../services/db';
 import { DOC_TYPES } from '../constants/db';
-import { DocumentFields } from '../types/db';
 import { Transaction, Wallet } from '../types/finances';
+import { DocumentFields, TransientDocument } from '../types/db';
 
 /**
  * Retrieves all wallets.
@@ -15,7 +16,7 @@ import { Transaction, Wallet } from '../types/finances';
 async function getWallets(): Promise<Wallet[]> {
   const result = await db.find({
     selector: {
-      _type: 'wallet',
+      kind: DOC_TYPES.WALLET,
     },
   });
 
@@ -26,6 +27,28 @@ async function getWallets(): Promise<Wallet[]> {
   return result.docs.map((doc) => ({
     ...(doc as Wallet),
   }));
+}
+
+/**
+ * Saves a wallet to the database.
+ *
+ * @param id ID of wallet to be updated
+ * @param wallet wallet data
+ */
+async function putWallet(wallet: Omit<Wallet, DocumentFields> & TransientDocument): Promise<Wallet> {
+  const result = await db.put({
+    ...wallet,
+    _id: wallet._id || shortid(),
+    kind: DOC_TYPES.WALLET,
+    createdOn: getTime(wallet.createdOn),
+  });
+
+  return {
+    ...wallet,
+    _id: result.id,
+    _rev: result.rev,
+    kind: DOC_TYPES.WALLET,
+  };
 }
 
 /**
@@ -58,7 +81,7 @@ async function putTransaction(transaction: Omit<Transaction, DocumentFields>): P
   const result = await db.put({
     ...transaction,
     _id: id.toString(),
-    _type: DOC_TYPES.TRANSACTION,
+    kind: DOC_TYPES.TRANSACTION,
     date: format(transaction.date, 'yyyy-MM-dd'),
     timestamp: getTime(transaction.timestamp),
   });
@@ -67,12 +90,13 @@ async function putTransaction(transaction: Omit<Transaction, DocumentFields>): P
     ...transaction,
     _id: result.id,
     _rev: result.rev,
-    _type: DOC_TYPES.TRANSACTION,
+    kind: DOC_TYPES.TRANSACTION,
   };
 }
 
 export {
   getWallets,
+  putWallet,
   getTransactions,
   putTransaction,
 };

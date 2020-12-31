@@ -26,7 +26,7 @@ export function deserializeTransaction(id: string, data: firestore.DocumentData)
   return {
     _id: id,
     _rev: '',
-    _type: '',
+    kind: '',
     walletId: data.wallet.id,
     categoryId: data.category.id,
     amount: data.amount / 100,

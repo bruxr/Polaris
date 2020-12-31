@@ -106,7 +106,7 @@ export async function createTransaction(
   return {
     _id: txRef.id,
     _rev: '',
-    _type: '',
+    kind: '',
     walletId,
     categoryId,
     amount,
