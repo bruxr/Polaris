@@ -61,7 +61,7 @@ function Finances(): React.ReactElement {
           <h3 className="text-sm text-gray-500 mb-4">{label}</h3>
           <dl className="grid grid-cols-2 gap-4">
             {transactions.map((transaction) => (
-              <>
+              <React.Fragment key={transaction._id}>
                 <dt>
                   <span className="block font-semibold">{transaction.category.name}</span>
                   <span className="text-sm text-gray-300">{transaction.notes}</span>
@@ -75,7 +75,7 @@ function Finances(): React.ReactElement {
                   {transaction.amount > 0 && '+'}
                   {currency(transaction.amount)}
                 </dd>
-              </>
+              </React.Fragment>
             ))}
           </dl>
         </section>
