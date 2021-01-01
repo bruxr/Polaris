@@ -64,7 +64,7 @@ function CreateTransactionForm(): React.ReactElement {
 
   const initialValues: FormValues = {
     walletId: wallets ? wallets[0]._id : '',
-    categoryId: categories ? categories[0]._id : '',
+    categoryId: categories ? groupedCategories[0].children[0].value : '',
     amount: 0,
     date: format(new Date(), 'Y-MM-dd'),
     notes: '',
