@@ -73,7 +73,6 @@
     "yup": "^0.29.2"
   },
   "devDependencies": {
-    "@firebase/rules-unit-testing": "^1.1.6",
     "@testing-library/react": "^11.2.2",
     "@types/cheerio": "^0.22.21",
     "@types/classnames": "^2.2.10",

@@ -1,5 +1,3 @@
-import { firestore } from 'firebase';
-
 import { Document } from './db';
 
 export interface TransactionMonthStats extends Document {
@@ -45,17 +43,6 @@ export interface Transaction extends Document {
   notes?: string;
   location?: [number, number];
   readonly timestamp: Date;
-}
-
-export interface TransactionRecord {
-  id: string;
-  wallet: firestore.DocumentReference;
-  category: firestore.DocumentReference;
-  date: Date;
-  amount: number;
-  notes?: string;
-  location?: firestore.GeoPoint;
-  ts: Date;
 }
 
 export interface MonthlyBudget {

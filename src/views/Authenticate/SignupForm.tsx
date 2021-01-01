@@ -6,7 +6,6 @@ import { Formik, Form, FormikProps } from 'formik';
 import Alert from '../../components/Alert';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import { auth } from '../../services/firebase';
 
 type FormValues = {
   email: string;
@@ -37,9 +36,9 @@ export default function SignupForm(): React.ReactElement {
           .required()
           .oneOf([Yup.ref('password'), ''], 'Passwords must match'),
       })}
-      onSubmit={async ({ email, password }, { setStatus }) => {
+      onSubmit={async (values, { setStatus }) => {
         try {
-          await auth.createUserWithEmailAndPassword(email, password);
+          // await auth.createUserWithEmailAndPassword(email, password);
         } catch (err) {
           setStatus(err.message);
         }

@@ -13,13 +13,10 @@ firebase.initializeApp({
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
 });
 
-const firestore = firebase.firestore;
-const db = firebase.firestore();
-const auth = firebase.auth();
 const functions = firebase.functions();
 
 function api(name: string): firebase.functions.HttpsCallable {
   return functions.httpsCallable(name);
 }
 
-export { firestore, db, auth, functions, api };
+export { functions, api };

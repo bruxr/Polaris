@@ -13,11 +13,9 @@ import Header from './components/Header';
 import Spinner from './components/Spinner';
 import { ROUTES } from './constants/routes';
 import Authenticate from './views/Authenticate';
-import Notifications from './views/Notifications';
 import currentUserAtom from './atoms/current-user';
 import FinancesWallets from './views/FinancesWallets';
 import auth, { deserializeUser } from './services/auth';
-import useNotifications from './hooks/use-notifications';
 import FinancesCategories from './views/FinancesCategories';
 
 Modal.setAppElement('#root');
@@ -26,8 +24,6 @@ function App(): JSX.Element {
   const [currentUser, setCurrentUser] = useRecoilState(currentUserAtom);
 
   const [loading,  setLoading] = useState(0);
-
-  useNotifications();
 
   useEffect(() => {
     const user = auth.currentUser();
@@ -80,7 +76,6 @@ function App(): JSX.Element {
         <Route path={ROUTES.FINANCES_CATEGORIES} component={FinancesCategories} />
         <Route path={ROUTES.FINANCES_WALLETS} component={FinancesWallets} />
         <Route path="/finances" component={Finances} />
-        <Route path="/notifications" component={Notifications} />
         {/* <Route path="/" component={Dashboard} /> */}
         <Route path={ROUTES.SETTINGS} component={Settings} />
         <Redirect to="/finances" />
