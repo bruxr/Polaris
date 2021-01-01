@@ -8,7 +8,7 @@ import Label from '../Label';
 type Props = {
   label: string,
   name: string,
-  options: Array<{ label: string, value: string }>,
+  options: Array<{ label: string, value?: string, children?: Array<{ label: string, value: string }> }>,
 }
 
 function Select({ label, name, options }: Props): React.ReactElement { 
@@ -18,7 +18,13 @@ function Select({ label, name, options }: Props): React.ReactElement {
 
   const selectedLabel = useMemo(() => {
     const selected = formik.values[name];
-    const option = options.find((option) => option.value === selected);
+    const option = options.find((option) => {
+      if (option.children) {
+        return option.children.find((child) => child.value === selected);
+      }
+      
+      return option.value === selected;
+    });
     if (!option) {
       throw new Error(`Cannot find option with value ${selected}`);
     }
@@ -44,9 +50,21 @@ function Select({ label, name, options }: Props): React.ReactElement {
           as="select"
           className="w-full absolute inset-0 opacity-0 z-10"
         >
-          {options.map((option) => (
-            <option key={option.value} value={option.value}>{option.label}</option>
-          ))}
+          {options.map((option) => {
+            if (option.children) {
+              return (
+                <optgroup key={option.label} label={option.label}>
+                  {option.children.map((child) => (
+                    <option key={child.value} value={child.value}>{child.label}</option>
+                  ))}
+                </optgroup>
+              );
+            } else {
+              return (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              );
+            }
+          })}
         </Field>
         <span className={classnames('flex-1', hasError ? 'text-red' : 'text-white')}>{selectedLabel}</span>
         <ArrowDropDownIcon className={hasError ? 'text-red' : 'text-gray-500'} />

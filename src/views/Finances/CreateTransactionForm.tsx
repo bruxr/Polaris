@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import useSWR from 'swr';
 import * as Yup from 'yup';
+import sortBy from 'lodash/sortBy';
 import parse from 'date-fns/parse';
 import classnames from 'classnames';
 import format from 'date-fns/format';
+import entriesIn from 'lodash/entriesIn';
 import startOfDay from 'date-fns/startOfDay';
 import { Formik, Form, FormikProps } from 'formik';
 
@@ -12,7 +15,14 @@ import Select from '../../components/Select';
 import Checkbox from '../../components/Checkbox';
 import Datepicker from '../../components/Datepicker';
 import { getLocation } from '../../services/geolocation';
-import { getTransactionCategory, getWallet, putTransaction } from '../../db/finances';
+import {
+  getTransactionCategories,
+  getTransactionCategory,
+  getWallets,
+  getWallet,
+  putTransaction,
+} from '../../db/finances';
+import { TransactionCategoryType } from '../../types/finances';
 
 type FormValues = {
   walletId: string,
@@ -24,11 +34,39 @@ type FormValues = {
 }
 
 function CreateTransactionForm(): React.ReactElement {
+  const { data: wallets } = useSWR('/wallets', getWallets);
+  const { data: categories } = useSWR('/transaction-categories', getTransactionCategories);
+
   const [sign, setSign] = useState<'-' | '+'>('-');
 
+  const groupedCategories = useMemo(() => {
+    if (!categories) {
+      return [];
+    }
+
+    const groups: Array<{ label: string, children: Array<{ label: string, value: string }> }> = [];
+    entriesIn(TransactionCategoryType).forEach(([label, key]) => {
+      const items = sortBy(categories.filter((category) => category.type === key), 'name');
+      if (items.length > 0) {
+        groups.push({
+          label,
+          children: items.map((item) => ({ label: item.name, value: item._id })),
+        });
+      }
+    });
+
+    return groups;
+  }, [categories]);
+
+  console.log(groupedCategories);
+
+  if (!wallets || !categories) {
+    return <></>;
+  }
+
   const initialValues: FormValues = {
-    walletId: '',
-    categoryId: '',
+    walletId: wallets ? wallets[0]._id : '',
+    categoryId: categories ? categories[0]._id : '',
     amount: 0,
     date: format(new Date(), 'Y-MM-dd'),
     notes: '',
@@ -116,20 +154,15 @@ function CreateTransactionForm(): React.ReactElement {
           <Select
             name="walletId"
             label="Wallet"
-            options={[
-              { value: '', label: '' },
-              { value: '1', label: 'Test 1' },
-              { value: '2', label: 'Test 2' },
-            ]}
+            options={wallets
+              ? wallets.map((wallet) => ({ value: wallet._id, label: wallet.name }))
+              : []
+            }
           />
           <Select
             name="categoryId"
             label="Category"
-            options={[
-              { value: '', label: '' },
-              { value: '1', label: 'Test 1' },
-              { value: '2', label: 'Test 2' },
-            ]}
+            options={groupedCategories}
           />
           <Datepicker
             label="Date"

@@ -18,6 +18,8 @@ function Finances(): React.ReactElement {
     setCreateTransaction(true);
   });
 
+  console.log(transactions);
+
   return (
     <div>
       <section className="my-10">
