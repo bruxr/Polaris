@@ -9,6 +9,9 @@ module.exports = {
       fontFamily: {
         mono: ['Roboto Mono', 'Monaco', 'monospace'],
       },
+      height: {
+        'content': 'calc(100vh - 128px)',
+      },
     },
   },
   variants: {
