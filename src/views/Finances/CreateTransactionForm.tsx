@@ -30,7 +30,7 @@ function CreateTransactionForm(): React.ReactElement {
     walletId: '',
     categoryId: '',
     amount: 0,
-    date: format(new Date(), 'Y-M-d'),
+    date: format(new Date(), 'Y-MM-dd'),
     notes: '',
     location: true,
   };
