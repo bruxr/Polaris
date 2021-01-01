@@ -3,6 +3,7 @@ import slugify from 'slugify';
 import set from 'date-fns/set';
 import format from 'date-fns/format';
 import getTime from 'date-fns/getTime';
+import parseISO from 'date-fns/parseISO';
 import endOfMonth from 'date-fns/endOfMonth';
 import startOfMonth from 'date-fns/startOfMonth';
 
@@ -164,13 +165,17 @@ async function deleteTransactionCategory(category: TransactionCategory): Promise
 /**
  * Retrieves all transactions for the current month.
  */
-async function getTransactions(): Promise<Wallet[]> {
+async function getTransactions(): Promise<Transaction[]> {
   const now = new Date();
   const result = await db.find({
     selector: {
-      _id: { $lte: endOfMonth(now), $gte: startOfMonth(now) },
-      _type: 'transaction',
+      _id: {
+        $lte: getTime(endOfMonth(now)).toString(),
+        $gte: getTime(startOfMonth(now)).toString(),
+      },
+      kind: DocumentKind.Transaction,
     },
+    sort: [{ _id: 'desc' }],
   });
 
   if (result.warning) {
@@ -178,7 +183,8 @@ async function getTransactions(): Promise<Wallet[]> {
   }
 
   return result.docs.map((doc) => ({
-    ...(doc as Wallet),
+    ...(doc as Transaction),
+    date: parseISO(doc.date),
   }));
 }
 
