@@ -1,3 +1,9 @@
+export enum DocumentKind {
+  Wallet = 'WALLET',
+  TransactionCategory = 'TRANSACTION_CATEGORY',
+  Transaction = 'TRANSACTION',
+}
+
 export type DocumentFields = '_id' | '_rev' | 'kind';
 
 export interface Document {
