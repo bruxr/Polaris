@@ -21,8 +21,9 @@ function Settings(): React.ReactElement {
         loading={seeding}
         onClick={async () => {
           setSeeding(true);
-          seed();
+          await seed();
           setSeeding(false);
+          alert('Seeding finished!');
         }}
       >
         Seed Initial Data
