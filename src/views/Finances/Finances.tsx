@@ -17,7 +17,7 @@ import { currency } from '../../services/currency';
 function Finances(): React.ReactElement {
   useTitle('Finances');
 
-  const { data: transactions } = useSWR('transactions', getTransactions);
+  const { data: transactions, mutate } = useSWR('transactions', getTransactions);
 
   const [createTransaction, setCreateTransaction] = useState(false);
 
@@ -89,6 +89,7 @@ function Finances(): React.ReactElement {
         <CreateTransactionForm
           onSuccess={() => {
             setCreateTransaction(false);
+            mutate();
           }}
         />
       </Sheet>
