@@ -22,7 +22,7 @@ export default function Header(): JSX.Element {
 
   return (
     <>
-      <header className="fixed top-0 left-0 flex items-center w-screen h-16 p-4">
+      <header className="fixed top-0 left-0 flex items-center w-screen h-16 p-4 bg-black">
         <button
           type="button"
           className="block w-6 h-6"
