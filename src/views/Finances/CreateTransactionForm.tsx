@@ -161,6 +161,14 @@ function CreateTransactionForm(): React.ReactElement {
             name="categoryId"
             label="Category"
             options={groupedCategories}
+            onChange={(value) => {
+              const category = categories.find((category) => category._id === value);
+              if (category && category.type === TransactionCategoryType.Income) {
+                setSign('+');
+              } else {
+                setSign('-');
+              }
+            }}
           />
           <Datepicker
             label="Date"

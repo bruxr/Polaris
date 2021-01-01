@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import React, { useMemo } from 'react';
+import React, { ChangeEvent, useMemo } from 'react';
 import { Field, useFormikContext } from 'formik';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDownSharp';
 
@@ -9,9 +9,10 @@ type Props = {
   label: string,
   name: string,
   options: Array<{ label: string, value?: string, children?: Array<{ label: string, value: string }> }>,
+  onChange?: (value: string) => void;
 }
 
-function Select({ label, name, options }: Props): React.ReactElement { 
+function Select({ label, name, options, onChange }: Props): React.ReactElement { 
   // We allow any here since we cannot fully determine the form values.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formik = useFormikContext<any>();
@@ -49,6 +50,13 @@ function Select({ label, name, options }: Props): React.ReactElement {
           id={name}
           as="select"
           className="w-full absolute inset-0 opacity-0 z-10"
+          onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+            const selected = e.currentTarget.value;
+            formik.setFieldValue(name, selected);
+            if (onChange) {
+              onChange(selected);
+            }
+          }}
         >
           {options.map((option) => {
             if (option.children) {
