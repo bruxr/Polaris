@@ -10,9 +10,9 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 import Select from '../../components/Select';
 import Checkbox from '../../components/Checkbox';
-import { putTransaction } from '../../db/finances';
 import Datepicker from '../../components/Datepicker';
 import { getLocation } from '../../services/geolocation';
+import { getTransactionCategory, getWallet, putTransaction } from '../../db/finances';
 
 type FormValues = {
   walletId: string,
@@ -60,9 +60,24 @@ function CreateTransactionForm(): React.ReactElement {
           coords = await getLocation();
         }
 
+        const wallet = await getWallet(walletId);
+        if (!wallet) {
+          throw new Error('Cannot find selected wallet.');
+        }
+        const category = await getTransactionCategory(categoryId);
+        if (!category) {
+          throw new Error('Cannot find selected transaction category.');
+        }
+
         await putTransaction({
-          walletId,
-          categoryId,
+          wallet: {
+            _id: wallet._id,
+            name: wallet.name,
+          },
+          category: {
+            _id: category._id,
+            name: category.name,
+          },
           amount: sign === '+' ? amount : amount * -1,
           date: startOfDay(parse(date, 'yyyy-MM-dd', timestamp)),
           notes: notes || undefined,

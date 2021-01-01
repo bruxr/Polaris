@@ -35,8 +35,8 @@ export interface TransactionCategory extends Document {
 }
 
 export interface Transaction extends Document {
-  walletId: string;
-  categoryId: string;
+  wallet: Pick<Wallet, '_id' | 'name'>,
+  category: Pick<TransactionCategory, '_id' | 'name'>
   amount: number;
   date: Date;
   notes?: string;
