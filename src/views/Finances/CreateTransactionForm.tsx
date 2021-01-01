@@ -58,8 +58,6 @@ function CreateTransactionForm(): React.ReactElement {
     return groups;
   }, [categories]);
 
-  console.log(groupedCategories);
-
   if (!wallets || !categories) {
     return <></>;
   }
