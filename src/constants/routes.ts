@@ -4,4 +4,5 @@ export const ROUTES = {
   FINANCES_REPORTS: '/finances/reports',
   FINANCES_CATEGORIES: '/finances/categories',
   FINANCES_WALLETS: '/finances/wallets',
+  SETTINGS: '/settings',
 };

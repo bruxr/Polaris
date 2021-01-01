@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRecoilValue } from 'recoil';
 import { useLocation } from 'react-router-dom';
 
 import ClearAllIcon from '@material-ui/icons/ClearAllSharp';
@@ -9,10 +10,17 @@ import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWalletSha
 
 import MenuItem from './MenuItem';
 import { ROUTES } from '../../constants/routes';
+import noFooterAtom from '../../atoms/no-footer';
 
 export default function Footer(): React.ReactElement {
+  const noFooter = useRecoilValue(noFooterAtom);
+
   const location = useLocation();
   const module = location.pathname.substr(1).split('/')[0];
+
+  if (noFooter) {
+    return <></>;
+  }
 
   return (
     <nav

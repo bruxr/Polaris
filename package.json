@@ -66,6 +66,7 @@
     "react-scripts": "4.0.1",
     "recoil": "^0.0.10",
     "shortid": "^2.2.16",
+    "slugify": "^1.4.6",
     "swr": "^0.3.11",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
     "typeface-roboto-mono": "^1.1.13",

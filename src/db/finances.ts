@@ -1,4 +1,5 @@
 import shortid from 'shortid';
+import slugify from 'slugify';
 import set from 'date-fns/set';
 import format from 'date-fns/format';
 import getTime from 'date-fns/getTime';
@@ -71,6 +72,22 @@ async function getTransactionCategories(): Promise<TransactionCategory[]> {
 }
 
 /**
+ * Retrieves a transaction category that matches the given name.
+ *
+ * @param name category name
+ */
+async function getTransactionCategoryByName(name: string): Promise<TransactionCategory | null> {
+  const id = slugify(name, { lower: true, strict: true });
+  let doc;
+  try {
+    doc = await db.get(id);
+    return doc;
+  } catch (err) {
+    return null;
+  }
+}
+
+/**
  * Saves a transaction category to the database.
  *
  * @param category transaction category data
@@ -80,7 +97,7 @@ async function putTransactionCategory(
 ): Promise<TransactionCategory> {
   const result = await db.put({
     ...category,
-    _id: category._id || shortid(),
+    _id: category._id || slugify(category.name, { lower: true, strict: true }),
     kind: DOC_TYPES.TRANSACTION_CATEGORY,
   });
 
@@ -148,6 +165,7 @@ export {
   getWallets,
   putWallet,
   getTransactionCategories,
+  getTransactionCategoryByName,
   putTransactionCategory,
   deleteTransactionCategory,
   getTransactions,

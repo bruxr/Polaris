@@ -6,6 +6,7 @@ import { useRecoilState } from 'recoil';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
 import Finances from './views/Finances';
+import Settings from './views/Settings';
 import { setupDb } from './services/db';
 import Footer from './components/Footer';
 import Header from './components/Header';
@@ -81,6 +82,7 @@ function App(): JSX.Element {
         <Route path="/finances" component={Finances} />
         <Route path="/notifications" component={Notifications} />
         {/* <Route path="/" component={Dashboard} /> */}
+        <Route path={ROUTES.SETTINGS} component={Settings} />
         <Redirect to="/finances" />
       </Switch>
       <Footer />

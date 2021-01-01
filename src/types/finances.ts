@@ -31,6 +31,7 @@ export interface TransactionCategory extends Document {
   name: string;
   type: TransactionCategoryType;
   notes?: string;
+  code?: 'ADJUSTMENT' | 'TRANSFER';
 }
 
 export interface Transaction extends Document {

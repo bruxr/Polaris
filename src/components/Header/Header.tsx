@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 
 import Modal from 'react-modal';
 import { useRecoilValue } from 'recoil';
+import { NavLink } from 'react-router-dom';
 import MenuIcon from '@material-ui/icons/Menu';
 import AddSharpIcon from '@material-ui/icons/AddSharp';
 import CloseSharpIcon from '@material-ui/icons/CloseSharp';
+import SettingsIcon from '@material-ui/icons/SettingsSharp';
 import ExitToAppSharpIcon from '@material-ui/icons/ExitToAppSharp';
+import AccountbalanceIcon from '@material-ui/icons/AccountBalanceSharp';
 
 import titleAtom from '../../atoms/title';
+import { ROUTES } from '../../constants/routes';
 import addButtonAtom from '../../atoms/add-button';
 
 export default function Header(): JSX.Element {
@@ -41,6 +45,8 @@ export default function Header(): JSX.Element {
           </button>
         )}
       </header>
+
+      {/* Sidebar */}
       <Modal
         isOpen={showMenu}
         onRequestClose={() => setShowMenu(false)}
@@ -57,9 +63,31 @@ export default function Header(): JSX.Element {
 
         <h2 className="font-bold text-2xl mb-10">Menu</h2>
         <nav>
-          <ul>
+          <ul className="flex flex-col space-y-3 -ml-4 -mr-4 text-gray-500">
             <li>
-              <button type="button" className="flex items-center text-gray-500 hover:text-gray-300">
+              <NavLink
+                className="block p-4 hover:text-gray-300"
+                activeClassName="bg-gray-900 text-primary"
+                to={ROUTES.FINANCES}
+                onClick={() => setShowMenu(false)}
+              >
+                <AccountbalanceIcon className="mr-2 align-bottom" />
+                Finances
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                className="block p-4 hover:text-gray-300"
+                activeClassName="bg-gray-900 text-primary"
+                to={ROUTES.SETTINGS}
+                onClick={() => setShowMenu(false)}
+              >
+                <SettingsIcon className="mr-2 align-bottom" />
+                Settings
+              </NavLink>
+            </li>
+            <li>
+              <button type="button" className="flex items-center text-gray-500 hover:text-gray-300 p-4">
                 <ExitToAppSharpIcon className="mr-2" />
                 Sign-Out
               </button>

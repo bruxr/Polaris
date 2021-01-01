@@ -41,6 +41,11 @@ const FinancesCategories = (): React.ReactElement => {
   }, [categories]);
 
   const editCategory = useCallback((category: TransactionCategory) => {
+    if (category.code) {
+      alert('This is a system category and cannot be edited.');
+      return;
+    }
+
     setEditedCategory(category);
     setShowForm(true);
   }, []);
