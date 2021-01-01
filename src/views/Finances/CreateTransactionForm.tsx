@@ -55,7 +55,7 @@ function CreateTransactionForm(): React.ReactElement {
       }
     });
 
-    return groups;
+    return sortBy(groups, 'label');
   }, [categories]);
 
   if (!wallets || !categories) {
