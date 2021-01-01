@@ -6,7 +6,6 @@ import getTime from 'date-fns/getTime';
 import endOfMonth from 'date-fns/endOfMonth';
 import startOfMonth from 'date-fns/startOfMonth';
 
-import { DOC_TYPES } from '../constants/db';
 import db, { findById } from '../services/db';
 import { Transaction, TransactionCategory, Wallet } from '../types/finances';
 import { DocumentKind, DocumentFields, TransientDocument } from '../types/db';
@@ -17,7 +16,7 @@ import { DocumentKind, DocumentFields, TransientDocument } from '../types/db';
 async function getWallets(): Promise<Wallet[]> {
   const result = await db.find({
     selector: {
-      kind: DOC_TYPES.WALLET,
+      kind: DocumentKind.Wallet,
     },
   });
 
@@ -75,7 +74,7 @@ async function putWallet(wallet: Omit<Wallet, DocumentFields> & TransientDocumen
   const result = await db.put({
     ...wallet,
     _id: wallet._id || shortid(),
-    kind: DOC_TYPES.WALLET,
+    kind: DocumentKind.Wallet,
     createdOn: getTime(wallet.createdOn),
   });
 
@@ -83,7 +82,7 @@ async function putWallet(wallet: Omit<Wallet, DocumentFields> & TransientDocumen
     ...wallet,
     _id: result.id,
     _rev: result.rev,
-    kind: DOC_TYPES.WALLET,
+    kind: DocumentKind.Wallet,
   };
 }
 
@@ -93,7 +92,7 @@ async function putWallet(wallet: Omit<Wallet, DocumentFields> & TransientDocumen
 async function getTransactionCategories(): Promise<TransactionCategory[]> {
   const result = await db.find({
     selector: {
-      kind: DOC_TYPES.TRANSACTION_CATEGORY,
+      kind: DocumentKind.TransactionCategory,
     },
   });
 
@@ -142,14 +141,14 @@ async function putTransactionCategory(
   const result = await db.put({
     ...category,
     _id: category._id || slugify(category.name, { lower: true, strict: true }),
-    kind: DOC_TYPES.TRANSACTION_CATEGORY,
+    kind: DocumentKind.TransactionCategory,
   });
 
   return {
     ...category,
     _id: result.id,
     _rev: result.rev,
-    kind: DOC_TYPES.TRANSACTION_CATEGORY,
+    kind: DocumentKind.TransactionCategory,
   };
 }
 
@@ -192,7 +191,7 @@ async function putTransaction(transaction: Omit<Transaction, DocumentFields>): P
   const result = await db.put({
     ...transaction,
     _id: id.toString(),
-    kind: DOC_TYPES.TRANSACTION,
+    kind: DocumentKind.Transaction,
     date: format(transaction.date, 'yyyy-MM-dd'),
     timestamp: getTime(transaction.timestamp),
   });
@@ -201,7 +200,7 @@ async function putTransaction(transaction: Omit<Transaction, DocumentFields>): P
     ...transaction,
     _id: result.id,
     _rev: result.rev,
-    kind: DOC_TYPES.TRANSACTION,
+    kind: DocumentKind.Transaction,
   };
 }
 
