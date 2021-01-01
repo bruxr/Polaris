@@ -27,11 +27,9 @@ export enum TransactionCategoryType {
   Other = 'OTHER',
 }
 
-export interface TransactionCategory {
-  id: string;
+export interface TransactionCategory extends Document {
   name: string;
   type: TransactionCategoryType;
-  icon: string;
   notes?: string;
 }
 

@@ -76,7 +76,7 @@ function App(): JSX.Element {
       <Header />
       <Switch>
         {/* <Route path="/finances/budgets" component={Budgets} /> */}
-        <Route path="/finances/categories" component={FinancesCategories} />
+        <Route path={ROUTES.FINANCES_CATEGORIES} component={FinancesCategories} />
         <Route path={ROUTES.FINANCES_WALLETS} component={FinancesWallets} />
         <Route path="/finances" component={Finances} />
         <Route path="/notifications" component={Notifications} />

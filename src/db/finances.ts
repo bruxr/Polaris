@@ -7,7 +7,7 @@ import startOfMonth from 'date-fns/startOfMonth';
 
 import db from '../services/db';
 import { DOC_TYPES } from '../constants/db';
-import { Transaction, Wallet } from '../types/finances';
+import { Transaction, TransactionCategory, Wallet } from '../types/finances';
 import { DocumentFields, TransientDocument } from '../types/db';
 
 /**
@@ -49,6 +49,56 @@ async function putWallet(wallet: Omit<Wallet, DocumentFields> & TransientDocumen
     _rev: result.rev,
     kind: DOC_TYPES.WALLET,
   };
+}
+
+/**
+ * Retrieves all transaction categories.
+ */
+async function getTransactionCategories(): Promise<TransactionCategory[]> {
+  const result = await db.find({
+    selector: {
+      kind: DOC_TYPES.TRANSACTION_CATEGORY,
+    },
+  });
+
+  if (result.warning) {
+    console.warn(result.warning);
+  }
+
+  return result.docs.map((doc) => ({
+    ...(doc as TransactionCategory),
+  }));
+}
+
+/**
+ * Saves a transaction category to the database.
+ *
+ * @param category transaction category data
+ */
+async function putTransactionCategory(
+  category: Omit<TransactionCategory, DocumentFields> & TransientDocument,
+): Promise<TransactionCategory> {
+  const result = await db.put({
+    ...category,
+    _id: category._id || shortid(),
+    kind: DOC_TYPES.TRANSACTION_CATEGORY,
+  });
+
+  return {
+    ...category,
+    _id: result.id,
+    _rev: result.rev,
+    kind: DOC_TYPES.TRANSACTION_CATEGORY,
+  };
+}
+
+/**
+ * Deletes a transaction category.
+ *
+ * @param category transaction category that will be removed
+ */
+async function deleteTransactionCategory(category: TransactionCategory): Promise<void> {
+  await db.remove(category);
 }
 
 /**
@@ -97,6 +147,9 @@ async function putTransaction(transaction: Omit<Transaction, DocumentFields>): P
 export {
   getWallets,
   putWallet,
+  getTransactionCategories,
+  putTransactionCategory,
+  deleteTransactionCategory,
   getTransactions,
   putTransaction,
 };

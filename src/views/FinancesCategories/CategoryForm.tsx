@@ -5,29 +5,26 @@ import { Formik, Form } from 'formik';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+import Select from '../../components/Select';
 import { TransactionCategoryType, TransactionCategory } from '../../types/finances';
+import { putTransactionCategory, deleteTransactionCategory } from '../../db/finances';
 
 type Props = {
   category?: TransactionCategory;
-  onSave?: () => void;
+  onSuccess?: () => void;
 }
 
-const CategoryForm = ({ category, onSave }: Props): React.ReactElement => {
+const CategoryForm = ({ category, onSuccess }: Props): React.ReactElement => {
   return (
     <Formik
       initialValues={{
         name: category ? category.name : '',
-        icon: category ? category.icon : '',
         type: category ? category.type : TransactionCategoryType.Expense,
         notes: category && category.notes ? category.notes : '',
       }}
       validationSchema={Yup.object({
         name: Yup.string()
           .label('Name')
-          .required(),
-        icon: Yup.string()
-          .label('Icon')
-          .max(2)
           .required(),
         type: Yup.string()
           .label('Type')
@@ -40,47 +37,61 @@ const CategoryForm = ({ category, onSave }: Props): React.ReactElement => {
         notes: Yup.string()
           .label('Notes'),
       })}
-      onSubmit={async () => {
-        if (category) {
-          // await updateTransactionCategory(category.id, name, icon, type, notes !== '' ? notes : undefined);
-        } else {
-          // await createTransactionCategory(name, icon, type, notes !== '' ? notes : undefined);
-        }
+      onSubmit={async ({ name, type, notes }) => {
+        const data = {
+          name,
+          type,
+          notes,
+        };
+        await putTransactionCategory({
+          ...category,
+          ...data,
+        });
 
-        if (onSave) {
-          onSave();
+        if (onSuccess) {
+          onSuccess();
         }
       }}
     >
-      {({ errors, isSubmitting }) => (
+      {({ isSubmitting, setSubmitting }) => (
         <Form>
           <Input
             name="name"
             label="Name"
-            error={errors.name}
           />
-          <Input
-            name="icon"
-            label="Icon"
-            error={errors.icon}
-            maxLength={2}
-          />
-          <Input
-            as="select"
+          <Select
             name="type"
             label="Type"
-          >
-            <option value={TransactionCategoryType.Expense}>Expense</option>
-            <option value={TransactionCategoryType.Income}>Income</option>
-            <option value={TransactionCategoryType.Other}>Other</option>
-          </Input>
+            options={[
+              { value: TransactionCategoryType.Expense, label: 'Expense' },
+              { value: TransactionCategoryType.Income, label: 'Income' },
+              { value: TransactionCategoryType.Other, label: 'Other' },
+            ]}
+          />
           <Input
-            as="textarea"
             name="notes"
             label="Notes"
-            error={errors.notes}
           />
-          <Button type="submit" loading={isSubmitting}>{category ? 'Save' : 'Create'}</Button>
+          <Button type="submit" loading={isSubmitting} className="mb-2">Save</Button>
+          {category && (
+            <Button
+              type="button"
+              variant="link"
+              onClick={() => {
+                if (confirm(`Are you sure you want to delete ${category.name}?`)) {
+                  setSubmitting(true);
+                  deleteTransactionCategory(category).then(() => {
+                    if (onSuccess) {
+                      onSuccess();
+                    }
+                    setSubmitting(false);
+                  });
+                }
+              }}
+            >
+              Delete
+            </Button>
+          )}
         </Form>
       )}
     </Formik>

@@ -14,9 +14,10 @@ type BudgetItem = {
 
 function deserializeTransactionCategory(input: any): TransactionCategory {
   return {
-    id: input._id,
+    _id: input.id,
+    _rev: '',
+    kind: '',
     name: input.name,
-    icon: input.icon,
     type: input.type,
     notes: input.notes,
   };

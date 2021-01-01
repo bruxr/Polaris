@@ -1,66 +1,55 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-
+import React, { useState, useMemo, useCallback } from 'react';
+import useSWR from 'swr';
 import sortBy from 'lodash/sortBy';
-import { loader } from 'graphql.macro';
-import mapValues from 'lodash/mapValues';
-import { useSetRecoilState } from 'recoil';
 
+import Card from '../../components/Card';
 import CategoryForm from './CategoryForm';
 import Sheet from '../../components/Sheet';
-import useQuery from '../../hooks/use-query';
-import addBtnAtom from '../../atoms/add-button';
-import { deserializeTransactionCategory } from '../../deserializers/finances';
+import useTitle from '../../hooks/use-title';
+import useAddButton from '../../hooks/use-add-button';
+import { getTransactionCategories } from '../../db/finances';
 import { TransactionCategory, TransactionCategoryType } from '../../types/finances';
 
-const ALL_TRANSACTION_CATEGORIES = loader('../../graphql/queries/AllTransactionCategories.graphql');
-
 const FinancesCategories = (): React.ReactElement => {
-  const setAddBtn = useSetRecoilState(addBtnAtom);
+  useTitle('Categories');
 
-  const categories = useQuery<TransactionCategory>(ALL_TRANSACTION_CATEGORIES, deserializeTransactionCategory);
-  console.log(categories);
+  const { data: categories, mutate } = useSWR('/categories', getTransactionCategories);
 
-  const [showAdd, setShowAdd] = useState(false);
-  const [editedCategory, setEditedCategory] = useState<TransactionCategory | null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [editedCategory, setEditedCategory] = useState<TransactionCategory | undefined>();
 
-  const grouped = useMemo(() => {
+  const income = useMemo(() => {
     if (!categories) {
-      return;
+      return [];
     }
 
-    const groups: {
-      [TransactionCategoryType.Income]: TransactionCategory[],
-      [TransactionCategoryType.Expense]: TransactionCategory[],
-      [TransactionCategoryType.Other]: TransactionCategory[],
-    } = {
-      [TransactionCategoryType.Income]: [],
-      [TransactionCategoryType.Expense]: [],
-      [TransactionCategoryType.Other]: [],
-    };
-    categories.forEach((record) => groups[record.type].push(record));
+    return sortBy(categories.filter((category) => category.type === TransactionCategoryType.Income), 'name');
+  }, [categories]);
+  const expenses = useMemo(() => {
+    if (!categories) {
+      return [];
+    }
 
-    return mapValues(groups, (items) => {
-      return sortBy(items, ['color', 'name']);
-    });
+    return sortBy(categories.filter((category) => category.type === TransactionCategoryType.Expense), 'name');
+  }, [categories]);
+  const other = useMemo(() => {
+    if (!categories) {
+      return [];
+    }
 
+    return sortBy(categories.filter((category) => category.type === TransactionCategoryType.Other), 'name');
   }, [categories]);
 
-  const handleSheetClose = useCallback(() => {
-    setShowAdd(false);
-    setEditedCategory(null);
+  const editCategory = useCallback((category: TransactionCategory) => {
+    setEditedCategory(category);
+    setShowForm(true);
   }, []);
 
-  useEffect(() => {
-    setAddBtn({
-      onClick: () => setShowAdd(true),
-    });
+  useAddButton(() => {
+    setShowForm(true);
+  });
 
-    return () => setAddBtn({
-      onClick: undefined,
-    });
-  }, [setAddBtn]);
-
-  if (!grouped) {
+  if (!categories) {
     return (
       <div>
         Please wait...
@@ -70,66 +59,85 @@ const FinancesCategories = (): React.ReactElement => {
 
   return (
     <div>
-      <h2 className="text-3xl font-bold mb-2">Categories</h2>
-      {grouped[TransactionCategoryType.Income].length > 0 && (
-        <div>
-          <h3>Income</h3>
+      {income.length > 0 && (
+        <Card title="Income">
           <div className="divide-y">
-            {grouped[TransactionCategoryType.Income].map((category) => (
-              <button
-                key={category.id}
-                type="button"
-                className="block mb-2"
-              >
-                <span className="block">{category.name}</span>
-                <span className="block">{category.notes}</span>
-              </button>
-            ))}
+            <ul className="flex flex-col space-y-3">
+              {income.map((category) => (
+                <li key={category._id}>
+                  <button
+                    type="button"
+                    className="block w-full text-left"
+                    onClick={() => editCategory(category)}
+                  >
+                    <span className="block">{category.name}</span>
+                    {category.notes && <span className="block text-gray-500 text-sm">{category.notes}</span>}
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
+        </Card>
       )}
 
-      {grouped[TransactionCategoryType.Expense].length > 0 && (
-        <div>
-          <h3>Expense</h3>
+      {expenses.length > 0 && (
+        <Card title="Expenses">
           <div className="divide-y">
-            {grouped[TransactionCategoryType.Expense].map((category) => (
-              <button
-                key={category.id}
-                type="button"
-                className="block mb-2"
-              >
-                <span className="block">{category.name}</span>
-                <span className="block">{category.notes}</span>
-              </button>
-            ))}
+            <ul className="flex flex-col space-y-3">
+              {expenses.map((category) => (
+                <li key={category._id}>
+                  <button
+                    type="button"
+                    className="block w-full text-left"
+                    onClick={() => editCategory(category)}
+                  >
+                    <span className="block">{category.name}</span>
+                    {category.notes && <span className="block text-gray-500 text-sm">{category.notes}</span>}
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
+        </Card>
       )}
 
-      {grouped[TransactionCategoryType.Other].length > 0 && (
-        <div>
-          <h3>Other</h3>
+      {other.length > 0 && (
+        <Card title="Other">
           <div className="divide-y">
-            {grouped[TransactionCategoryType.Other].map((category) => (
-              <button
-                key={category.id}
-                type="button"
-                className="block mb-2"
-              >
-                <span className="block">{category.name}</span>
-                <span className="block">{category.notes}</span>
-              </button>
-            ))}
+            <ul className="flex flex-col space-y-3">
+              {other.map((category) => (
+                <li key={category._id}>
+                  <button
+                    type="button"
+                    className="block w-full text-left"
+                    onClick={() => editCategory(category)}
+                  >
+                    <span className="block">{category.name}</span>
+                    {category.notes && <span className="block text-gray-500 text-sm">{category.notes}</span>}
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
+        </Card>
       )}
 
-      {(showAdd || editedCategory) && (
-        <Sheet title="Create Category" onClose={handleSheetClose}>
-          <CategoryForm category={editedCategory || undefined} onSave={handleSheetClose} />
-        </Sheet>
-      )}
+      <Sheet
+        open={showForm}
+        title="Category"
+        onClose={() => {
+          setShowForm(false);
+          setEditedCategory(undefined);
+        }}
+      >
+        <CategoryForm
+          category={editedCategory}
+          onSuccess={() => {
+            setShowForm(false);
+            mutate();
+          }}
+        />
+      </Sheet>
     </div>
   );
 };
