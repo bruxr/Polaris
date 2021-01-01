@@ -19,18 +19,19 @@ function Select({ label, name, options, onChange }: Props): React.ReactElement {
 
   const selectedLabel = useMemo(() => {
     const selected = formik.values[name];
-    const option = options.find((option) => {
+    let label = '';
+    options.forEach((option) => {
       if (option.children) {
-        return option.children.find((child) => child.value === selected);
+        const child = option.children.find((child) => child.value === selected);
+        if (child) {
+          label = child.label;
+        }
+      } else if (option.value === selected) {
+        label = option.label;
       }
-      
-      return option.value === selected;
     });
-    if (!option) {
-      throw new Error(`Cannot find option with value ${selected}`);
-    }
 
-    return option.label;
+    return label;
   }, [formik.values, name, options]);
   const hasError = useMemo(() => {
     return !!formik.errors[name] && formik.touched[name];
