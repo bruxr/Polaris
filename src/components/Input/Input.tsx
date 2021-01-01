@@ -15,11 +15,11 @@ function Input(props: PropsWithChildren<Props>): React.ReactElement {
 
   // We allow any here since we cannot fully determine the form values.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { errors, isSubmitting } = useFormikContext<any>();
+  const { errors, touched, isSubmitting } = useFormikContext<any>();
 
   const hasError = useMemo(() => {
-    return !!errors[name];
-  }, [errors, name]);
+    return !!errors[name] && touched[name];
+  }, [errors, touched, name]);
 
   return (
     <div className="mb-4">
@@ -40,7 +40,7 @@ function Input(props: PropsWithChildren<Props>): React.ReactElement {
           )}
         />
       </div>
-      {hasError && <div className="text-red-600 text-xs">{errors[name]}</div>}
+      {hasError && <div className="text-primary text-xs mt-2">{errors[name]}</div>}
     </div>
   );
 }
