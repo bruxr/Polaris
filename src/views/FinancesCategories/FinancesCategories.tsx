@@ -59,6 +59,15 @@ const FinancesCategories = (): React.ReactElement => {
 
   return (
     <div>
+      {categories && categories.length === 0 && (
+        <div
+          className="text-sm text-gray-500 text-center h-content w-full
+            fixed left-0 flex justify-center items-center"
+        >
+          No categories yet.
+        </div>
+      )}
+
       {income.length > 0 && (
         <Card title="Income">
           <div className="divide-y">
