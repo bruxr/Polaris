@@ -64,7 +64,7 @@ function Finances(): React.ReactElement {
               <>
                 <dt>
                   <span className="block font-semibold">{transaction.category.name}</span>
-                  <span className="text-sm">{transaction.notes}</span>
+                  <span className="text-sm text-gray-300">{transaction.notes}</span>
                 </dt>
                 <dd
                   className={classnames(
