@@ -39,8 +39,6 @@ function FinancesWallets(): React.ReactElement {
     setShowForm(true);
   });
 
-  console.log(wallets);
-
   return (
     <>
       {assets.length > 0 && (
