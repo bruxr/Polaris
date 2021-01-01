@@ -33,7 +33,11 @@ type FormValues = {
   location: boolean,
 }
 
-function CreateTransactionForm(): React.ReactElement {
+type Props = {
+  onSuccess?: () => void;
+}
+
+function CreateTransactionForm({ onSuccess }: Props): React.ReactElement {
   const { data: wallets } = useSWR('/wallets', getWallets);
   const { data: categories } = useSWR('/transaction-categories', getTransactionCategories);
 
@@ -114,12 +118,16 @@ function CreateTransactionForm(): React.ReactElement {
             _id: category._id,
             name: category.name,
           },
-          amount: sign === '+' ? amount : amount * -1,
+          amount: (sign === '+' ? amount : amount * -1) * 100,
           date: startOfDay(parse(date, 'yyyy-MM-dd', timestamp)),
           notes: notes || undefined,
           location: coords,
           timestamp,
         });
+
+        if (onSuccess) {
+          onSuccess();
+        }
       }}
     >
       {({ values, setFieldValue }: FormikProps<FormValues>) => (

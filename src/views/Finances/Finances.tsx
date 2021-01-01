@@ -33,7 +33,11 @@ function Finances(): React.ReactElement {
         open={createTransaction}
         onClose={() => setCreateTransaction(false)}
       >
-        <CreateTransactionForm />
+        <CreateTransactionForm
+          onSuccess={() => {
+            setCreateTransaction(false);
+          }}
+        />
       </Sheet>
     </div>
   );
