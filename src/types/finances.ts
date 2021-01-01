@@ -2,11 +2,14 @@ import { firestore } from 'firebase';
 
 import { Document } from './db';
 
-export interface MonthlyTransactionStats {
-  month: string;
-  expenses: number;
-  income: number;
-  categories: Record<string, number>;
+export interface TransactionMonthStats extends Document {
+  expenses?: number;
+  income?: number;
+  other?: number;
+  categories: Array<{
+    category: Pick<TransactionCategory, '_id' | 'name'>,
+    amount: number,
+  }>;
 }
 
 export enum WalletType {
