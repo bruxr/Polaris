@@ -6,10 +6,10 @@ import getTime from 'date-fns/getTime';
 import endOfMonth from 'date-fns/endOfMonth';
 import startOfMonth from 'date-fns/startOfMonth';
 
-import db from '../services/db';
 import { DOC_TYPES } from '../constants/db';
+import db, { findById } from '../services/db';
 import { Transaction, TransactionCategory, Wallet } from '../types/finances';
-import { DocumentFields, TransientDocument } from '../types/db';
+import { DocumentKind, DocumentFields, TransientDocument } from '../types/db';
 
 /**
  * Retrieves all wallets.
@@ -31,12 +31,47 @@ async function getWallets(): Promise<Wallet[]> {
 }
 
 /**
+ * Retrieves a wallet with a given ID.
+ *
+ * @param id wallet ID
+ */
+async function getWallet(id: string): Promise<Wallet | null> {
+  return findById(DocumentKind.Wallet, id);
+}
+
+/**
  * Saves a wallet to the database.
  *
  * @param id ID of wallet to be updated
  * @param wallet wallet data
  */
 async function putWallet(wallet: Omit<Wallet, DocumentFields> & TransientDocument): Promise<Wallet> {
+  // If we are updating an existing wallet, we create a balance adjustment transaction
+  if (wallet._id) {
+    const oldWallet = await db.get(wallet._id);
+    if (oldWallet.balance !== wallet.balance) {
+      const adjustmentCat = await getTransactionCategoryByName('Balance Adjustment');
+      if (!adjustmentCat) {
+        throw new Error('Cannot find balance adjustment category.');
+      }
+
+      const now = new Date();
+      await putTransaction({
+        wallet: {
+          _id: wallet._id,
+          name: wallet.name,
+        },
+        category: {
+          _id: adjustmentCat._id,
+          name: adjustmentCat.name,
+        },
+        amount: (wallet.balance - oldWallet.balance) * -1,
+        date: now,
+        timestamp: now,
+      });
+    }
+  }
+
   const result = await db.put({
     ...wallet,
     _id: wallet._id || shortid(),
@@ -69,6 +104,15 @@ async function getTransactionCategories(): Promise<TransactionCategory[]> {
   return result.docs.map((doc) => ({
     ...(doc as TransactionCategory),
   }));
+}
+
+/**
+ * Retrieves a transaction category with a given ID.
+ *
+ * @param id category id
+ */
+async function getTransactionCategory(id: string): Promise<TransactionCategory | null> {
+  return findById(DocumentKind.TransactionCategory, id);
 }
 
 /**
@@ -163,8 +207,10 @@ async function putTransaction(transaction: Omit<Transaction, DocumentFields>): P
 
 export {
   getWallets,
+  getWallet,
   putWallet,
   getTransactionCategories,
+  getTransactionCategory,
   getTransactionCategoryByName,
   putTransactionCategory,
   deleteTransactionCategory,
