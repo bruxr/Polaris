@@ -17,7 +17,7 @@ export default function Sheet({ open, title, children, onClose }: PropsWithChild
       closeTimeoutMS={150}
       className={{
         beforeClose: styles.modalClose,
-        base: classnames('fixed bottom-0 w-full bg-black p-4 transition', styles.modal),
+        base: classnames('fixed bottom-0 w-full bg-black p-4 transition duration-300', styles.modal),
         afterOpen: styles.modalShown,
       }}
       overlayClassName={{
