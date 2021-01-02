@@ -249,6 +249,15 @@ async function putTransaction(transaction: Omit<Transaction, DocumentFields>): P
 }
 
 /**
+ * Retrieve transaction statistics for a given month.
+ *
+ * @param month stats for this month in YYYY-MM format
+ */
+async function getTransactionMonthStats(month: string): Promise<TransactionMonthStats | null> {
+  return findById<TransactionMonthStats>(DocumentKind.TransactionMonthStats, month);
+}
+
+/**
  * Updates transaction monthly statistics.
  * 
  * @param category category to be updated
@@ -310,4 +319,5 @@ export {
   deleteTransactionCategory,
   getTransactions,
   putTransaction,
+  getTransactionMonthStats,
 };
