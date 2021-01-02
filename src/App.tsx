@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import Modal from 'react-modal';
-import { DateTime } from 'luxon';
+import isPast from 'date-fns/isPast';
 import { useRecoilState } from 'recoil';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
@@ -28,8 +28,8 @@ function App(): JSX.Element {
   useEffect(() => {
     const user = auth.currentUser();
     if (user) {
-      const expiry = DateTime.fromMillis(user.token.expires_at);
-      if (!expiry.isValid || expiry <= DateTime.local()) {
+      const expiry = new Date(user.token.expires_at);
+      if (isPast(expiry)) {
         user.jwt(true)
           .then(() => {
             setCurrentUser(deserializeUser(user));

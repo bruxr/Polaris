@@ -1,5 +1,3 @@
-import { DateTime } from 'luxon';
-
 export enum Courier {
   Jinio = 'jinio',
   Lazada = 'lazada',
@@ -10,7 +8,7 @@ export interface PackageStub {
   id: string;
   courier: Courier;
   code: string;
-  eta: DateTime;
+  eta: Date;
   lastStatus: string;
 }
 
@@ -18,9 +16,9 @@ export interface Package {
   id: string;
   courier: Courier;
   code: string;
-  eta: DateTime;
+  eta: Date;
   received: boolean;
   lastStatus: string;
-  lastTimestamp: DateTime;
-  createdAt: DateTime;
+  lastTimestamp: Date;
+  createdAt: Date;
 }

@@ -1,7 +1,7 @@
 import React from 'react';
-
-import { DateTime } from 'luxon';
 import classnames from 'classnames';
+import isPast from 'date-fns/isPast';
+import format from 'date-fns/format';
 import { Link } from 'react-router-dom';
 
 import { PackageStub, Courier } from '../../types/packages';
@@ -12,7 +12,6 @@ interface Props {
 
 export default function Package({ pkg }: Props): JSX.Element {
   const { id, courier, code, lastStatus, eta } = pkg;
-
 
   return (
     <Link to={`/packages/${id}`} className="block py-4 mb-4">
@@ -34,9 +33,9 @@ export default function Package({ pkg }: Props): JSX.Element {
         &middot;
         <span className={classnames(
           'inline-block pl-1',
-          { 'text-red-500': eta <= DateTime.utc() },
+          { 'text-red-500': isPast(eta) },
         )}>
-          ETA {eta.toFormat('MMM d')}
+          ETA {format(eta, 'MMM d')}
         </span>
       </div>
     </Link>
