@@ -1,20 +1,24 @@
-import PouchDB from 'pouchdb-browser';
+import PouchDB from 'pouchdb';
 import PouchDBFind from 'pouchdb-find';
 import { DocumentKind } from '../types/db';
+import PouchDBMemoryAdapter from 'pouchdb-adapter-memory';
 
 PouchDB.plugin(PouchDBFind);
+PouchDB.plugin(PouchDBMemoryAdapter);
 
 let name = 'polaris';
 if (process.env.NODE_ENV !== 'production') {
   name += process.env.NODE_ENV;
 }
 
-// We use any here because documents inside the database can be vastly different.
-// TODO: Look into properly typing the database based on each doc's "kind" property.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const db = new PouchDB<any>(name);
-
+let db: PouchDB.Database | null = null;
 async function setupDb(): Promise<void> {
+  // We use any here because documents inside the database can be vastly different.
+  // TODO: Look into properly typing the database based on each doc's "kind" property.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  db = new PouchDB<any>(name, {
+    adapter: process.env.NODE_ENV === 'test' ? 'memory' : 'idb',
+  });
   await db.createIndex({
     index: { fields: ['kind'] },
   });
