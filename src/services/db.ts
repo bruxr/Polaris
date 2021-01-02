@@ -5,8 +5,8 @@ import { DocumentKind } from '../types/db';
 PouchDB.plugin(PouchDBFind);
 
 let name = 'polaris';
-if (process.env.NODE_ENV === 'development') {
-  name += '-dev';
+if (process.env.NODE_ENV !== 'production') {
+  name += process.env.NODE_ENV;
 }
 
 // We use any here because documents inside the database can be vastly different.
