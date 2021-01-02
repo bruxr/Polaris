@@ -9,12 +9,12 @@ import isYesterday from 'date-fns/isYesterday';
 
 import Sheet from '../../components/Sheet';
 import useTitle from '../../hooks/use-title';
+import TransactionForm from './TransactionForm';
 import { Transaction } from '../../types/finances';
-import { CHART_COLORS } from '../../constants/charts';
-import { getTransactionMonthStats, getTransactions } from '../../db/finances';
-import useAddButton from '../../hooks/use-add-button';
-import CreateTransactionForm from './CreateTransactionForm';
 import { currency } from '../../services/currency';
+import { CHART_COLORS } from '../../constants/charts';
+import useAddButton from '../../hooks/use-add-button';
+import { getTransactionMonthStats, getTransactions } from '../../db/finances';
 
 function Finances(): React.ReactElement {
   useTitle('Finances');
@@ -27,7 +27,8 @@ function Finances(): React.ReactElement {
     (key, month) => getTransactionMonthStats(month),
   );
 
-  const [createTransaction, setCreateTransaction] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [transaction, setTransaction] = useState<Transaction | undefined>();
 
   const chartData = useMemo(() => {
     if (!stats) {
@@ -77,7 +78,7 @@ function Finances(): React.ReactElement {
   }, [transactions]);
 
   useAddButton(() => {
-    setCreateTransaction(true);
+    setShowForm(true);
   });
 
   return (
@@ -110,36 +111,50 @@ function Finances(): React.ReactElement {
       {byDay.map(([, { label, transactions }]) => (
         <section key={label} className="mb-8">
           <h3 className="text-sm text-gray-500 mb-4">{label}</h3>
-          <dl className="grid grid-cols-2 gap-4">
+          <ul>
             {transactions.map((transaction) => (
-              <React.Fragment key={transaction._id}>
-                <dt>
-                  <span className="block font-semibold">{transaction.category.name}</span>
-                  <span className="text-sm text-gray-300">{transaction.notes}</span>
-                </dt>
-                <dd
-                  className={classnames(
-                    'flex justify-end items-center font-mono text-sm',
-                    { 'text-green': transaction.amount > 0 },
-                  )}
+              <li key={transaction._id} className="mb-3">
+                <button
+                  type="button"
+                  className="flex justify-between w-full text-left"
+                  onClick={() => {
+                    setTransaction(transaction);
+                    setShowForm(true);
+                  }}
                 >
-                  {transaction.amount > 0 && '+'}
-                  {currency(transaction.amount)}
-                </dd>
-              </React.Fragment>
+                  <span>
+                    <span className="block font-semibold">{transaction.category.name}</span>
+                    <span className="text-sm text-gray-300">{transaction.notes}</span>
+                  </span>
+                  <span
+                    className={classnames(
+                      'flex justify-end items-center font-mono text-sm',
+                      { 'text-green': transaction.amount > 0 },
+                    )}
+                  >
+                    {transaction.amount > 0 && '+'}
+                    {currency(transaction.amount)}
+                  </span>
+                </button>
+              </li>
             ))}
-          </dl>
+          </ul>
         </section>
       ))}
 
       <Sheet
         title="New Transaction"
-        open={createTransaction}
-        onClose={() => setCreateTransaction(false)}
+        open={showForm}
+        onClose={() => {
+          setShowForm(false);
+          setTransaction(undefined);
+        }}
       >
-        <CreateTransactionForm
+        <TransactionForm
+          transaction={transaction}
           onSuccess={() => {
-            setCreateTransaction(false);
+            setShowForm(false);
+            setTransaction(undefined);
             mutateTransactions();
             mutateStats();
           }}

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import * as Yup from 'yup';
 import sortBy from 'lodash/sortBy';
@@ -15,6 +15,7 @@ import Select from '../../components/Select';
 import Checkbox from '../../components/Checkbox';
 import Datepicker from '../../components/Datepicker';
 import { getLocation } from '../../services/geolocation';
+import { Transaction, TransactionCategoryType } from '../../types/finances';
 import {
   getTransactionCategories,
   getTransactionCategory,
@@ -22,7 +23,6 @@ import {
   getWallet,
   putTransaction,
 } from '../../db/finances';
-import { TransactionCategoryType } from '../../types/finances';
 
 type FormValues = {
   walletId: string,
@@ -34,10 +34,11 @@ type FormValues = {
 }
 
 type Props = {
+  transaction?: Transaction;
   onSuccess?: () => void;
 }
 
-function CreateTransactionForm({ onSuccess }: Props): React.ReactElement {
+function TransactionForm({ transaction, onSuccess }: Props): React.ReactElement {
   const { data: wallets } = useSWR('/wallets', getWallets);
   const { data: categories } = useSWR('/transaction-categories', getTransactionCategories);
 
@@ -62,16 +63,23 @@ function CreateTransactionForm({ onSuccess }: Props): React.ReactElement {
     return sortBy(groups, 'label');
   }, [categories]);
 
+  // Update the sign if we're editing a transaction
+  useEffect(() => {
+    if (transaction) {
+      setSign(transaction.amount < 0 ? '-' : '+');
+    }
+  }, [transaction]);
+
   if (!wallets || !categories) {
     return <></>;
   }
 
   const initialValues: FormValues = {
-    walletId: wallets ? wallets[0]._id : '',
-    categoryId: categories ? groupedCategories[0].children[0].value : '',
-    amount: 0,
-    date: format(new Date(), 'Y-MM-dd'),
-    notes: '',
+    walletId: transaction?.wallet._id || wallets[0]._id,
+    categoryId: transaction?.category._id || groupedCategories[0].children[0].value,
+    amount: transaction ? Math.abs(transaction.amount) / 100 : 0,
+    date: transaction ? format(transaction.date, 'Y-MM-dd') : format(new Date(), 'Y-MM-dd'),
+    notes: transaction?.notes || '',
     location: true,
   };
 
@@ -108,8 +116,9 @@ function CreateTransactionForm({ onSuccess }: Props): React.ReactElement {
         if (!category) {
           throw new Error('Cannot find selected transaction category.');
         }
-
+        
         await putTransaction({
+          ...transaction,
           wallet: {
             _id: wallet._id,
             name: wallet.name,
@@ -200,4 +209,4 @@ function CreateTransactionForm({ onSuccess }: Props): React.ReactElement {
   );
 }
 
-export default CreateTransactionForm;
+export default TransactionForm;
