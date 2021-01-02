@@ -1,8 +1,8 @@
 export enum DocumentKind {
-  Wallet = 'WALLET',
-  TransactionCategory = 'TRANSACTION_CATEGORY',
-  TransactionMonthStats = 'TRANSACTION_MONTH_STATS',
-  Transaction = 'TRANSACTION',
+  Wallet = 'wallet',
+  TransactionCategory = 'transactionCategory',
+  TransactionMonthStats = 'transactionMonthStats',
+  Transaction = 'transaction',
 }
 
 export type DocumentFields = '_id' | '_rev' | 'kind';
