@@ -11,17 +11,24 @@ if (process.env.NODE_ENV !== 'production') {
   name += process.env.NODE_ENV;
 }
 
-let db: PouchDB.Database | null = null;
+// We use any here because documents inside the database can be vastly different.
+// TODO: Look into properly typing the database based on each doc's "kind" property.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let db = new PouchDB<any>(name);
+
 async function setupDb(): Promise<void> {
-  // We use any here because documents inside the database can be vastly different.
-  // TODO: Look into properly typing the database based on each doc's "kind" property.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  db = new PouchDB<any>(name, {
-    adapter: process.env.NODE_ENV === 'test' ? 'memory' : 'idb',
-  });
   await db.createIndex({
     index: { fields: ['kind'] },
   });
+}
+
+/**
+ * Setups a database instance to be used for testing.
+ */
+async function setupTestDb(): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  db = new PouchDB<any>(name, { adapter: 'memory' });
+  await setupDb();
 }
 
 /**
@@ -62,6 +69,7 @@ async function findById<T>(kind: DocumentKind, id: string): Promise<T | null> {
 export default db;
 export {
   setupDb,
+  setupTestDb,
   findBy,
   findById,
 };
