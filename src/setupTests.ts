@@ -6,6 +6,6 @@ import '@testing-library/jest-dom/extend-expect';
 import db, { setupTestDb } from './services/db';
 
 beforeEach(async () => {
-  db.destroy();
+  await db.destroy();
   await setupTestDb();
 });
