@@ -14,7 +14,7 @@ if (process.env.NODE_ENV !== 'production') {
 // We use any here because documents inside the database can be vastly different.
 // TODO: Look into properly typing the database based on each doc's "kind" property.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-let db = new PouchDB<any>(name);
+const db = new PouchDB<any>(name);
 
 async function setupDb(): Promise<void> {
   await db.createIndex({
@@ -25,10 +25,8 @@ async function setupDb(): Promise<void> {
 /**
  * Setups a database instance to be used for testing.
  */
-async function setupTestDb(): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  db = new PouchDB<any>(name, { adapter: 'memory' });
-  await setupDb();
+async function resetTestDb(): Promise<void> {
+  await db.destroy();
 }
 
 /**
@@ -69,7 +67,7 @@ async function findById<T>(kind: DocumentKind, id: string): Promise<T | null> {
 export default db;
 export {
   setupDb,
-  setupTestDb,
+  resetTestDb,
   findBy,
   findById,
 };

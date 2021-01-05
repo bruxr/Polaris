@@ -21,4 +21,12 @@ describe('wallets', () => {
       });
     });
   });
+
+  describe('.find', () => {
+    it('should return a single wallet', async () => {
+      return wallets.findAll().then(() => {
+        expect(true).toBe(true);
+      });
+    });
+  });
 });
