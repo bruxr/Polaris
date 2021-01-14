@@ -63,6 +63,18 @@
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
     "typeface-roboto-mono": "^1.1.13",
     "typescript": "^3.9.7",
+    "workbox-background-sync": "^6.0.2",
+    "workbox-broadcast-update": "^6.0.2",
+    "workbox-cacheable-response": "^6.0.2",
+    "workbox-core": "^6.0.2",
+    "workbox-expiration": "^6.0.2",
+    "workbox-google-analytics": "^6.0.2",
+    "workbox-navigation-preload": "^6.0.2",
+    "workbox-precaching": "^6.0.2",
+    "workbox-range-requests": "^6.0.2",
+    "workbox-routing": "^6.0.2",
+    "workbox-strategies": "^6.0.2",
+    "workbox-streams": "^6.0.2",
     "yup": "^0.29.2"
   },
   "devDependencies": {

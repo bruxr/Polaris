@@ -9,7 +9,7 @@ import './index.css';
 
 import App from './App';
 import Providers from './Providers';
-import * as serviceWorker from './serviceWorker';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 // Setup sentry on non-dev environments
 if (process.env.NODE_ENV !== 'development') {
@@ -31,5 +31,5 @@ ReactDOM.render(
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.register();
+// Learn more about service workers: https://cra.link/PWA
+serviceWorkerRegistration.register();
