@@ -178,14 +178,15 @@ async function deleteTransactionCategory(category: TransactionCategory): Promise
 
 /**
  * Retrieves all transactions for the current month.
+ * 
+ * @param month retrieve transactions for this month
  */
-async function getTransactions(): Promise<Transaction[]> {
-  const now = new Date();
+async function getTransactions(month: Date = new Date()): Promise<Transaction[]> {
   const result = await db.find({
     selector: {
       _id: {
-        $lte: getTime(endOfMonth(now)).toString(),
-        $gte: getTime(startOfMonth(now)).toString(),
+        $lte: getTime(endOfMonth(month)).toString(),
+        $gte: getTime(startOfMonth(month)).toString(),
       },
       kind: DocumentKind.Transaction,
     },

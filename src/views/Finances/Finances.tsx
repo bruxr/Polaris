@@ -4,8 +4,13 @@ import classnames from 'classnames';
 import format from 'date-fns/format';
 import isToday from 'date-fns/isToday';
 import entriesIn from 'lodash/entriesIn';
+import isFuture from 'date-fns/isFuture';
+import addMonths from 'date-fns/addMonths';
+import subMonths from 'date-fns/subMonths';
 import { Doughnut } from 'react-chartjs-2';
 import isYesterday from 'date-fns/isYesterday';
+import ChevronLeftSharp from '@material-ui/icons/ChevronLeftSharp';
+import ChevronRightSharp from '@material-ui/icons/ChevronRightSharp';
 
 import Sheet from '../../components/Sheet';
 import useTitle from '../../hooks/use-title';
@@ -19,12 +24,21 @@ import { getTransactionMonthStats, getTransactions } from '../../db/finances';
 function Finances(): React.ReactElement {
   useTitle('Finances');
 
-  const month = format(new Date(), 'yyyy-MM');
+  const [month, setMonth] = useState<Date>(new Date());
+  const monthSlug = useMemo(() => {
+    return format(month, 'yyyy-MM');
+  }, [month]);
+  const isMaxMonth = useMemo(() => {
+    return isFuture(addMonths(month, 1));
+  }, [month]);
 
-  const { data: transactions, mutate: mutateTransactions } = useSWR('transactions', getTransactions);
+  const { data: transactions, mutate: mutateTransactions } = useSWR(
+    [`transactions/${monthSlug}`, monthSlug, month],
+    (key, monthSlug, month) => getTransactions(month),
+  );
   const { data: stats, mutate: mutateStats } = useSWR(
-    [`/transaction-stats/${month}`, month],
-    (key, month) => getTransactionMonthStats(month),
+    [`/transaction-stats/${monthSlug}`, monthSlug],
+    (key, monthSlug) => getTransactionMonthStats(monthSlug),
   );
 
   const [showForm, setShowForm] = useState(false);
@@ -83,6 +97,28 @@ function Finances(): React.ReactElement {
 
   return (
     <div>
+      <nav className="flex justify-center items-center mb-10">
+        <button
+          type="button"
+          className="p-2 mr-2"
+          onClick={() => setMonth(subMonths(month, 1))}
+        >
+          <ChevronLeftSharp />
+        </button>
+        {format(month, 'LLLL yyyy')}
+        <button
+          type="button"
+          disabled={isMaxMonth}
+          className={classnames(
+            'p-2 ml-2',
+            { 'text-gray-700': isMaxMonth },
+          )}
+          onClick={() => setMonth(addMonths(month, 1))}
+        >
+          <ChevronRightSharp />
+        </button>
+      </nav>
+
       <section className="my-6">
         {chartData && (
           <div className="relative h-48">
