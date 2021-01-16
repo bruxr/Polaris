@@ -1,4 +1,4 @@
-const colors = require('./src/COLORS.json');
+const colors = require('./src/colors.json');
 
 module.exports = {
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
