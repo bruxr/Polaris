@@ -2,9 +2,11 @@ import PouchDB from 'pouchdb';
 import PouchDBFind from 'pouchdb-find';
 import { DocumentKind } from '../types/db';
 import PouchDBMemoryAdapter from 'pouchdb-adapter-memory';
+import PouchDBAuthentication from 'pouchdb-authentication';
 
 PouchDB.plugin(PouchDBFind);
 PouchDB.plugin(PouchDBMemoryAdapter);
+PouchDB.plugin(PouchDBAuthentication);
 
 let name = 'polaris';
 if (process.env.NODE_ENV !== 'production') {
@@ -20,6 +22,28 @@ async function setupDb(): Promise<void> {
   await db.createIndex({
     index: { fields: ['kind'] },
   });
+  await setupDbSync();
+}
+
+/**
+ * Setups DB sync to our backend server.
+ */
+async function setupDbSync(): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const remoteDb = new PouchDB<any>(process.env.REACT_APP_BACKEND_DB, { skip_setup: true });
+
+  try {
+    await remoteDb.logIn(
+      process.env.REACT_APP_BACKEND_DB_USER || '',
+      process.env.REACT_APP_BACKEND_DB_PASS || '',
+    );
+    db.sync(remoteDb, { live: true })
+      // .on('paused', () => console.info('Sync paused'))
+      // .on('active', () => console.info('Sync active.'))
+      .on('error', (err) => console.error(`Sync error: ${err}`));
+  } catch {
+    console.info('Cannot reach backend, sync is disabled.');
+  }
 }
 
 /**
