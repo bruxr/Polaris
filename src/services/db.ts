@@ -1,22 +1,24 @@
+/* eslint @typescript-eslint/no-explicit-any: 0 */
+
 import PouchDB from 'pouchdb';
 import PouchDBFind from 'pouchdb-find';
 import { DocumentKind } from '../types/db';
-import PouchDBMemoryAdapter from 'pouchdb-adapter-memory';
 import PouchDBAuthentication from 'pouchdb-authentication';
 
 PouchDB.plugin(PouchDBFind);
-PouchDB.plugin(PouchDBMemoryAdapter);
 PouchDB.plugin(PouchDBAuthentication);
 
-let name = 'polaris';
-if (process.env.NODE_ENV !== 'production') {
-  name += process.env.NODE_ENV;
-}
+const name = 'polaris';
 
-// We use any here because documents inside the database can be vastly different.
-// TODO: Look into properly typing the database based on each doc's "kind" property.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const db = new PouchDB<any>(name);
+let db: PouchDB.Database;
+if (process.env.NODE_ENV === 'test') {
+  import('pouchdb-adapter-memory').then((PouchDBMemoryAdapter) => {
+      PouchDB.plugin(PouchDBMemoryAdapter.default);
+      db = new PouchDB<any>(name, { adapter: 'memory' });
+  });
+} else {
+  db = new PouchDB<any>(name);
+}
 
 async function setupDb(): Promise<void> {
   await db.createIndex({
@@ -51,6 +53,7 @@ async function setupDbSync(): Promise<void> {
  */
 async function resetTestDb(): Promise<void> {
   await db.destroy();
+  db = new PouchDB<any>(name, { adapter: 'memory' });
 }
 
 /**
