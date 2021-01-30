@@ -6,7 +6,7 @@ import { render, RenderOptions } from '@testing-library/react';
 import Providers from '../Providers';
 import { getDb } from '../services/db';
 import * as factories from './factories';
-import { FactoryItem } from '../types/testing';
+import { FactoryBuilder, FactoryCreator } from '../types/testing';
 
 function customRender(ui: React.ReactElement, options?: RenderOptions): void {
   render(ui, {
@@ -15,21 +15,32 @@ function customRender(ui: React.ReactElement, options?: RenderOptions): void {
   });
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any , @typescript-eslint/explicit-module-boundary-types
-function build(item: FactoryItem, attributes?: any): any {
+/**
+ * Generates attributes from a factory.
+ *
+ * @param factory factory name
+ * @param attributes optional attributes to override factory
+ */
+const build: FactoryBuilder = (factory, attributes) => {
   return {
-    ...factories[item](),
+    ...factories[factory]({ create, build }),
     ...attributes,
   };
-}
+};
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any , @typescript-eslint/explicit-module-boundary-types
-async function create<T>(item: FactoryItem, count = 1, attributes?: any): Promise<T[]> {
+/**
+ * Creates records from a factory.
+ *
+ * @param factory factory name
+ * @param count number of records to create
+ * @param attributes optional attributes to override factory
+ */
+const create: FactoryCreator = async (factory, count = 1, attributes = {}) => {
   const db = getDb();
   
   const records = [];
   for (let i = 0; i < count; i++) {
-    records.push(build(item, attributes));
+    records.push(build(factory, attributes));
   }
   const result = await db.bulkDocs(records);
 
@@ -37,7 +48,7 @@ async function create<T>(item: FactoryItem, count = 1, attributes?: any): Promis
     ...record,
     _rev: result[index].rev,
   }));
-}
+};
 
 export * from '@testing-library/react';
 export {

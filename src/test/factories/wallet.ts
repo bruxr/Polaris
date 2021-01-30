@@ -1,10 +1,11 @@
 import faker from 'faker';
 import shortid from 'shortid';
 
+import { Factory } from '../../types/testing';
 import { Wallet, WalletType } from '../../types/finances';
 import { DocumentKind } from '../../types/db';
 
-function wallet(): Omit<Wallet, '_rev'> {
+const wallet: Factory<Wallet> = () => {
   return {
     _id: shortid(),
     kind: DocumentKind.Wallet,
@@ -13,6 +14,6 @@ function wallet(): Omit<Wallet, '_rev'> {
     type: WalletType.Savings,
     createdOn: faker.date.recent(),
   };
-}
+};
 
 export { wallet };
