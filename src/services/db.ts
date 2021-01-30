@@ -42,6 +42,9 @@ async function setupDb(): Promise<void> {
     PouchDB.plugin(PouchDBMemoryAdapter.default);
 
     db = new PouchDB<any>(NAME, { adapter: 'memory' });
+    await db.createIndex({
+      index: { fields: ['kind'] },
+    });
   }
 }
 
