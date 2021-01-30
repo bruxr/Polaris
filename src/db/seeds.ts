@@ -19,6 +19,15 @@ async function seedTransactionCategories(): Promise<void> {
       code: 'TRANSFER',
     });
   }
+
+  const initial = await getTransactionCategoryByName('Initial');
+  if (!initial) {
+    await putTransactionCategory({
+      name: 'Initial',
+      type: TransactionCategoryType.Other,
+      code: 'INITIAL',
+    });
+  }
 }
 
 async function seed(): Promise<void> {
