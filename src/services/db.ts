@@ -1,37 +1,58 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
-
 import PouchDB from 'pouchdb';
 import PouchDBFind from 'pouchdb-find';
-import { DocumentKind } from '../types/db';
 import PouchDBAuthentication from 'pouchdb-authentication';
 
 PouchDB.plugin(PouchDBFind);
 PouchDB.plugin(PouchDBAuthentication);
 
-const name = 'polaris';
+const NAME = 'polaris';
+let db: PouchDB.Database | null = null;
 
-let db: PouchDB.Database;
-if (process.env.NODE_ENV === 'test') {
-  import('pouchdb-adapter-memory').then((PouchDBMemoryAdapter) => {
-      PouchDB.plugin(PouchDBMemoryAdapter.default);
-      db = new PouchDB<any>(name, { adapter: 'memory' });
-  });
-} else {
-  db = new PouchDB<any>(name);
+/**
+ * Returns the database instance.
+ */
+function getDb(): PouchDB.Database { 
+  if (db === null) {
+    throw new Error('Database not initialized yet.');
+  }
+
+  return db;
 }
 
+/**
+ * Setups a database instance and additional setup depending on `NODE_ENV`.
+ * 
+ * On test environments, it will create an in-memory instance.
+ * Otherwise, it creates a browser database with indices and sync to a remote server.
+ */
 async function setupDb(): Promise<void> {
-  await db.createIndex({
-    index: { fields: ['kind'] },
-  });
-  await setupDbSync();
+  if (db !== null) {
+    throw new Error('Database already initialized.');
+  }
+
+  if (process.env.NODE_ENV !== 'test') {
+    db = new PouchDB<any>(NAME);
+    await db.createIndex({
+      index: { fields: ['kind'] },
+    });
+    await setupDbSync();
+  } else {
+    const PouchDBMemoryAdapter = await import('pouchdb-adapter-memory');
+    PouchDB.plugin(PouchDBMemoryAdapter.default);
+
+    db = new PouchDB<any>(NAME, { adapter: 'memory' });
+  }
 }
 
 /**
  * Setups DB sync to our backend server.
  */
 async function setupDbSync(): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if (db === null) {
+    throw new Error('Database not initialized.');
+  }
+
   const remoteDb = new PouchDB<any>(process.env.REACT_APP_BACKEND_DB, { skip_setup: true });
 
   try {
@@ -49,52 +70,19 @@ async function setupDbSync(): Promise<void> {
 }
 
 /**
- * Setups a database instance to be used for testing.
+ * Destroys the current db instance.
  */
-async function resetTestDb(): Promise<void> {
+async function destroyDb(): Promise<void> {
+  if (db === null) {
+    throw new Error('Database not initialized.');
+  }
+
   await db.destroy();
-  db = new PouchDB<any>(name, { adapter: 'memory' });
+  db = null;
 }
 
-/**
- * Utility function for retrieving the first document that matches given params.
- * 
- * @param kind kind of document
- * @param params params
- */
-async function findBy<T>(kind: DocumentKind, params: Record<string, string | number>): Promise<T | null> {
-  const result = await db.find({
-    selector: {
-      ...params,
-      kind,
-    },
-  });
-  
-  if (result.warning) {
-    console.warn(result.warning);
-  }
-
-  if (result.docs.length === 0) {
-    return null;
-  }
-
-  return result.docs[0];
-}
-
-/**
- * Utility function for retrieving a document with a given ID and document kind.
- *
- * @param id document ID
- * @param kind document kind
- */
-async function findById<T>(kind: DocumentKind, id: string): Promise<T | null> {
-  return findBy(kind, { _id: id });
-}
-
-export default db;
 export {
+  getDb,
   setupDb,
-  resetTestDb,
-  findBy,
-  findById,
+  destroyDb,
 };
