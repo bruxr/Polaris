@@ -3,8 +3,13 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect';
-import { resetTestDb } from './services/db';
+import { setupDb, destroyDb } from './services/db';
+
+beforeAll(async () => {
+  await setupDb();
+});
 
 afterEach(async () => {
-  await resetTestDb();
+  await destroyDb();
+  await setupDb();
 });
