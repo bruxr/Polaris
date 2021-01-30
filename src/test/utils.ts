@@ -3,8 +3,8 @@
 import React from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 
-import db from '../services/db';
 import Providers from '../Providers';
+import { getDb } from '../services/db';
 import * as factories from './factories';
 import { FactoryItem } from '../types/testing';
 
@@ -25,6 +25,8 @@ function build(item: FactoryItem, attributes?: any): any {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any , @typescript-eslint/explicit-module-boundary-types
 async function create<T>(item: FactoryItem, count = 1, attributes?: any): Promise<T[]> {
+  const db = getDb();
+  
   const records = [];
   for (let i = 0; i < count; i++) {
     records.push(build(item, attributes));
