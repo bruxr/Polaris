@@ -1,7 +1,7 @@
-import { getWallet, getWallets, putWallet } from './wallets';
 import { Wallet } from '../types/finances';
 import { create, build } from '../test/utils';
 import { FactoryItem } from '../types/testing';
+import { getWallet, getWallets, putWallet } from './wallets';
 
 describe('putWallet', () => {
   it('should create a record', async () => {
