@@ -1,4 +1,4 @@
-import { putWallet } from './wallets';
+import { getWallet, getWallets, putWallet } from './wallets';
 import { Wallet } from '../types/finances';
 import { create, build } from '../test/utils';
 import { FactoryItem } from '../types/testing';
@@ -20,7 +20,10 @@ describe('getWallet', () => {
   });
 
   it('should return a wallet', async () => {
-    expect(wallet).not.toBeUndefined();
+    const result = await getWallet(wallet._id);
+    expect(result).not.toBeUndefined();
+    expect(result?.name).toEqual(wallet.name);
+    expect(result?.balance).toEqual(wallet.balance);
   });
 });
 
@@ -32,6 +35,16 @@ describe('getWallets', () => {
   });
 
   it('should return a wallet', async () => {
-    wallets.forEach((wallet) => expect(wallet).not.toBeUndefined());
+    const results = await getWallets();
+    wallets.forEach((wallet) => {
+      const result = results.find((item) => item._id === wallet._id);
+      if (!result) {
+        throw new Error(`Cannot find wallet ${wallet._id}`);
+      }
+
+      expect(result).not.toBeUndefined();
+      expect(result?.name).toEqual(wallet.name);
+      expect(result?.balance).toEqual(wallet.balance);
+    });
   });
 });
