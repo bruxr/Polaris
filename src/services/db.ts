@@ -7,12 +7,12 @@ PouchDB.plugin(PouchDBFind);
 PouchDB.plugin(PouchDBAuthentication);
 
 const NAME = 'polaris';
-let db: PouchDB.Database | null = null;
+let db: PouchDB.Database<any> | null = null;
 
 /**
  * Returns the database instance.
  */
-function getDb(): PouchDB.Database { 
+function getDb(): PouchDB.Database<any> { 
   if (db === null) {
     throw new Error('Database not initialized yet.');
   }
