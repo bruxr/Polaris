@@ -2,6 +2,24 @@ import { getDb } from './db';
 import { DocumentKind } from '../types/db';
 
 /**
+ * Returns all documents with the given kind.
+ *
+ * @param kind kind of document
+ */
+async function findAll<T>(kind: DocumentKind): Promise<T[]> {
+  const db = getDb();
+  const result = await db.find({
+    selector: { kind },
+  });
+
+  if (result.warning) {
+    console.warn(result.warning);
+  }
+
+  return result.docs;
+}
+
+/**
  * Utility function for retrieving the first document that matches given params.
  * 
  * @param kind kind of document
@@ -39,6 +57,7 @@ async function findById<T>(kind: DocumentKind, id: string): Promise<T | null> {
 }
 
 export {
+  findAll,
   findBy,
   findById,
 };
