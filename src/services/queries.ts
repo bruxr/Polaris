@@ -41,4 +41,4 @@ async function findById<T>(kind: DocumentKind, id: string): Promise<T | null> {
 export {
   findBy,
   findById,
-}
+};
