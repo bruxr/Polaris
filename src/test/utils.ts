@@ -21,9 +21,10 @@ function customRender(ui: React.ReactElement, options?: RenderOptions): void {
  * @param factory factory name
  * @param attributes optional attributes to override factory
  */
-const build: FactoryBuilder = (factory, attributes) => {
+const build: FactoryBuilder = async (factory, attributes = {}) => {
+  const attrs = await factories[factory]({ create, build });
   return {
-    ...factories[factory]({ create, build }),
+    ...attrs,
     ...attributes,
   };
 };
@@ -40,7 +41,8 @@ const create: FactoryCreator = async (factory, count = 1, attributes = {}) => {
   
   const records = [];
   for (let i = 0; i < count; i++) {
-    records.push(build(factory, attributes));
+    const attrs = await build(factory, attributes);
+    records.push(attrs);
   }
   const result = await db.bulkDocs(records);
 

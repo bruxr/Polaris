@@ -4,11 +4,13 @@ export enum FactoryItem {
   TransactionCategory = 'transactionCategory',
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type FactoryBuilder = (factory: FactoryItem, attributes: any) => any;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type FactoryCreator = (factory: FactoryItem, count: number, attributes?: any) => Promise<T[]>;
+export type FactoryBuilder = (factory: FactoryItem, attributes?: any) => Promise<any>;
 
-export type Factory<T> = (args: { create: FactoryCreator, build: FactoryBuilder })
-  => Omit<T, '_id' | '_rev'> & { _id?: string };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type FactoryCreator = <T = unknown>(factory: FactoryItem, count?: number, attributes?: any) => Promise<T[]>;
+
+type Attributes = Record<string, string | number | boolean | Record<string, string | number>>;
+export type Factory = (args: { create: FactoryCreator, build: FactoryBuilder })
+  => Attributes | Promise<Attributes>;
