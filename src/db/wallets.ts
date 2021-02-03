@@ -76,6 +76,8 @@ async function putWallet(
   //   }
   // }
 
+  console.log(wallet);
+
   const result = await db.put({
     ...wallet,
     _id: wallet._id || shortid(),

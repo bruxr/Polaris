@@ -1,3 +1,5 @@
+import parseISO from 'date-fns/parseISO';
+
 import { Wallet } from '../types/finances';
 import { create, build } from '../test/utils';
 import { FactoryItem } from '../types/testing';
@@ -5,8 +7,11 @@ import { getWallet, getWallets, putWallet } from './wallets';
 
 describe('putWallet', () => {
   it('should create a record', async () => {
-    const attrs = build(FactoryItem.Wallet);
-    const wallet = await putWallet(attrs);
+    const attrs = await build(FactoryItem.Wallet);
+    const wallet = await putWallet({
+      ...attrs,
+      createdOn: parseISO(attrs.createdOn),
+    });
 
     expect(wallet._id).not.toBeUndefined();
   });
