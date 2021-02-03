@@ -4,7 +4,7 @@ import getTime from 'date-fns/getTime';
 import { getDb } from '../services/db';
 import { Wallet } from '../types/finances';
 import { findById } from '../services/queries';
-import { getTransactionCategoryByName, putTransaction } from './finances';
+// import { getTransactionCategoryByName, putTransaction } from './finances';
 import { DocumentKind, DocumentFields, TransientDocument } from '../types/db';
 
 /**
@@ -45,7 +45,7 @@ async function getWallet(id: string): Promise<Wallet | null> {
  */
 async function putWallet(
   wallet: Omit<Wallet, DocumentFields> & TransientDocument,
-  opts?: { noTransaction: boolean },
+  // opts?: { noTransaction: boolean },
 ): Promise<Wallet> {
   const db = getDb();
 
@@ -75,8 +75,6 @@ async function putWallet(
   //     });
   //   }
   // }
-
-  console.log(wallet);
 
   const result = await db.put({
     ...wallet,
