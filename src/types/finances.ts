@@ -38,14 +38,14 @@ export interface TransactionCategory extends Document {
 export interface Transaction extends Document {
   wallet: Pick<Wallet, '_id' | 'name'>,
   category: Pick<TransactionCategory, '_id' | 'name'>
-  previous: string;
+  previous?: string;
   hash: string;
   amount: number;
   balance: number;
   date: Date;
   notes?: string;
   location?: [number, number];
-  readonly timestamp: Date;
+  readonly createdAt: Date;
 }
 
 export interface MonthlyBudget {

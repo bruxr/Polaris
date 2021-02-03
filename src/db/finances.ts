@@ -7,7 +7,8 @@ import parseISO from 'date-fns/parseISO';
 import endOfMonth from 'date-fns/endOfMonth';
 import startOfMonth from 'date-fns/startOfMonth';
 
-import db, { findById } from '../services/db';
+import db from '../services/db';
+import { findById } from '../services/queries';
 import { DocumentKind, DocumentFields, TransientDocument } from '../types/db';
 import {
   Transaction,
@@ -97,115 +98,6 @@ async function deleteTransactionCategory(category: TransactionCategory): Promise
 }
 
 /**
- * Retrieves all transactions for the current month.
- * 
- * @param month retrieve transactions for this month
- */
-async function getTransactions(month: Date = new Date()): Promise<Transaction[]> {
-  const result = await db.find({
-    selector: {
-      _id: {
-        $lte: getTime(endOfMonth(month)).toString(),
-        $gte: getTime(startOfMonth(month)).toString(),
-      },
-      kind: DocumentKind.Transaction,
-    },
-    sort: [{ _id: 'desc' }],
-  });
-
-  if (result.warning) {
-    console.warn(result.warning);
-  }
-
-  return result.docs.map((doc) => ({
-    ...(doc as Transaction),
-    date: parseISO(doc.date),
-  }));
-}
-
-/**
- * Retrieves a single transaction.
- *
- * @param id transaction ID
- */
-async function getTransaction(id: string): Promise<Transaction | null> {
-  return findById(DocumentKind.Transaction, id);
-}
-
-/**
- * Saves a transactio to the database. This also updates its parent's 
- * wallet balance and monthly stats for the category.
- * 
- * @param transaction transaction data
- */
-async function putTransaction(
-  transaction: Omit<Transaction, DocumentFields> & TransientDocument,
-): Promise<Transaction> {
-  const monthKey = format(transaction.date, 'yyyy-MM');
-
-  // If we're updating an existing transaction, we need to
-  // revert any changes on wallet balances and transaction stats
-  if (transaction._id) {
-    const oldTransaction = await getTransaction(transaction._id);
-    if (!oldTransaction) {
-      throw new Error('Cannot find original transaction record.');
-    }
-
-    const prevWallet = await getWallet(transaction.wallet._id);
-    if (!prevWallet) {
-      throw new Error('Cannot find previous wallet record.');
-    }
-    await putWallet({
-      ...prevWallet,
-      balance: prevWallet.balance - oldTransaction.amount,
-    }, { noTransaction: true });
-
-    const prevCategory = await getTransactionCategory(transaction.category._id);
-    if (!prevCategory) {
-      throw new Error('Cannot find previous transaction category.');
-    }
-    await updateTransactionMonthStats(prevCategory, monthKey, oldTransaction.amount * -1);
-  }
-
-  // Update wallet balance
-  const wallet = await getWallet(transaction.wallet._id);
-  if (!wallet) {
-    throw new Error('Cannot find transaction\'s parent wallet.');
-  }
-  await putWallet({
-    ...wallet,
-    balance: wallet.balance + transaction.amount,
-  }, { noTransaction: true });
-
-  // Update monthly stats
-  const category = await getTransactionCategory(transaction.category._id);
-  if (!category) {
-    throw new Error('Cannot find transaction\'s category.');
-  }
-  await updateTransactionMonthStats(category, monthKey, transaction.amount);
-
-  const id = transaction._id || getTime(set(new Date(), {
-    year: transaction.date.getFullYear(),
-    month: transaction.date.getMonth(),
-    date: transaction.date.getDate(),
-  }));
-  const result = await db.put({
-    ...transaction,
-    _id: id.toString(),
-    kind: DocumentKind.Transaction,
-    date: format(transaction.date, 'yyyy-MM-dd'),
-    timestamp: getTime(transaction.timestamp),
-  });
-
-  return {
-    ...transaction,
-    _id: result.id,
-    _rev: result.rev,
-    kind: DocumentKind.Transaction,
-  };
-}
-
-/**
  * Retrieve transaction statistics for a given month.
  *
  * @param month stats for this month in YYYY-MM format
@@ -266,15 +158,11 @@ async function updateTransactionMonthStats(
 }
 
 export {
-  getWallets,
-  getWallet,
   getTransactionCategories,
   getTransactionCategory,
   getTransactionCategoryByName,
   putTransactionCategory,
   deleteTransactionCategory,
-  getTransactions,
-  getTransaction,
-  putTransaction,
   getTransactionMonthStats,
+  updateTransactionMonthStats,
 };
