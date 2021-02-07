@@ -57,7 +57,7 @@ async function getTransaction(id: string): Promise<Transaction | null> {
  * @param transaction transaction data
  */
 async function putTransaction(
-  transaction: Omit<Transaction, DocumentFields | 'hash' | 'balance'> & TransientDocument,
+  transaction: Omit<Transaction, DocumentFields | 'balance'> & TransientDocument,
 ): Promise<Transaction> {
   const db = getDb();
   // const monthKey = format(transaction.date, 'yyyy-MM');
