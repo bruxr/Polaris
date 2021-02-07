@@ -1,3 +1,4 @@
+import PouchDB from 'pouchdb';
 import set from 'date-fns/set';
 import format from 'date-fns/format';
 import getTime from 'date-fns/getTime';
@@ -7,8 +8,9 @@ import endOfMonth from 'date-fns/endOfMonth';
 import startOfMonth from 'date-fns/startOfMonth';
 
 import { getDb } from '../services/db';
+import { sha256 } from '../services/hash';
 import { findById } from '../services/queries';
-import { Transaction } from '../types/finances';
+import { Transaction, Wallet } from '../types/finances';
 // import { putWallet, getWallet } from './wallets';
 import { DocumentKind, DocumentFields, TransientDocument } from '../types/db';
 // import { getTransactionCategory, updateTransactionMonthStats } from './finances';
@@ -58,7 +60,7 @@ async function getTransaction(id: string): Promise<Transaction | null> {
  * @param transaction transaction data
  */
 async function putTransaction(
-  transaction: Omit<Transaction, DocumentFields> & TransientDocument,
+  transaction: Omit<Transaction, DocumentFields | 'hash' | 'balance'> & TransientDocument,
 ): Promise<Transaction> {
   const db = getDb();
   // const monthKey = format(transaction.date, 'yyyy-MM');
@@ -110,20 +112,46 @@ async function putTransaction(
     minutes: now.getMinutes(),
     seconds: now.getSeconds(),
     milliseconds: now.getMilliseconds(),
-  }));
-  const result = await db.put({
+  })).toString();
+
+  // Calculate next balance
+  const prevTxResult = await db.find({
+    selector: {
+      _id: { $lt: id },
+      'wallet._id': transaction.wallet._id,
+      kind: DocumentKind.Transaction,
+    },
+    sort: [{ _id: 'desc' }],
+    limit: 1,
+  });
+  if (prevTxResult.warning) {
+    console.warn(prevTxResult.warning);
+  }
+  if (prevTxResult.docs.length === 0) {
+    throw new Error('Cannot find a previous transaction to calculate balance.');
+  }
+  const balance = prevTxResult.docs[0].balance + transaction.amount;
+  
+  const data = {
     ...transaction,
+    balance,
     _id: id.toString(),
-    kind: DocumentKind.Transaction,
     date: formatISO(transaction.date),
     createdAt: formatISO(now),
+  };
+
+  const result = await db.put({
+    ...data,
+    kind: DocumentKind.Transaction,
   });
 
   return {
-    ...transaction,
+    ...data,
     _id: result.id,
     _rev: result.rev,
     kind: DocumentKind.Transaction,
+    date: transaction.date,
+    createdAt: now,
   };
 }
 

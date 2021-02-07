@@ -14,15 +14,11 @@ import Button from '../../components/Button';
 import Select from '../../components/Select';
 import Checkbox from '../../components/Checkbox';
 import Datepicker from '../../components/Datepicker';
+import { putTransaction } from '../../db/transactions';
 import { getLocation } from '../../services/geolocation';
+import { getWallets, getWallet } from '../../db/wallets';
 import { Transaction, TransactionCategoryType } from '../../types/finances';
-import {
-  getTransactionCategories,
-  getTransactionCategory,
-  getWallets,
-  getWallet,
-  putTransaction,
-} from '../../db/finances';
+import { getTransactionCategories, getTransactionCategory } from '../../db/finances';
 
 type FormValues = {
   walletId: string,
@@ -131,7 +127,6 @@ function TransactionForm({ transaction, onSuccess }: Props): React.ReactElement 
           date: startOfDay(parse(date, 'yyyy-MM-dd', timestamp)),
           notes: notes || undefined,
           location: coords,
-          timestamp,
         });
 
         if (onSuccess) {

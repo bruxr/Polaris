@@ -19,7 +19,8 @@ import { Transaction } from '../../types/finances';
 import { currency } from '../../services/currency';
 import { CHART_COLORS } from '../../constants/charts';
 import useAddButton from '../../hooks/use-add-button';
-import { getTransactionMonthStats, getTransactions } from '../../db/finances';
+import { getTransactions } from '../../db/transactions';
+import { getTransactionMonthStats } from '../../db/finances';
 
 function Finances(): React.ReactElement {
   useTitle('Finances');

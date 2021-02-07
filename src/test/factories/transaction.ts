@@ -8,7 +8,7 @@ import { Factory, FactoryItem } from '../../types/testing';
 import { Wallet, TransactionCategory } from '../../types/finances';
 
 const transaction: Factory = async ({ create }) => {
-  const timestamp = faker.date.past();
+  const timestamp = new Date();
   const amount = faker.random.number({ min: -99999, max: 99999 });
   const walletObj = (await create<Wallet>(FactoryItem.Wallet))[0];
   const category = (await create<TransactionCategory>(FactoryItem.TransactionCategory))[0];
