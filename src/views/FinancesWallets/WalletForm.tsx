@@ -7,7 +7,7 @@ import Alert from '../../components/Alert';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import Select from '../../components/Select';
-import { putWallet } from '../../db/finances';
+import { putWallet } from '../../db/wallets';
 import { Wallet, WalletType } from '../../types/finances';
 
 interface Props {
@@ -22,7 +22,7 @@ export default function WalletForm({ wallet, onSuccess }: Props): JSX.Element {
       initialValues={{
         name: wallet ? wallet.name : '',
         type: wallet ? wallet.type : WalletType.Savings,
-        balance: wallet ? wallet.balance / 100 : 0,
+        balance: 0,
       }}
       validationSchema={Yup.object({
         name: Yup.string()

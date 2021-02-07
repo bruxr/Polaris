@@ -1,6 +1,4 @@
-import PouchDB from 'pouchdb';
 import set from 'date-fns/set';
-import format from 'date-fns/format';
 import getTime from 'date-fns/getTime';
 import parseISO from 'date-fns/parseISO';
 import formatISO from 'date-fns/formatISO';
@@ -8,7 +6,6 @@ import endOfMonth from 'date-fns/endOfMonth';
 import startOfMonth from 'date-fns/startOfMonth';
 
 import { getDb } from '../services/db';
-import { sha256 } from '../services/hash';
 import { findById } from '../services/queries';
 import { Transaction, Wallet } from '../types/finances';
 // import { putWallet, getWallet } from './wallets';

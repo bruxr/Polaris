@@ -5,7 +5,7 @@ import sortBy from 'lodash/sortBy';
 import WalletForm from './WalletForm';
 import Sheet from '../../components/Sheet';
 import useTitle from '../../hooks/use-title';
-import { getWallets } from '../../db/finances';
+import { getWallets } from '../../db/wallets';
 import { currency } from '../../services/currency';
 import useAddButton from '../../hooks/use-add-button';
 import { Wallet, WalletType } from '../../types/finances';
@@ -56,7 +56,8 @@ function FinancesWallets(): React.ReactElement {
                   }}
                 >
                   <span className="font-semibold">{asset.name}</span>
-                  <span className="font-mono font-light text-right">{currency(asset.balance)}</span>
+                  {/* TODO: Add balance */}
+                  <span className="font-mono font-light text-right">?</span>
                 </button> 
               </li>
             ))}
@@ -75,7 +76,8 @@ function FinancesWallets(): React.ReactElement {
                   className="flex justify-between w-full"
                 >
                   <span className="font-semibold">{debt.name}</span>
-                  <span className="font-mono font-light text-right">{currency(debt.balance)}</span>
+                  {/* TODO: Add balance */}
+                  <span className="font-mono font-light text-right">?</span>
                 </button> 
               </li>
             ))}
