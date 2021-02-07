@@ -127,7 +127,7 @@ function TransactionForm({ transaction, onSuccess }: Props): React.ReactElement 
           date: startOfDay(parse(date, 'yyyy-MM-dd', timestamp)),
           notes: notes || undefined,
           location: coords,
-          createdAt: new Date(),
+          createdAt: transaction?.createdAt || new Date(),
         });
 
         if (onSuccess) {
