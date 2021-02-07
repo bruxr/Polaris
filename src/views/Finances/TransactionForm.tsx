@@ -18,7 +18,7 @@ import { putTransaction } from '../../db/transactions';
 import { getLocation } from '../../services/geolocation';
 import { getWallets, getWallet } from '../../db/wallets';
 import { Transaction, TransactionCategoryType } from '../../types/finances';
-import { getTransactionCategories, getTransactionCategory } from '../../db/finances';
+import { getTransactionCategories, getTransactionCategory } from '../../db/trasactionCategories';
 
 type FormValues = {
   walletId: string,

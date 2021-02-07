@@ -7,7 +7,7 @@ import CategoryForm from './CategoryForm';
 import Sheet from '../../components/Sheet';
 import useTitle from '../../hooks/use-title';
 import useAddButton from '../../hooks/use-add-button';
-import { getTransactionCategories } from '../../db/finances';
+import { getTransactionCategories } from '../../db/trasactionCategories';
 import { TransactionCategory, TransactionCategoryType } from '../../types/finances';
 
 const FinancesCategories = (): React.ReactElement => {
