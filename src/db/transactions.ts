@@ -12,6 +12,15 @@ import { Transaction, Wallet } from '../types/finances';
 import { DocumentKind, DocumentFields, TransientDocument } from '../types/db';
 // import { getTransactionCategory, updateTransactionMonthStats } from './finances';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function deserializeTransaction(doc: any): Transaction {
+  return {
+    ...doc,
+    date: parseISO(doc.date),
+    createdAt: parseISO(doc.createdAt),
+  };
+}
+
 /**
  * Retrieves all transactions for the current month.
  * 
@@ -35,10 +44,33 @@ async function getTransactions(month: Date = new Date()): Promise<Transaction[]>
     console.warn(result.warning);
   }
 
-  return result.docs.map((doc) => ({
-    ...(doc as Transaction),
-    date: parseISO(doc.date),
-  }));
+  return result.docs.map((doc) => deserializeTransaction(doc));
+}
+
+/**
+ * Returns the last transaction of a wallet.
+ *
+ * @param wallet filter transactios by this wallet
+ */
+async function getLastTransaction(wallet: Wallet): Promise<Transaction> {
+  const db = getDb();
+  const result = await db.find({
+    selector: {
+      'wallet._id': wallet._id,
+      kind: DocumentKind.Transaction,
+    },
+    sort: [{ _id: 'desc' }],
+    limit: 1,
+  });
+  if (result.warning) {
+    console.warn(result.warning);
+  }
+
+  if (result.docs.length === 0) {
+    throw new Error('Wallet has no transactions.');
+  }
+
+  return deserializeTransaction(result.docs[0]);
 }
 
 /**
@@ -47,7 +79,8 @@ async function getTransactions(month: Date = new Date()): Promise<Transaction[]>
  * @param id transaction ID
  */
 async function getTransaction(id: string): Promise<Transaction | null> {
-  return findById(DocumentKind.Transaction, id);
+  const transaction = findById(DocumentKind.Transaction, id);
+  return deserializeTransaction(transaction);
 }
 
 /**
@@ -112,6 +145,8 @@ async function putTransaction(
   })).toString();
 
   // Calculate next balance
+  // Here we check if there is a previous transaction, if so we add the amount to it
+  // to calculate the next balance. Otherwise, we just use the amount as the balance.
   const prevTxResult = await db.find({
     selector: {
       _id: { $lt: id },
@@ -124,10 +159,12 @@ async function putTransaction(
   if (prevTxResult.warning) {
     console.warn(prevTxResult.warning);
   }
-  if (prevTxResult.docs.length === 0) {
-    throw new Error('Cannot find a previous transaction to calculate balance.');
+  let balance = 0;
+  if (prevTxResult.docs.length > 0) {
+    balance = prevTxResult.docs[0].balance + transaction.amount;
+  } else {
+    balance = transaction.amount;
   }
-  const balance = prevTxResult.docs[0].balance + transaction.amount;
   
   const data = {
     ...transaction,
@@ -154,6 +191,7 @@ async function putTransaction(
 
 export {
   getTransactions,
+  getLastTransaction,
   getTransaction,
   putTransaction,
 };

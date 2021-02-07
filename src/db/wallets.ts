@@ -1,11 +1,22 @@
 import shortid from 'shortid';
-import getTime from 'date-fns/getTime';
+import parseISO from 'date-fns/parseISO';
+import formatISO from 'date-fns/formatISO';
 
 import { getDb } from '../services/db';
 import { Wallet } from '../types/finances';
 import { findById } from '../services/queries';
+import { getLastTransaction, putTransaction } from './transactions';
+import { getTransactionCategoryByName } from './trasactionCategories';
 // import { getTransactionCategoryByName, putTransaction } from './finances';
 import { DocumentKind, DocumentFields, TransientDocument } from '../types/db';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function deserializeWallet(wallet: any): Wallet {
+  return {
+    ...wallet,
+    createdAt: parseISO(wallet.createdAt),
+  };
+}
 
 /**
  * Retrieves all wallets.
@@ -23,9 +34,7 @@ async function getWallets(): Promise<Wallet[]> {
     console.warn(result.warning);
   }
 
-  return result.docs.map((doc) => ({
-    ...(doc as Wallet),
-  }));
+  return result.docs.map((doc) => deserializeWallet(doc));
 }
 
 /**
@@ -34,7 +43,7 @@ async function getWallets(): Promise<Wallet[]> {
  * @param id wallet ID
  */
 async function getWallet(id: string): Promise<Wallet | null> {
-  return findById(DocumentKind.Wallet, id);
+  return deserializeWallet(findById(DocumentKind.Wallet, id));
 }
 
 /**
@@ -45,43 +54,64 @@ async function getWallet(id: string): Promise<Wallet | null> {
  */
 async function putWallet(
   wallet: Omit<Wallet, DocumentFields> & TransientDocument,
+  balance: number,
   // opts?: { noTransaction: boolean },
 ): Promise<Wallet> {
   const db = getDb();
-
-  // If we are updating an existing wallet, we create a balance adjustment transaction
-  // const createTransaction = opts ? !opts.noTransaction : true;
-  // if (wallet._id && createTransaction) {
-  //   const oldWallet = await db.get<Wallet>(wallet._id);
-  //   if (oldWallet.balance !== wallet.balance) {
-  //     const adjustmentCat = await getTransactionCategoryByName('Balance Adjustment');
-  //     if (!adjustmentCat) {
-  //       throw new Error('Cannot find balance adjustment category.');
-  //     }
-
-  //     const now = new Date();
-  //     await putTransaction({
-  //       wallet: {
-  //         _id: wallet._id,
-  //         name: wallet.name,
-  //       },
-  //       category: {
-  //         _id: adjustmentCat._id,
-  //         name: adjustmentCat.name,
-  //       },
-  //       amount: (wallet.balance - oldWallet.balance) * -1,
-  //       date: now,
-  //       timestamp: now,
-  //     });
-  //   }
-  // }
-
   const result = await db.put({
     ...wallet,
     _id: wallet._id || shortid(),
     kind: DocumentKind.Wallet,
-    createdOn: getTime(wallet.createdOn),
+    createdAt: formatISO(wallet.createdAt),
   });
+
+  // If we need to update a wallet, create an adjustment transaction
+  const now = new Date();
+  const tx = {
+    wallet: {
+      _id: result.id,
+      name: wallet.name,
+    },
+    date: now,
+    createdAt: now,
+  };
+  if (wallet._id && wallet._rev) {
+    const lastTx = await getLastTransaction({
+      ...wallet,
+      _id: wallet._id,
+      kind: DocumentKind.Wallet,
+    });
+    if (!lastTx) {
+      throw new Error('Cannot find previous transaction.');
+    }
+
+    const adjustmentCat = await getTransactionCategoryByName('Balance Adjustment');
+    if (!adjustmentCat) {
+      throw new Error('Cannot find transaction category for balance adjustment');
+    }
+    await putTransaction({
+      ...tx,
+      amount: balance - lastTx.balance,
+      category: {
+        _id: adjustmentCat._id,
+        name: adjustmentCat.name,
+      },
+    });
+  // Otherwise, create an initial transaction
+  } else {
+    const initialCat = await getTransactionCategoryByName('Initial');
+    if (!initialCat) {
+      throw new Error('Cannot find transaction category for initial transaction.');
+    }
+    await putTransaction({
+      ...tx,
+      amount: balance,
+      category: {
+        _id: initialCat._id,
+        name: initialCat.name,
+      },
+    });
+  }
 
   return {
     ...wallet,

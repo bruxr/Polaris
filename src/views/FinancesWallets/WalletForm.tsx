@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
@@ -9,6 +9,7 @@ import Button from '../../components/Button';
 import Select from '../../components/Select';
 import { putWallet } from '../../db/wallets';
 import { Wallet, WalletType } from '../../types/finances';
+import { getLastTransaction } from '../../db/transactions';
 
 interface Props {
   wallet?: Wallet;
@@ -16,13 +17,23 @@ interface Props {
 }
 
 export default function WalletForm({ wallet, onSuccess }: Props): JSX.Element {
+  const [balance, setBalance] = useState(0);
+  useEffect(() => {
+    if (!wallet) {
+      return;
+    }
+
+    getLastTransaction(wallet).then((tx) => {
+      setBalance(tx.balance / 100);
+    });
+  }, [wallet]);
 
   return (
     <Formik
       initialValues={{
         name: wallet ? wallet.name : '',
         type: wallet ? wallet.type : WalletType.Savings,
-        balance: 0,
+        balance,
       }}
       validationSchema={Yup.object({
         name: Yup.string()
@@ -36,17 +47,14 @@ export default function WalletForm({ wallet, onSuccess }: Props): JSX.Element {
           .label('Initial balance'),
       })}
       onSubmit={async ({ name, type, balance }, { setStatus }) => {
-        const data = {
-          name,
-          balance: Number(balance) * 100,
-          type,
-        };
         try {
+          console.log(wallet);
           await putWallet({
             ...wallet,
-            ...data,
-            createdOn: wallet ? wallet.createdOn : new Date(),
-          });
+            name,
+            type,
+            createdAt: wallet ? wallet.createdAt : new Date(),
+          }, balance * 100);
         } catch (err) {
           setStatus(err.message);
         }
@@ -55,6 +63,7 @@ export default function WalletForm({ wallet, onSuccess }: Props): JSX.Element {
           onSuccess();
         }
       }}
+      enableReinitialize
     >
       {({ errors, status, isSubmitting }) => (
         <Form>

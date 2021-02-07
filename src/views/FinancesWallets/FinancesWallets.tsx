@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import useSWR from 'swr';
 import sortBy from 'lodash/sortBy';
 
@@ -9,6 +9,7 @@ import { getWallets } from '../../db/wallets';
 import { currency } from '../../services/currency';
 import useAddButton from '../../hooks/use-add-button';
 import { Wallet, WalletType } from '../../types/finances';
+import { getLastTransaction } from '../../db/transactions';
 
 function FinancesWallets(): React.ReactElement {
   useTitle('Wallets');
@@ -17,6 +18,7 @@ function FinancesWallets(): React.ReactElement {
 
   const [showForm, setShowForm] = useState(false);
   const [editedWallet, setEditedWallet] = useState<Wallet | undefined>();
+  const [balances, setBalances] = useState<Record<string, number>>({});
 
   const assets = useMemo(() => {
     if (!wallets) {
@@ -33,6 +35,22 @@ function FinancesWallets(): React.ReactElement {
 
     const filtered = wallets.filter((wallet) => wallet.type === WalletType.Credit);
     return sortBy(filtered, 'name');
+  }, [wallets]);
+
+  useEffect(() => {
+    if (!wallets) {
+      return;
+    }
+
+    wallets.forEach((wallet) => {
+      getLastTransaction(wallet).then((tx) => {
+        setBalances((prev) => {
+          const copy = { ...prev };
+          copy[wallet._id] = tx.balance;
+          return copy;
+        });
+      });
+    });
   }, [wallets]);
 
   useAddButton(() => {
@@ -56,8 +74,9 @@ function FinancesWallets(): React.ReactElement {
                   }}
                 >
                   <span className="font-semibold">{asset.name}</span>
-                  {/* TODO: Add balance */}
-                  <span className="font-mono font-light text-right">?</span>
+                  <span className="font-mono font-light text-right">
+                    {balances[asset._id] ? currency(balances[asset._id]) : ''}
+                  </span>
                 </button> 
               </li>
             ))}
@@ -76,8 +95,9 @@ function FinancesWallets(): React.ReactElement {
                   className="flex justify-between w-full"
                 >
                   <span className="font-semibold">{debt.name}</span>
-                  {/* TODO: Add balance */}
-                  <span className="font-mono font-light text-right">?</span>
+                  <span className="font-mono font-light text-right">
+                    {balances[debt._id] ? currency(balances[debt._id]) : ''}
+                  </span>
                 </button> 
               </li>
             ))}
