@@ -17,7 +17,6 @@ export enum WalletType {
 
 export interface Wallet extends Document {
   name: string;
-  balance: number;
   type: WalletType;
   createdOn: Date;
 }
