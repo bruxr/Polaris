@@ -48,7 +48,6 @@ export default function WalletForm({ wallet, onSuccess }: Props): JSX.Element {
       })}
       onSubmit={async ({ name, type, balance }, { setStatus }) => {
         try {
-          console.log(wallet);
           await putWallet({
             ...wallet,
             name,
