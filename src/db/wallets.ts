@@ -43,7 +43,9 @@ async function getWallets(): Promise<Wallet[]> {
  * @param id wallet ID
  */
 async function getWallet(id: string): Promise<Wallet | null> {
-  return deserializeWallet(findById(DocumentKind.Wallet, id));
+  const wallet = await findById(DocumentKind.Wallet, id);
+
+  return deserializeWallet(wallet);
 }
 
 /**
