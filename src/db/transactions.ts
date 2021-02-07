@@ -165,6 +165,27 @@ async function putTransaction(
   } else {
     balance = transaction.amount;
   }
+
+  // Update succeeding transactions
+  let baseBalance = balance;
+  const nextTx = await db.find({
+    selector: {
+      _id: { $gt: id },
+      'wallet._id': transaction.wallet._id,
+      kind: DocumentKind.Transaction,
+    },
+    sort: [{ _id: 'asc' }],
+  });
+  if (nextTx.warning) {
+    console.warn(nextTx.warning);
+  }
+  for (const doc of nextTx.docs) {
+    baseBalance = baseBalance + doc.amount;
+    await db.put({
+      ...doc,
+      balance: baseBalance,
+    });
+  }
   
   const data = {
     ...transaction,
