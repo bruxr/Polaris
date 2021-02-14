@@ -1,7 +1,0 @@
-fragment NewWallet on Wallet {
-  _id
-  __typename
-  name
-  balance
-  type
-}
