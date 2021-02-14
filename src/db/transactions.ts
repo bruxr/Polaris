@@ -79,7 +79,7 @@ async function getLastTransaction(wallet: Wallet): Promise<Transaction> {
  * @param id transaction ID
  */
 async function getTransaction(id: string): Promise<Transaction | null> {
-  const transaction = findById(DocumentKind.Transaction, id);
+  const transaction = await findById(DocumentKind.Transaction, id);
   return deserializeTransaction(transaction);
 }
 
