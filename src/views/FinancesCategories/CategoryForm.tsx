@@ -7,7 +7,7 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 import Select from '../../components/Select';
 import { TransactionCategoryType, TransactionCategory } from '../../types/finances';
-import { putTransactionCategory, deleteTransactionCategory } from '../../db/trasactionCategories';
+import { putTransactionCategory, deleteTransactionCategory } from '../../db/transactionCategories';
 
 type Props = {
   category?: TransactionCategory;

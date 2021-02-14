@@ -1,5 +1,5 @@
 import { TransactionCategoryType } from '../types/finances';
-import { getTransactionCategoryByName, putTransactionCategory } from './trasactionCategories';
+import { getTransactionCategoryByName, putTransactionCategory } from './transactionCategories';
 
 async function seedTransactionCategories(): Promise<void> {
   const balAdjustment = await getTransactionCategoryByName('Balance Adjustment');

@@ -6,7 +6,7 @@ import { getDb } from '../services/db';
 import { Wallet } from '../types/finances';
 import { findById } from '../services/queries';
 import { getLastTransaction, putTransaction } from './transactions';
-import { getTransactionCategoryByName } from './trasactionCategories';
+import { getTransactionCategoryByName } from './transactionCategories';
 // import { getTransactionCategoryByName, putTransaction } from './finances';
 import { DocumentKind, DocumentFields, TransientDocument } from '../types/db';
 
