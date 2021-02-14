@@ -84,6 +84,75 @@ async function getTransaction(id: string): Promise<Transaction | null> {
 }
 
 /**
+ * Returns the previous transaction of the given transaction ID.
+ *
+ * @param Transaction transaction
+ */
+async function getPrevTransaction(transaction: Transaction): Promise<Transaction | null> {
+  const db = getDb();
+  const result = await db.find({
+    selector: {
+      _id: { $lt: transaction._id },
+      'wallet._id': transaction.wallet._id,
+      kind: DocumentKind.Transaction,
+    },
+    sort: [{ _id: 'desc' }],
+    limit: 1,
+  });
+
+  if (result.warning) {
+    console.warn(result.warning);
+  }
+
+  if (result.docs.length === 0) {
+    return null;
+  }
+
+  return deserializeTransaction(result.docs[0]);
+}
+
+/**
+ * Returns the next transactions of the given transaction ID.
+ * 
+ * @param transaction Transaction
+ */
+async function getNextTransactions(transaction: Transaction): Promise<Transaction[]> {
+  const db = getDb();
+  const result = await db.find({
+    selector: {
+      _id: { $gt: transaction._id },
+      'wallet._id': transaction.wallet._id,
+      kind: DocumentKind.Transaction,
+    },
+    sort: [{ _id: 'asc' }],
+  });
+
+  if (result.warning) {
+    console.warn(result.warning);
+  }
+
+  return result.docs.map((doc) => deserializeTransaction(doc));
+}
+
+/**
+ * Updates the balances of transactions after the given transaction.
+ *
+ * @param transaction update transactions after this
+ * @param baseBalance initial balance
+ */
+async function updateNextBalances(transaction: Transaction, baseBalance: number): Promise<void> {
+  const db = getDb();
+  const nextTx = await getNextTransactions(transaction);
+  for (const tx of nextTx) {
+    baseBalance = baseBalance + tx.amount;
+    await db.put({
+      ...tx,
+      balance: baseBalance,
+    });
+  }
+}
+
+/**
  * Saves a transaction to the database. This also updates its parent's 
  * wallet balance and monthly stats for the category.
  * 
@@ -143,48 +212,56 @@ async function putTransaction(
     seconds: now.getSeconds(),
     milliseconds: now.getMilliseconds(),
   })).toString();
+  const newTx = { // Temporary transaction object
+    ...transaction,
+    _id: transaction._id || id,
+    balance: 0,
+    kind: DocumentKind.Transaction,
+  };
 
-  // Calculate next balance
-  // Here we check if there is a previous transaction, if so we add the amount to it
-  // to calculate the next balance. Otherwise, we just use the amount as the balance.
-  const prevTxResult = await db.find({
-    selector: {
-      _id: { $lt: id },
-      'wallet._id': transaction.wallet._id,
-      kind: DocumentKind.Transaction,
-    },
-    sort: [{ _id: 'desc' }],
-    limit: 1,
-  });
-  if (prevTxResult.warning) {
-    console.warn(prevTxResult.warning);
-  }
   let balance = 0;
-  if (prevTxResult.docs.length > 0) {
-    balance = prevTxResult.docs[0].balance + transaction.amount;
-  } else {
-    balance = transaction.amount;
-  }
+  // If we're updating an existing transaction we need to perform additional steps
+  if (transaction._id && transaction._rev) {
+    const oldTx = await getTransaction(transaction._id);
+    if (!oldTx) {
+      throw new Error('Cannot find original transaction.');
+    }
 
-  // Update succeeding transactions
-  let baseBalance = balance;
-  const nextTx = await db.find({
-    selector: {
-      _id: { $gt: id },
-      'wallet._id': transaction.wallet._id,
-      kind: DocumentKind.Transaction,
-    },
-    sort: [{ _id: 'asc' }],
-  });
-  if (nextTx.warning) {
-    console.warn(nextTx.warning);
-  }
-  for (const doc of nextTx.docs) {
-    baseBalance = baseBalance + doc.amount;
-    await db.put({
-      ...doc,
-      balance: baseBalance,
-    });
+    // If we changed the wallet, we need to remove the transaction from the
+    // old wallet's balance chain and insert it to the new wallet's balance chain.
+    if (transaction.wallet._id !== oldTx.wallet._id) {
+      const prevTx = await getPrevTransaction(oldTx);
+      if (!prevTx) {
+        throw new Error('Cannot find previous transaction.');
+      }
+      await updateNextBalances(oldTx, prevTx.balance);
+      
+      const prevTx2 = await getPrevTransaction(newTx);
+      if (!prevTx2) {
+        throw new Error('Cannot find new previous transaction');
+      }
+      balance = prevTx2.balance + transaction.amount;
+      await updateNextBalances(newTx, balance);
+
+    // If the amount has changed, we need to update the current wallet's balance chain
+    } else if (transaction.amount !== oldTx.amount) {
+      const prevTx = await getPrevTransaction(newTx);
+      if (!prevTx) {
+        throw new Error('Cannot find previous transaction');
+      }
+
+      balance = prevTx.balance + transaction.amount;
+      await updateNextBalances(newTx, balance);
+    }
+
+  // Otherwise, for new transactions just calculate the balance
+  } else {
+    const prevTx = await getPrevTransaction(newTx);
+    if (prevTx) {
+      balance = prevTx.balance + transaction.amount;
+    } else {
+      balance = transaction.amount;
+    }
   }
   
   const data = {
@@ -194,7 +271,6 @@ async function putTransaction(
     date: formatISO(transaction.date),
     createdAt: formatISO(now),
   };
-
   const result = await db.put({
     ...data,
     kind: DocumentKind.Transaction,
