@@ -20,7 +20,7 @@ import { currency } from '../../services/currency';
 import { CHART_COLORS } from '../../constants/charts';
 import useAddButton from '../../hooks/use-add-button';
 import { getTransactions } from '../../db/transactions';
-import { getTransactionMonthStats } from '../../db/finances';
+import { getTransactionMonthStats } from '../../db/transactionMonthStats';
 
 function Finances(): React.ReactElement {
   useTitle('Finances');
