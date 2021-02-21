@@ -1,13 +1,12 @@
 import React from 'react';
 
 import * as Yup from 'yup';
-import { useSetRecoilState } from 'recoil';
 import { Formik, Form, FormikProps } from 'formik';
 
 import Alert from '../../components/Alert';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import currentUserAtom from '../../atoms/current-user';
+import { useStoreActions } from '../../store';
 import auth, { deserializeUser } from '../../services/auth';
 
 type FormValues = {
@@ -21,7 +20,7 @@ const initialValues: FormValues = {
 };
 
 export default function SigninForm(): React.ReactElement {
-  const setCurrentUser = useSetRecoilState(currentUserAtom);
+  const { setCurrentUser } = useStoreActions((actions) => actions);
 
   return (
     <Formik
