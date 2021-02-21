@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import useSWR from 'swr';
 import classnames from 'classnames';
 import format from 'date-fns/format';
