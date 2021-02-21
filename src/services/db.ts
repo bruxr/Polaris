@@ -3,6 +3,8 @@ import PouchDB from 'pouchdb';
 import PouchDBFind from 'pouchdb-find';
 import PouchDBAuthentication from 'pouchdb-authentication';
 
+import { store } from '../store';
+
 PouchDB.plugin(PouchDBFind);
 PouchDB.plugin(PouchDBAuthentication);
 
@@ -65,9 +67,13 @@ async function setupDbSync(): Promise<void> {
       process.env.REACT_APP_BACKEND_DB_PASS || '',
     );
     db.sync(remoteDb, { live: true })
-      // .on('paused', () => console.info('Sync paused'))
-      // .on('active', () => console.info('Sync active.'))
-      .on('error', (err) => console.error(`Sync error: ${err}`));
+      .on('paused', () => store.getActions().session.setSyncStatus('inactive'))
+      .on('active', () => store.getActions().session.setSyncStatus('active'))
+      .on('error', (err) => {
+        console.log(err);
+        store.getActions().session.setSyncStatus('error');
+      });
+    store.getActions().session.setSyncStatus('active');
   } catch {
     console.info('Cannot reach backend, sync is disabled.');
   }

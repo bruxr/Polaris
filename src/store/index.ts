@@ -1,8 +1,11 @@
 import { createStore, createTypedHooks, Action, action } from 'easy-peasy';
 
 import { User } from '../types/users';
+import session, { SessionModel } from './session';
 
 interface StoreModel {
+  session: SessionModel;
+
   footerVisible: boolean;
   currentUser?: User;
   addBtnClick?: () => void;
@@ -15,6 +18,7 @@ interface StoreModel {
 }
 
 const store = createStore<StoreModel>({
+  session,
   footerVisible: true,
 
   setFooterVisible: action((state, visible) => {
