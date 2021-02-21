@@ -1,10 +1,9 @@
 import { useEffect } from 'react';
-import { useSetRecoilState } from 'recoil';
 
-import titleAtom from '../atoms/title';
+import { useStoreActions } from '../store';
 
 function useTitle(title: string): void {
-  const setTitle = useSetRecoilState(titleAtom);
+  const { setTitle } = useStoreActions((actions) => actions);
 
   useEffect(() => {
     document.title = `${title} - Polaris`;

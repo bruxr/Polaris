@@ -1,6 +1,8 @@
 import React, { PropsWithChildren } from 'react';
-import { RecoilRoot } from 'recoil';
+import { StoreProvider } from 'easy-peasy';
 import { BrowserRouter as Router } from 'react-router-dom';
+
+import { store } from './store';
 
 type Props = {
 }
@@ -8,11 +10,11 @@ type Props = {
 function Providers({ children }: PropsWithChildren<Props>): React.ReactElement {
   return (
     <React.StrictMode>
-      <RecoilRoot>
+      <StoreProvider store={store}>
         <Router>
           {children}
         </Router>
-      </RecoilRoot>
+      </StoreProvider>
     </React.StrictMode>
   );
 }

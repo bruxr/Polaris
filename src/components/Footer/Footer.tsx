@@ -1,5 +1,4 @@
 import React from 'react';
-import { useRecoilValue } from 'recoil';
 import { useLocation } from 'react-router-dom';
 
 import ClearAllIcon from '@material-ui/icons/ClearAllSharp';
@@ -9,16 +8,16 @@ import AccountBalanceIcon from '@material-ui/icons/AccountBalanceSharp';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWalletSharp';
 
 import MenuItem from './MenuItem';
+import { useStoreState } from '../../store';
 import { ROUTES } from '../../constants/routes';
-import noFooterAtom from '../../atoms/no-footer';
 
 export default function Footer(): React.ReactElement {
-  const noFooter = useRecoilValue(noFooterAtom);
+  const { footerVisible } = useStoreState((state) => state);
 
   const location = useLocation();
   const module = location.pathname.substr(1).split('/')[0];
 
-  if (noFooter) {
+  if (!footerVisible) {
     return <></>;
   }
 

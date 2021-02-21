@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 
 import Modal from 'react-modal';
 import isPast from 'date-fns/isPast';
-import { useRecoilState } from 'recoil';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
 import Finances from './views/Finances';
@@ -13,15 +12,16 @@ import Header from './components/Header';
 import Spinner from './components/Spinner';
 import { ROUTES } from './constants/routes';
 import Authenticate from './views/Authenticate';
-import currentUserAtom from './atoms/current-user';
 import FinancesWallets from './views/FinancesWallets';
 import auth, { deserializeUser } from './services/auth';
+import { useStoreState, useStoreActions } from './store';
 import FinancesCategories from './views/FinancesCategories';
 
 Modal.setAppElement('#root');
 
 function App(): JSX.Element {
-  const [currentUser, setCurrentUser] = useRecoilState(currentUserAtom);
+  const { currentUser } = useStoreState((state) => state);
+  const { setCurrentUser } = useStoreActions((actions) => actions);
 
   const [loading,  setLoading] = useState(0);
 

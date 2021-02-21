@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-import { useRecoilState } from 'recoil';
-
 import AddPackageSheet from './AddPackageSheet';
-import addButtonAtom from '../../atoms/add-button';
 
 export default function Packages(): JSX.Element {
-  const [, setAddButtonCallback] = useRecoilState(addButtonAtom);
 
   const [addShown] = useState(false);
 
@@ -19,7 +15,7 @@ export default function Packages(): JSX.Element {
     //     setAddShown(false);
     //   },
     // });
-  }, [setAddButtonCallback]);
+  }, []);
 
   return (
     <>

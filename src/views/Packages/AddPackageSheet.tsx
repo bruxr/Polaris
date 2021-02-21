@@ -1,29 +1,18 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
-import { useRecoilState } from 'recoil';
 import LocalShippingIcon from '@material-ui/icons/LocalShippingOutlined';
 
 import Input from '../../components/Input';
 import Sheet from '../../components/Sheet';
 import Button from '../../components/Button';
 import { Courier } from '../../types/packages';
-import addButtonAtom from '../../atoms/add-button';
 
 export default function AddPackageSheet(): JSX.Element {
-  const [addButtonCallback] = useRecoilState(addButtonAtom);
-
-  const handleOnClose = useCallback(() => {
-    if (!addButtonCallback) {
-      return;
-    }
-
-    // addButtonCallback.onHide();
-  }, [addButtonCallback]);
 
   return (
-    <Sheet onClose={handleOnClose}>
+    <Sheet>
       <div className="text-center"><LocalShippingIcon fontSize="large" /></div>
       <h3 className="text-lg text-center font-medium mb-4">Add Package</h3>
 

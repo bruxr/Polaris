@@ -8,6 +8,7 @@ PouchDB.plugin(PouchDBAuthentication);
 
 const NAME = 'polaris';
 let db: PouchDB.Database<any> | null = null;
+let remoteDb: PouchDB.Database<any> | null = null;
 
 /**
  * Returns the database instance.
@@ -56,7 +57,7 @@ async function setupDbSync(): Promise<void> {
     throw new Error('Database not initialized.');
   }
 
-  const remoteDb = new PouchDB<any>(process.env.REACT_APP_BACKEND_DB, { skip_setup: true });
+  remoteDb = new PouchDB<any>(process.env.REACT_APP_BACKEND_DB, { skip_setup: true });
 
   try {
     await remoteDb.logIn(

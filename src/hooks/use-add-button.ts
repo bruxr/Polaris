@@ -1,7 +1,5 @@
 import { useEffect } from 'react';
-import { useSetRecoilState, useResetRecoilState } from 'recoil';
-
-import addButtonAtom from '../atoms/add-button';
+import { useStoreActions } from '../store';
 
 /**
  * Registers a callback that will be invoked when
@@ -10,16 +8,14 @@ import addButtonAtom from '../atoms/add-button';
  * @param callback callback function
  */
 function useAddButton(callback: () => void): void {
-  const setAddBtn = useSetRecoilState(addButtonAtom);
-  const resetAddBtn = useResetRecoilState(addButtonAtom);
+  const { setAddBtn } = useStoreActions((actions) => actions);
 
   useEffect(() => {
-    setAddBtn({
-      onClick: callback,
-    });
+    setAddBtn(callback);
+    return () => setAddBtn(undefined);
 
-    return () => resetAddBtn();
-  }, [callback, setAddBtn, resetAddBtn]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 }
 
 export default useAddButton;

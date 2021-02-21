@@ -1,16 +1,15 @@
 import { useEffect } from 'react';
-import { useSetRecoilState } from 'recoil';
 
-import noFooterAtom from '../atoms/no-footer';
+import { useStoreActions } from '../store';
 
 function useNoFooter(): void {
-  const setNoFooter = useSetRecoilState(noFooterAtom);
+  const { setFooterVisible } = useStoreActions((actions) => actions);
 
   useEffect(() => {
-    setNoFooter(true);
+    setFooterVisible(false);
     
-    return () => setNoFooter(false);
-  }, [setNoFooter]);
+    return () => setFooterVisible(true);
+  }, [setFooterVisible]);
 }
 
 export default useNoFooter;

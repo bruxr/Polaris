@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 import Modal from 'react-modal';
-import { useRecoilValue } from 'recoil';
 import { NavLink } from 'react-router-dom';
 import MenuIcon from '@material-ui/icons/Menu';
 import AddSharpIcon from '@material-ui/icons/AddSharp';
@@ -10,13 +9,11 @@ import SettingsIcon from '@material-ui/icons/SettingsSharp';
 import ExitToAppSharpIcon from '@material-ui/icons/ExitToAppSharp';
 import AccountbalanceIcon from '@material-ui/icons/AccountBalanceSharp';
 
-import titleAtom from '../../atoms/title';
+import { useStoreState } from '../../store';
 import { ROUTES } from '../../constants/routes';
-import addButtonAtom from '../../atoms/add-button';
 
 export default function Header(): JSX.Element {
-  const title = useRecoilValue(titleAtom);
-  const add = useRecoilValue(addButtonAtom);
+  const { title, addBtnClick } = useStoreState((state) => state);
 
   const [showMenu, setShowMenu] = useState(false);
 
@@ -31,14 +28,12 @@ export default function Header(): JSX.Element {
           <MenuIcon />
         </button>
         <h1 className="font-bold text-xl ml-4">{title || 'Polaris'}</h1>
-        {add.onClick && (
+        {addBtnClick && (
           <button
             type="button"
             className="block w-6 h-6 ml-auto text-primary"
             onClick={() => {
-              if (add.onClick) {
-                add.onClick();
-              }
+              addBtnClick();
             }}
           >
             <AddSharpIcon />
