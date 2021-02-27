@@ -1,6 +1,6 @@
 {
   "name": "polaris",
-  "version": "0.2.0",
+  "version": "0.2.51",
   "private": true,
   "scripts": {
     "start": "HTTPS=true craco start",
