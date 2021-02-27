@@ -7,6 +7,8 @@ import Button from '../../components/Button';
 import useTitle from '../../hooks/use-title';
 import useNoFooter from '../../hooks/use-no-footer';
 
+import packageJson from '../../../package.json';
+
 function Settings(): React.ReactElement {
   const { syncStatus } = useStoreState((state) => state.session);
   
@@ -44,7 +46,7 @@ function Settings(): React.ReactElement {
         </Button>
       </section>
 
-      <section>
+      <section className="mb-4">
         <h3 className="text-lg font-semibold">Delete Database</h3>
         <p className="mb-4 text-gray-500">Deleting the database will destroy all local records but will not affect
         the remote mother server.</p>
@@ -60,6 +62,10 @@ function Settings(): React.ReactElement {
         >
           Delete Local Database
         </Button>
+      </section>
+
+      <section>
+        <p className="text-gray-700 text-xs text-center pt-8">v{packageJson.version}</p>
       </section>
     </div>
   );
