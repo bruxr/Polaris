@@ -1,7 +1,7 @@
 import React from 'react';
 
 import * as Yup from 'yup';
-import Sentry from '@sentry/react';
+import * as Sentry from '@sentry/react';
 import { Formik, Form } from 'formik';
 
 import Input from '../../components/Input';

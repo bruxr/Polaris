@@ -1,6 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 
-import Sentry from '@sentry/react';
+import * as Sentry from '@sentry/react';
 import { StoreProvider } from 'easy-peasy';
 import { BrowserRouter as Router } from 'react-router-dom';
 

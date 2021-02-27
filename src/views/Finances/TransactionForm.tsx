@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import * as Yup from 'yup';
-import Sentry from '@sentry/react';
+import * as Sentry from '@sentry/react';
 import sortBy from 'lodash/sortBy';
 import parse from 'date-fns/parse';
 import classnames from 'classnames';
