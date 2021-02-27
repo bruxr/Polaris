@@ -9,7 +9,8 @@
     "eject": "react-scripts eject",
     "lint": "eslint . --ext .ts,.tsx",
     "deploy": "yarn build && firebase deploy --only hosting",
-    "emulators": "firebase emulators:start --import=./saved-data --export-on-exit=./saved-data"
+    "emulators": "firebase emulators:start --import=./saved-data --export-on-exit=./saved-data",
+    "postinstall": "husky install"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -96,6 +97,7 @@
     "eslint-plugin-react-hooks": "^4.0.8",
     "faker": "^5.1.0",
     "firebase-tools": "^8.8.1",
+    "husky": "^5.1.1",
     "node-sass": "^4.14.1",
     "pouchdb-adapter-memory": "^7.2.2",
     "ts-jest": "^26.4.4",
