@@ -1,6 +1,7 @@
 import React from 'react';
 
 import * as Yup from 'yup';
+import Sentry from '@sentry/react';
 import { Formik, Form } from 'formik';
 
 import Input from '../../components/Input';
@@ -38,15 +39,19 @@ const CategoryForm = ({ category, onSuccess }: Props): React.ReactElement => {
           .label('Notes'),
       })}
       onSubmit={async ({ name, type, notes }) => {
-        const data = {
-          name,
-          type,
-          notes,
-        };
-        await putTransactionCategory({
-          ...category,
-          ...data,
-        });
+        try {
+          const data = {
+            name,
+            type,
+            notes,
+          };
+          await putTransactionCategory({
+            ...category,
+            ...data,
+          });
+        } catch (err) {
+          Sentry.captureException(err);
+        }
 
         if (onSuccess) {
           onSuccess();

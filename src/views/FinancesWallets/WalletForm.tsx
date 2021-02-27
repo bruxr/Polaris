@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import * as Yup from 'yup';
+import Sentry from '@sentry/react';
 import { Formik, Form } from 'formik';
 
 import Alert from '../../components/Alert';
@@ -55,6 +56,7 @@ export default function WalletForm({ wallet, onSuccess }: Props): JSX.Element {
             createdAt: wallet ? wallet.createdAt : new Date(),
           }, balance * 100);
         } catch (err) {
+          Sentry.captureException(err);
           setStatus(err.message);
         }
 

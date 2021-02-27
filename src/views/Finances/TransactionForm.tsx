@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import * as Yup from 'yup';
+import Sentry from '@sentry/react';
 import sortBy from 'lodash/sortBy';
 import parse from 'date-fns/parse';
 import classnames from 'classnames';
@@ -113,22 +114,26 @@ function TransactionForm({ transaction, onSuccess }: Props): React.ReactElement 
           throw new Error('Cannot find selected transaction category.');
         }
         
-        await putTransaction({
-          ...transaction,
-          wallet: {
-            _id: wallet._id,
-            name: wallet.name,
-          },
-          category: {
-            _id: category._id,
-            name: category.name,
-          },
-          amount: (sign === '+' ? amount : amount * -1) * 100,
-          date: startOfDay(parse(date, 'yyyy-MM-dd', timestamp)),
-          notes: notes || undefined,
-          location: coords,
-          createdAt: transaction?.createdAt || new Date(),
-        });
+        try {
+          await putTransaction({
+            ...transaction,
+            wallet: {
+              _id: wallet._id,
+              name: wallet.name,
+            },
+            category: {
+              _id: category._id,
+              name: category.name,
+            },
+            amount: (sign === '+' ? amount : amount * -1) * 100,
+            date: startOfDay(parse(date, 'yyyy-MM-dd', timestamp)),
+            notes: notes || undefined,
+            location: coords,
+            createdAt: transaction?.createdAt || new Date(),
+          });
+        } catch (err) {
+          Sentry.captureException(err);
+        }
 
         if (onSuccess) {
           onSuccess();

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import * as Yup from 'yup';
+import Sentry from '@sentry/react';
 import { Formik, Form, FormikProps } from 'formik';
 
 import Alert from '../../components/Alert';
@@ -43,6 +44,7 @@ export default function SigninForm(): React.ReactElement {
           if (err.name === 'JSONHTTPError') {
             setStatus(err.json.error_description);
           } else {
+            Sentry.captureException(err);
             setStatus(err.message);
           }
         }
