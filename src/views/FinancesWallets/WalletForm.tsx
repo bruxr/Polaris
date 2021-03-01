@@ -49,11 +49,16 @@ export default function WalletForm({ wallet, onSuccess }: Props): JSX.Element {
       })}
       onSubmit={async ({ name, type, balance }, { setStatus }) => {
         try {
+          let createdAt = new Date();
+          if (wallet && wallet.createdAt) {
+            createdAt = wallet.createdAt;
+          }
+
           await putWallet({
             ...wallet,
             name,
             type,
-            createdAt: wallet ? wallet.createdAt : new Date(),
+            createdAt,
           }, balance * 100);
         } catch (err) {
           Sentry.captureException(err);
