@@ -153,6 +153,7 @@ function TransactionForm({ transaction, onSuccess }: Props): React.ReactElement 
             <input
               type="text"
               value={values.amount}
+              inputMode="decimal"
               className={classnames(
                 'bg-transparent font-mono text-4xl tracking-tighter',
                 sign === '+' ? 'text-green' : 'text-red',
